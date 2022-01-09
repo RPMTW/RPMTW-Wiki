@@ -14,14 +14,41 @@ import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 import 'package:seo_renderer/seo_renderer.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  List<Locale> _locales;
+  if (window.localStorage.containsKey("rpmtw_locale_languageCode")) {
+    final storage = window.localStorage;
+    _locales = [
+      Locale.fromSubtags(
+          languageCode: storage['rpmtw_locale_languageCode']!,
+          scriptCode: storage['rpmtw_locale_scriptCode'],
+          countryCode: storage['rpmtw_locale_countryCode']),
+    ];
+  } else {
+    _locales = WidgetsBinding.instance!.window.locales;
+  }
+  locale =
+      basicLocaleListResolution(_locales, AppLocalizations.supportedLocales);
+
   AccountHandler.init();
   href = window.location.href;
   RPMTWApiClient.init(development: true); // Initialize RPMTWApiClient
   runApp(const WikiApp());
 }
 
-class WikiApp extends StatelessWidget {
+class WikiApp extends StatefulWidget {
   const WikiApp({Key? key}) : super(key: key);
+
+  @override
+  State<WikiApp> createState() => _WikiAppState();
+}
+
+class _WikiAppState extends State<WikiApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +69,7 @@ class WikiApp extends StatelessWidget {
             brightness: Brightness.dark,
             fontFamily: "font"),
         initialRoute: HomePage.route,
+        locale: locale,
         onGenerateRoute: (settings) {
           try {
             Uri uri = Uri.parse(href);

@@ -8,6 +8,7 @@ import 'package:rpmtw_wiki/widget/account_manage_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   static const route = '/';
@@ -95,7 +96,8 @@ class _WIPTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseTab(
       child: Center(
-        child: SEOText(localizations.guiWIP, style: const TextStyle(fontSize: 30)),
+        child:
+            SEOText(localizations.guiWIP, style: const TextStyle(fontSize: 30)),
       ),
     );
   }
@@ -120,11 +122,16 @@ class BaseTab extends StatelessWidget {
   }
 }
 
-class _Footer extends StatelessWidget {
+class _Footer extends StatefulWidget {
   const _Footer({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<_Footer> createState() => _FooterState();
+}
+
+class _FooterState extends State<_Footer> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -139,6 +146,35 @@ class _Footer extends StatelessWidget {
               link: "https://www.rpmtw.com", text: localizations.guiWebsite),
           const _CreativeCommons(),
           SEOText(localizations.guiCopyright, textAlign: TextAlign.center),
+          SizedBox(
+            width: 150,
+            child: DropdownButton<Locale>(
+              value: locale,
+              style: const TextStyle(color: Colors.lightBlue),
+              onChanged: (_locale) {
+                locale = _locale!;
+                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                  window.location.reload();
+                });
+              },
+              isExpanded: true,
+              items: AppLocalizations.supportedLocales
+                  .where((locale) => !(locale.languageCode == "zh" &&
+                      locale.scriptCode == null &&
+                      locale.countryCode == null))
+                  .map<DropdownMenuItem<Locale>>((Locale locale) {
+                return DropdownMenuItem<Locale>(
+                  value: locale,
+                  alignment: Alignment.center,
+                  child: Text(lookupAppLocalizations(locale).languageName,
+                      style:
+                          const TextStyle(fontSize: 17.5, fontFamily: 'font'),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis),
+                );
+              }).toList(),
+            ),
+          ),
           const SizedBox(height: 2)
         ],
       ),
