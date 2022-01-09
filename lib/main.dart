@@ -9,6 +9,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:rpmtw_api_client/rpmtw_api_client.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/account_manage_button.dart';
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 
@@ -89,10 +90,27 @@ class _HomePageState extends State<HomePage> {
       length: 6,
       child: Scaffold(
           appBar: AppBar(
-            title: Text(localizations.title),
-            centerTitle: true,
+            title: Row(
+              mainAxisAlignment: Utility.isWebMobile
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkResponse(
+                  onTap: () =>
+                      window.open("https://www.rpmtw.com", "RPMTW Website"),
+                  child: Image.asset(
+                    'assets/images/RPMTW_Logo.gif',
+                    fit: BoxFit.contain,
+                    width: 40,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(localizations.title, overflow: TextOverflow.ellipsis)
+              ],
+            ),
             bottom: TabBar(
-              isScrollable: true,
+              isScrollable: Utility.isWebMobile,
               tabs: [
                 Tab(
                     icon: const FaIcon(FontAwesomeIcons.home),
