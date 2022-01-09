@@ -1,0 +1,15 @@
+{
+  "authLogIn": "登入帳號",
+  "authLogInIng": "正在處理帳號資料中...",
+  "authLogout": "登出帳號",
+  "authManage": "管理帳號",
+  "authSuccess": "成功登入 RPMTW 帳號。",
+  "guiSuccess": "成功",
+  "tabHome": "首頁",
+  "tabMod": "模組",
+  "tabResourcePack": "資源包",
+  "tabServer": "伺服器",
+  "tabVanilla": "原版",
+  "tabWorld": "地圖",
+  "title": "RPMTW 當個創世神百科"
+}

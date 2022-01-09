@@ -1,0 +1,15 @@
+{
+  "authLogIn": "登入账号",
+  "authLogInIng": "正在处理账号资料中...",
+  "authLogout": "登出账号",
+  "authManage": "管理账号",
+  "authSuccess": "成功登入 RPMTW 账号。",
+  "guiSuccess": "成功",
+  "tabHome": "首页",
+  "tabMod": "Mod",
+  "tabResourcePack": "资源包",
+  "tabServer": "服务器",
+  "tabVanilla": "原版",
+  "tabWorld": "地图",
+  "title": "RPMTW 我的世界百科"
+}

@@ -1,0 +1,15 @@
+{
+  "authLogIn": "LogIn Account",
+  "authLogInIng": "Account information is being processed...",
+  "authLogout": "Logout Account",
+  "authManage": "Management Account",
+  "authSuccess": "Successfully logged into the RPMTW account.",
+  "guiSuccess": "Success",
+  "tabHome": "Home",
+  "tabMod": "Mod",
+  "tabResourcePack": "Resource Pack",
+  "tabServer": "Server",
+  "tabVanilla": "Vanilla",
+  "tabWorld": "World",
+  "title": "RPMTW MC Wiki"
+}
