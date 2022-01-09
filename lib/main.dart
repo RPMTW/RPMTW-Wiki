@@ -11,6 +11,7 @@ import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
+import 'package:seo_renderer/seo_renderer.dart';
 
 void main() async {
   AccountHandler.init();
@@ -34,6 +35,7 @@ class WikiApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
           AppLocalizations.delegate,
         ],
+        navigatorObservers: [routeObserver],
         supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
             primarySwatch: Colors.blue,
@@ -68,4 +70,3 @@ class WikiApp extends StatelessWidget {
         });
   }
 }
-

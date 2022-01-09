@@ -1,4 +1,6 @@
-import 'package:rpmtw_api_client/rpmtw_api_client.dart';
+import 'package:flutter/material.dart';
+import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
+import 'package:seo_renderer/seo_renderer.dart';
 
 class Account extends User {
   final String token;
@@ -19,6 +21,11 @@ class Account extends User {
             avatarStorageUUID: avatarStorageUUID,
             status: status,
             message: message);
+
+  Widget seoAvatar({double fontSize = 18}) => ImageRenderer(
+      child: avatar(fontSize: fontSize),
+      link: avatarUrl(RPMTWApiClient.lastInstance.baseUrl)!,
+      alt: "$username's avatar");
 
   factory Account.fromMap(Map<String, dynamic> map) {
     Map data = map['data'];

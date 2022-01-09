@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpmtw_wiki/models/account.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
-import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class AccountManageButton extends StatefulWidget {
   const AccountManageButton({Key? key}) : super(key: key);
@@ -29,14 +29,14 @@ class _AccountManageButtonState extends State<AccountManageButton> {
           borderRadius: const BorderRadius.all(Radius.circular(30)),
           child: Row(
             children: [
-              SizedBox(width: 30, height: 30, child: account.avatar()),
+              SizedBox(width: 30, height: 30, child: account.seoAvatar()),
               ...Utility.isWebMobile //手機板將不顯示詳細名稱
                   ? []
                   : [
                       const SizedBox(
                         width: 5,
                       ),
-                      Text(account.username),
+                      SEOText(account.username),
                     ],
               const SizedBox(
                 width: 10,
@@ -51,7 +51,7 @@ class _AccountManageButtonState extends State<AccountManageButton> {
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(width: 50, height: 50, child: account.avatar()),
+                    SizedBox(width: 50, height: 50, child: account.seoAvatar()),
                     Text(account.username),
                     const SizedBox(
                       height: 10,

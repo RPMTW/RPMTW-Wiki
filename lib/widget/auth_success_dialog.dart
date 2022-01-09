@@ -5,6 +5,7 @@ import 'package:rpmtw_wiki/screen/home_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
+import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class AuthSuccessDialog extends StatefulWidget {
   final String token;
@@ -31,13 +32,13 @@ class _AuthSuccessDialogState extends State<AuthSuccessDialog> {
           if (snapshot.hasData) {
             Account account = snapshot.data!;
             return AlertDialog(
-              title: Text(localizations.guiSuccess),
+              title: SEOText(localizations.guiSuccess),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(localizations.authSuccess),
-                  Text(account.username),
+                  SEOText(localizations.authSuccess),
+                  SEOText(account.username),
                 ],
               ),
               actions: [
@@ -50,7 +51,7 @@ class _AuthSuccessDialogState extends State<AuthSuccessDialog> {
             );
           } else {
             return AlertDialog(
-              title: Text(localizations.authLogInIng),
+              title: SEOText(localizations.authLogInIng),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: const [

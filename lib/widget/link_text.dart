@@ -3,6 +3,7 @@ import 'dart:html';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:seo_renderer/seo_renderer.dart';
 
 class LinkText extends StatelessWidget {
   final String text;
@@ -20,16 +21,21 @@ class LinkText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        style: TextStyle(
-          color: Colors.lightBlue,
-          fontSize: fontSize,
+    return LinkRenderer(
+      anchorText: text,
+      link: link,
+      child: Text.rich(
+        TextSpan(
+          style: TextStyle(
+            color: Colors.lightBlue,
+            fontSize: fontSize,
+          ),
+          text: text,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => window.open(link, ""),
         ),
-        text: text,
-        recognizer: TapGestureRecognizer()..onTap = () => window.open(link, ""),
+        textAlign: textAlign,
       ),
-      textAlign: textAlign,
     );
   }
 }

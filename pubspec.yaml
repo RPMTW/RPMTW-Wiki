@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.17.0
   no_context_navigation: ^2.1.2
   font_awesome_flutter: ^9.2.0
+  seo_renderer: ^0.3.0
 
 dev_dependencies:
   flutter_test:

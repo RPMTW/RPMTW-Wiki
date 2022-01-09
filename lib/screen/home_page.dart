@@ -7,6 +7,7 @@ import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/account_manage_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
+import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class HomePage extends StatefulWidget {
   static const route = '/';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(localizations.title, overflow: TextOverflow.ellipsis)
+              SEOText(localizations.title, overflow: TextOverflow.ellipsis)
             ],
           ),
           bottom: TabBar(
@@ -73,12 +74,12 @@ class _HomePageState extends State<HomePage> {
           actions: const [AccountManageButton()],
         ),
         body: const TabBarView(children: [
-          const _WIPTab(),
-          const _WIPTab(),
-          const _WIPTab(),
-          const _WIPTab(),
-          const _WIPTab(),
-          const _WIPTab(),
+          _WIPTab(),
+          _WIPTab(),
+          _WIPTab(),
+          _WIPTab(),
+          _WIPTab(),
+          _WIPTab(),
         ]),
       ),
     );
@@ -94,7 +95,7 @@ class _WIPTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseTab(
       child: Center(
-        child: Text(localizations.guiWIP, style: const TextStyle(fontSize: 30)),
+        child: SEOText(localizations.guiWIP, style: const TextStyle(fontSize: 30)),
       ),
     );
   }
@@ -137,7 +138,7 @@ class _Footer extends StatelessWidget {
           LinkText(
               link: "https://www.rpmtw.com", text: localizations.guiWebsite),
           const _CreativeCommons(),
-          Text(localizations.guiCopyright, textAlign: TextAlign.center),
+          SEOText(localizations.guiCopyright, textAlign: TextAlign.center),
           const SizedBox(height: 2)
         ],
       ),
@@ -159,7 +160,7 @@ class _CreativeCommons extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(localizations.footerCC1),
+            SEOText(localizations.footerCC1),
             const SizedBox(width: 5),
             LinkText(
                 link:

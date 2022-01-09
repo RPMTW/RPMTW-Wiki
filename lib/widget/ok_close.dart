@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class OkClose extends StatelessWidget {
   final Function? onOk;
@@ -20,7 +21,7 @@ class OkClose extends StatelessWidget {
             onOk!.call();
           }
         },
-        child: Text(
+        child: SEOText(
           title ?? "OK",
           style: TextStyle(color: color),
         ));
