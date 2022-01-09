@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
-import 'package:rpmtw_wiki/main.dart';
 import 'package:rpmtw_wiki/models/account.dart';
+import 'package:rpmtw_wiki/screen/home_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';

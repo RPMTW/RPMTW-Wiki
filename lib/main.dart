@@ -4,13 +4,12 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:rpmtw_api_client/rpmtw_api_client.dart';
+import 'package:rpmtw_wiki/screen/home_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
-import 'package:rpmtw_wiki/utilities/utility.dart';
-import 'package:rpmtw_wiki/widget/account_manage_button.dart';
+
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 
 void main() async {
@@ -70,78 +69,3 @@ class WikiApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
-  static const route = '/';
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 6,
-      child: Scaffold(
-          appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: Utility.isWebMobile
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                InkResponse(
-                  onTap: () =>
-                      window.open("https://www.rpmtw.com", "RPMTW Website"),
-                  child: Image.asset(
-                    'assets/images/RPMTW_Logo.gif',
-                    fit: BoxFit.contain,
-                    width: 40,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(localizations.title, overflow: TextOverflow.ellipsis)
-              ],
-            ),
-            bottom: TabBar(
-              isScrollable: Utility.isWebMobile,
-              tabs: [
-                Tab(
-                    icon: const FaIcon(FontAwesomeIcons.home),
-                    text: localizations.tabHome),
-                Tab(
-                    icon: const FaIcon(FontAwesomeIcons.puzzlePiece),
-                    text: localizations.tabMod),
-                Tab(
-                    icon: const FaIcon(FontAwesomeIcons.globe),
-                    text: localizations.tabWorld),
-                Tab(
-                    icon: const FaIcon(FontAwesomeIcons.palette),
-                    text: localizations.tabResourcePack),
-                Tab(
-                    icon: const FaIcon(FontAwesomeIcons.gamepad),
-                    text: localizations.tabVanilla),
-                Tab(
-                    icon: const FaIcon(FontAwesomeIcons.server),
-                    text: localizations.tabServer),
-              ],
-            ),
-            actions: const [AccountManageButton()],
-          ),
-          body: TabBarView(children: [
-            Container(),
-            Container(),
-            Container(),
-            Container(),
-            Container(),
-            Container(),
-          ])),
-    );
-  }
-}
