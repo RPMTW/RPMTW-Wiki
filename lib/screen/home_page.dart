@@ -6,6 +6,7 @@ import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/account_manage_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpmtw_wiki/widget/link_text.dart';
 
 class HomePage extends StatefulWidget {
   static const route = '/';
@@ -110,10 +111,65 @@ class BaseTab extends StatelessWidget {
         children: [
           child,
           const SizedBox(height: 5),
-          Text(localizations.guiCopyright, textAlign: TextAlign.center),
+          const _Footer(),
           const SizedBox(height: 5)
         ],
       ),
+    );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+            top: BorderSide(color: Theme.of(context).dividerColor, width: 2)),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 2),
+          LinkText(
+              link: "https://www.rpmtw.com", text: localizations.guiWebsite),
+          const _CreativeCommons(),
+          Text(localizations.guiCopyright, textAlign: TextAlign.center),
+          const SizedBox(height: 2)
+        ],
+      ),
+    );
+  }
+}
+
+class _CreativeCommons extends StatelessWidget {
+  const _CreativeCommons({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String localeName = WidgetsBinding.instance!.window.locale.toString();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          children: [
+            Text(localizations.footerCC1),
+            const SizedBox(width: 5),
+            LinkText(
+                link:
+                    "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.$localeName",
+                text: localizations.footerCC2),
+          ],
+        ),
+        const SizedBox(width: 5),
+        Image.asset("assets/images/cc-by-nc-sa.png"),
+      ],
     );
   }
 }
