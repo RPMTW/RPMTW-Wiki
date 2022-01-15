@@ -64,7 +64,7 @@ class _AccountManageButtonState extends State<AccountManageButton> {
                           tooltip: localizations.authLogout,
                           onPressed: () async {
                             AccountHandler.remove();
-                            Navigator.of(context).pop();
+                            window.location.reload();
                           },
                         ),
                         IconButton(

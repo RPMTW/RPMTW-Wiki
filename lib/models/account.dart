@@ -43,8 +43,8 @@ class Account extends User {
   @override
   Map<String, dynamic> toMap() {
     return {
-      "status": status,
-      "message": message,
+      "status": statusCode,
+      "message": statusMessage,
       "data": {
         'uuid': uuid,
         'username': username,

@@ -20,6 +20,8 @@ class AccountHandler {
 
   static bool get hasAccount => account != null;
 
+  static String? get token => account?.token;
+
   static Account set(Account _account) {
     account = _account;
     save();
@@ -33,8 +35,8 @@ class AccountHandler {
         email: user.email,
         emailVerified: user.emailVerified,
         avatarStorageUUID: user.avatarStorageUUID,
-        status: user.status,
-        message: user.message,
+        status: user.statusCode,
+        message: user.statusMessage,
         token: token);
     return set(account);
   }
