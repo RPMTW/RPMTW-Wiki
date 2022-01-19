@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
-
-typedef FormFieldValidator<T> = String? Function(T? value);
 
 class RPMTWFormField extends StatelessWidget {
   final String fieldName;
@@ -18,6 +17,8 @@ class RPMTWFormField extends StatelessWidget {
 
   final bool hasDivider;
   final bool lockLine;
+  final Widget? child;
+
   const RPMTWFormField(
       {Key? key,
       required this.fieldName,
@@ -31,7 +32,8 @@ class RPMTWFormField extends StatelessWidget {
       this.lockLine = true,
       this.validator,
       this.prefixIcon,
-      this.hintText})
+      this.hintText,
+      this.child})
       : super(key: key);
 
   double get splitWidth => kIsWebMobile ? 12 : 25;
@@ -48,7 +50,14 @@ class RPMTWFormField extends StatelessWidget {
             Expanded(
                 child: TextFormField(
               controller: controller,
-              validator: validator,
+              validator: (value) {
+                String? error = validator?.call(value);
+                if (error != null) {
+                  Utility.showErrorFlushbar(context, error);
+                  return error;
+                }
+                return null;
+              },
               decoration: InputDecoration(
                 labelText: fieldName,
                 prefixIcon: prefixIcon,
@@ -64,9 +73,13 @@ class RPMTWFormField extends StatelessWidget {
           ],
         ),
         _buildTooltip(context),
-        hasDivider
-            ? const Divider(
-                thickness: 2.0,
+        child ?? const SizedBox.shrink(),
+        (hasDivider && helperText != null)
+            ? Column(
+                children: [
+                  SizedBox(height: kSplitHight),
+                  const RPMTWDivider(),
+                ],
               )
             : const SizedBox.shrink(),
       ],

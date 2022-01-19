@@ -1,8 +1,10 @@
+import 'dart:html';
 import 'dart:math';
 
 import 'package:another_flushbar/flushbar.dart';
-import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:picture_verification_code/picture_verification_code.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/pages/base_page.dart';
@@ -10,13 +12,19 @@ import 'package:rpmtw_wiki/pages/home_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/editor_tool_bar.dart';
 import 'package:rpmtw_wiki/widget/form_field.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
 import 'package:rpmtw_wiki/widget/row_scroll_view.dart';
+import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 import 'package:rpmtw_wiki/widget/title_bar.dart';
+import 'package:split_view/split_view.dart';
+import 'package:undo/undo.dart';
+
+final GlobalKey<FormState> _formKey = GlobalKey();
 
 class AddModPage extends StatefulWidget {
   static const String route = '/mod/add';
@@ -27,42 +35,39 @@ class AddModPage extends StatefulWidget {
 }
 
 class _AddModPageState extends State<AddModPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<_BaseInfoState> _baseInfoKey = GlobalKey();
 
-  bool loading = true;
-  bool isForge = false;
-  bool isFabric = false;
+  void _submit() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+    _BaseInfoState baseInfoState = _baseInfoKey.currentState!;
 
-  List<MinecraftVersion> allMinecraftVersions = [];
+    final List<String> supportVersions = baseInfoState.supportVersions;
+    List<ModLoader> loaders = [];
+    if (baseInfoState.isFabric) {
+      loaders.add(ModLoader.fabric);
+    }
+    if (baseInfoState.isForge) {
+      loaders.add(ModLoader.forge);
+    }
 
-  String? name;
-  String? id;
-  String? description;
-  List<MinecraftVersion> supportVersions = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      MinecraftVersionManifest manifest = await RPMTWApiClient
-          .lastInstance.minecraftResource
-          .getMinecraftVersionManifest();
-      allMinecraftVersions = manifest.versions
-          .where((v) => v.type == MinecraftVersionType.release) //僅顯示正式發行版
-          .toList();
-      await Future.delayed(
-          const Duration(milliseconds: 300)); // 故意小延遲，避免畫面看起來卡頓
-      setState(() {
-        loading = false;
-      });
-    });
+    showDialog(
+        context: context,
+        builder: (context) => _SubmitModDialog(
+              name: baseInfoState.name!,
+              supportVersions: supportVersions,
+              id: baseInfoState.id,
+              description: baseInfoState.description,
+              loaders: loaders,
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: TitleBar(
           title: localizations.addModTitle,
@@ -72,6 +77,9 @@ class _AddModPageState extends State<AddModPage> {
             tabs: [
               Tab(
                 text: localizations.addModBaseTitle,
+              ),
+              const Tab(
+                text: "文章內容",
               ),
               const Tab(
                 text: "詳細資訊",
@@ -85,28 +93,7 @@ class _AddModPageState extends State<AddModPage> {
                 Tooltip(
                   message: localizations.addModSubmitTooltip,
                   child: ElevatedButton.icon(
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        }
-                        _formKey.currentState!.save();
-                        if (supportVersions.isEmpty) {
-                          Flushbar(
-                            title: localizations.guiError,
-                            message: localizations.addModSupportedVersionNull,
-                            backgroundColor: Colors.red,
-                            duration: const Duration(seconds: 3),
-                          ).show(context);
-                          return;
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (context) => _SubmitModDialog(
-                                    name: name!,
-                                    supportVersions: supportVersions,
-                                  ));
-                        }
-                      },
+                      onPressed: () => _submit(),
                       icon: const Icon(Icons.send),
                       style: ButtonStyle(
                           backgroundColor:
@@ -118,15 +105,142 @@ class _AddModPageState extends State<AddModPage> {
           ],
         ),
         body: TabBarView(
-          children: [_buildBaseInfo(), const Text("test")],
+          children: [
+            _BaseInfo(key: _baseInfoKey),
+            const _Content(),
+            const Text("test")
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildBaseInfo() {
+class _BaseInfo extends StatefulWidget {
+  const _BaseInfo({Key? key}) : super(key: key);
+
+  @override
+  _BaseInfoState createState() => _BaseInfoState();
+}
+
+class _BaseInfoState extends State<_BaseInfo>
+    with AutomaticKeepAliveClientMixin {
+  bool _loading = true;
+  List<MinecraftVersion> _allMinecraftVersions = [];
+
+  bool isForge = false;
+  bool isFabric = false;
+
+  String? name;
+  String? id;
+  String? description;
+  List<String> supportVersions = [];
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      MinecraftVersionManifest manifest = await RPMTWApiClient
+          .lastInstance.minecraftResource
+          .getMinecraftVersionManifest();
+      _allMinecraftVersions = manifest.versions
+          .where((v) => v.type == MinecraftVersionType.release) //僅顯示正式發行版
+          .toList();
+      await Future.delayed(
+          const Duration(milliseconds: 300)); // 故意小延遲，避免畫面看起來卡頓
+      setState(() {
+        _loading = false;
+      });
+    });
+  }
+
+  void _showCheckModConflictMenu(BuildContext context) {
+    StateSetter? setFilterState;
+    final RenderBox button = context.findRenderObject()! as RenderBox;
+    final RenderBox overlay =
+        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero,
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+
+    String? filter;
+    List<PopupMenuEntry<Widget>> items = [
+      PopupMenuItem(
+          enabled: false,
+          child: DefaultTextStyle(
+              style: Theme.of(context).textTheme.titleMedium!,
+              child: const Text("檢查模組是否已存在"))),
+      PopupMenuItem(
+          enabled: false,
+          child: RPMTextField(
+            hintText: "模組名稱或模組 ID",
+            onChanged: (value) {
+              setFilterState?.call(() {
+                filter = value;
+              });
+            },
+          )),
+      PopupMenuItem(
+          enabled: false,
+          child: DefaultTextStyle(
+            style: Theme.of(context).textTheme.titleMedium!,
+            child: StatefulBuilder(builder: (context, _setFilterState) {
+              setFilterState = _setFilterState;
+              return FutureBuilder<List<MinecraftMod>>(
+                  future: apiClient.minecraftResource.search(filter: filter),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Text(
+                        "搜尋模組失敗",
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.done) {
+                      List<MinecraftMod> mods = snapshot.data!;
+                      return SizedBox(
+                        width: 50,
+                        height: mods.length * 68.0,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: mods.length,
+                            itemBuilder: ((context, index) {
+                              MinecraftMod mod = mods[index];
+                              return ListTile(
+                                onTap: () {
+                                  // TODO:開啟該模組的頁面
+                                },
+                                title: Tooltip(
+                                    message: mod.uuid, child: Text(mod.name)),
+                                subtitle: mod.id != null ? Text(mod.id!) : null,
+                              );
+                            })),
+                      );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  });
+            }),
+          ))
+    ];
+
+    showMenu(context: context, position: position, items: items);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     return BasePage(
-      loading: loading,
+      loading: _loading,
       child: Form(
         key: _formKey,
         child: Column(
@@ -141,6 +255,23 @@ class _AddModPageState extends State<AddModPage> {
                 }
                 return null;
               },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: kSplitHight),
+                  Row(
+                    children: [
+                      SizedBox(width: kSplitWidth),
+                      OutlinedButton.icon(
+                          onPressed: () => _showCheckModConflictMenu(context),
+                          icon: const Icon(Icons.rule),
+                          label: const Text("檢查模組是否已存在")),
+                    ],
+                  ),
+                  SizedBox(height: kSplitHight),
+                  const RPMTWDivider(),
+                ],
+              ),
             ),
             RPMTWFormField(
               fieldName: localizations.addModTranslatedNameField,
@@ -157,13 +288,11 @@ class _AddModPageState extends State<AddModPage> {
               fieldName: localizations.addModDescriptionField,
               helperText: localizations.addModDescriptionTooltip,
               lockLine: false,
-              onSaved: (value) {
-                description = value;
-              },
+              onSaved: (value) => description = value,
             ),
             _buildLoaderCheckbox(),
             _VersionChoice(
-              allVersions: allMinecraftVersions,
+              allVersions: _allMinecraftVersions,
               onChanged: (versions) => supportVersions = versions,
             ),
             const SEOText("模組封面："),
@@ -173,45 +302,174 @@ class _AddModPageState extends State<AddModPage> {
     );
   }
 
-  Column _buildLoaderCheckbox() {
-    return Column(
-      children: [
-        SEOText(localizations.addModLoader),
-        Row(
-          mainAxisSize: MainAxisSize.min,
+  Widget _buildLoaderCheckbox() {
+    return StatefulBuilder(builder: (context, _setState) {
+      return Column(
+        children: [
+          SEOText(localizations.addModLoader),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(width: kSplitWidth),
+              Checkbox(
+                  value: isForge,
+                  onChanged: (value) {
+                    _setState(() {
+                      isForge = value!;
+                    });
+                  }),
+              const SEOText("Forge"),
+              Checkbox(
+                  value: isFabric,
+                  onChanged: (value) {
+                    _setState(() {
+                      isFabric = value!;
+                    });
+                  }),
+              const SEOText("Fabric"),
+            ],
+          ),
+        ],
+      );
+    });
+  }
+}
+
+class _Content extends StatefulWidget {
+  const _Content({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<_Content> {
+  late final TextEditingController _controller;
+  late final SimpleStack _changeController;
+
+  final TextStyle _textStyle = const TextStyle(fontSize: 25);
+
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    _changeController = SimpleStack("", limit: 20);
+    super.initState();
+
+    _controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: _controller.text.length),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  String _githubMarkdownUrl() {
+    Locale traditionalChinese = const Locale.fromSubtags(
+        languageCode: 'zh', countryCode: 'TW', scriptCode: 'Hant');
+    if (locale == traditionalChinese) {
+      return "https://gist.github.com/billy3321/1001749662c370887c63bb30f26c9e6e";
+    } else {
+      return "https://docs.github.com/en/github/writing-on-github";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BasePage(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: SplitView(
+          viewMode:
+              kIsWebDesktop ? SplitViewMode.Horizontal : SplitViewMode.Vertical,
+          gripSize: 3,
           children: [
-            SizedBox(width: kSplitWidth),
-            Checkbox(
-                value: isForge,
-                onChanged: (value) {
-                  setState(() {
-                    isForge = value!;
-                  });
-                }),
-            const SEOText("Forge"),
-            Checkbox(
-                value: isFabric,
-                onChanged: (value) {
-                  setState(() {
-                    isFabric = value!;
-                  });
-                }),
-            const SEOText("Fabric"),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.text_snippet),
+                    SizedBox(width: kSplitWidth / 2),
+                    Text("原始文章", style: _textStyle),
+                  ],
+                ),
+                const RPMTWDivider(),
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    maxLines: kIsWebDesktop ? 30 : 10,
+                    maxLength: null,
+                    onChanged: (value) {
+                      _changeController.modify(value);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SizedBox(height: kSplitHight),
+                EditorToolbar.basic(
+                    controller: _controller,
+                    setState: setState,
+                    changeController: _changeController,
+                    context: context),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const FaIcon(FontAwesomeIcons.markdown),
+                    SizedBox(width: kSplitWidth / 2),
+                    LinkText(
+                      text: "RPMWiki 支援 Github Markdown 語法",
+                      link: _githubMarkdownUrl(),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.preview),
+                      SizedBox(width: kSplitWidth / 2),
+                      Text("預覽文章", style: _textStyle),
+                    ],
+                  ),
+                  const RPMTWDivider(),
+                  MarkdownBody(
+                    selectable: true,
+                    data: _controller.text,
+                    onTapLink: (String text, String? href, String title) {
+                      if (href != null) {
+                        window.open(href, title.isNotEmpty ? title : text);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
 
 class _SubmitModDialog extends StatefulWidget {
   final String name;
-  final List<MinecraftVersion> supportVersions;
+  final List<String> supportVersions;
   final String? id;
   final String? description;
   final List<RelationMod>? relationMods;
   final ModIntegrationPlatform? integration;
   final List<ModSide>? side;
+  final List<ModLoader>? loaders;
 
   const _SubmitModDialog({
     Key? key,
@@ -222,6 +480,7 @@ class _SubmitModDialog extends StatefulWidget {
     this.relationMods,
     this.integration,
     this.side,
+    this.loaders,
   }) : super(key: key);
 
   @override
@@ -301,6 +560,7 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
       relationMods: widget.relationMods,
       integration: widget.integration,
       side: widget.side,
+      loader: widget.loaders,
     );
   }
 
@@ -323,7 +583,7 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
             );
           } else {
             return AlertDialog(
-              title: const Text("請稍後，正在建立模組中..."),
+              title: Text(localizations.addModCreating),
               content: Column(mainAxisSize: MainAxisSize.min, children: const [
                 CircularProgressIndicator(),
               ]),
@@ -335,7 +595,7 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
 
 class _VersionChoice extends StatefulWidget {
   final List<MinecraftVersion> allVersions;
-  final void Function(List<MinecraftVersion>) onChanged;
+  final void Function(List<String>) onChanged;
   const _VersionChoice(
       {Key? key, required this.allVersions, required this.onChanged})
       : super(key: key);
@@ -345,7 +605,7 @@ class _VersionChoice extends StatefulWidget {
 }
 
 class _VersionChoiceState extends State<_VersionChoice> {
-  late List<MinecraftVersion> versions;
+  late List<String> versions;
 
   @override
   void initState() {
@@ -355,6 +615,20 @@ class _VersionChoiceState extends State<_VersionChoice> {
 
   @override
   Widget build(BuildContext context) {
+    /*
+    DropDownMultiSelect(
+                        onChanged: (List<String> x) {
+                          setState(() {
+                            versions = x;
+                          });
+                          widget.onChanged(x);
+                        },
+                        options: widget.allVersions.map((v) => v.id).toList(),
+                        selectedValues: versions,
+                        whenEmpty: '請選擇版本',
+                      ),
+                    ), */
+
     return Column(
       children: [
         SizedBox(width: kSplitWidth),
@@ -362,21 +636,90 @@ class _VersionChoiceState extends State<_VersionChoice> {
         RowScrollView(
           child: Column(
             children: [
-              ChipsChoice<MinecraftVersion>.multiple(
-                value: versions,
-                onChanged: (value) {
-                  setState(() {
-                    versions = value;
-                  });
-                  widget.onChanged.call(value);
+              FormField<List<String>>(
+                initialValue: versions,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    String error = localizations.addModSupportedVersionNull;
+                    Utility.showErrorFlushbar(context, error);
+
+                    return error;
+                  }
+                  return null;
                 },
-                choiceItems:
-                    C2Choice.listFrom<MinecraftVersion, MinecraftVersion>(
-                  source: widget.allVersions,
-                  value: (i, v) => v,
-                  label: (i, v) => v.id,
-                ),
-                choiceStyle: const C2ChoiceStyle(color: Colors.green),
+                builder: (field) {
+                  return UnmanagedRestorationScope(
+                      bucket: field.bucket,
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                          child: Stack(
+                            children: [
+                              Align(
+                                  child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 10),
+                                      child: Text(versions.isNotEmpty
+                                          ? versions
+                                              .reduce((a, b) => a + ' , ' + b)
+                                          : "請選擇版本")),
+                                  alignment: Alignment.centerLeft),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 15,
+                                      horizontal: 10,
+                                    ),
+                                  ),
+                                  isDense: true,
+                                  onChanged: (x) {},
+                                  value: null,
+                                  selectedItemBuilder: (context) {
+                                    return widget.allVersions
+                                        .map((e) => DropdownMenuItem(
+                                              child: Container(),
+                                            ))
+                                        .toList();
+                                  },
+                                  items: widget.allVersions.map((e) {
+                                    String versionID = e.id;
+
+                                    return DropdownMenuItem<String>(
+                                      enabled: false,
+                                      child: Row(
+                                        children: [
+                                          StatefulBuilder(builder:
+                                              (context, _setCheckBoxState) {
+                                            return Checkbox(
+                                                value: versions
+                                                    .contains(versionID),
+                                                onChanged: (isSelected) {
+                                                  if (isSelected!) {
+                                                    var ns = versions;
+                                                    ns.add(versionID);
+                                                    widget.onChanged(ns);
+                                                  } else {
+                                                    var ns = versions;
+                                                    ns.remove(versionID);
+                                                    widget.onChanged(ns);
+                                                  }
+                                                  _setCheckBoxState(() {});
+                                                });
+                                          }),
+                                          Text(versionID)
+                                        ],
+                                      ),
+                                      value: versionID,
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
+                          )));
+                },
               ),
               ...?kIsWebDesktop
                   ? [

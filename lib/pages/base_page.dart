@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/row_scroll_view.dart';
+import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'dart:html';
 
 import 'package:rpmtw_wiki/widget/seo_text.dart';
@@ -17,6 +18,7 @@ class BasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: ListView(
+        controller: ScrollController(),
         children: [
           Builder(builder: (context) {
             if (loading) {
@@ -33,7 +35,6 @@ class BasePage extends StatelessWidget {
               return child;
             }
           }),
-          const SizedBox(height: 5),
           const _Footer(),
           const SizedBox(height: 5)
         ],
@@ -56,9 +57,7 @@ class _FooterState extends State<_Footer> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Divider(
-          thickness: 2.0,
-        ),
+        const RPMTWDivider(),
         const SizedBox(height: 2),
         LinkText(link: "https://www.rpmtw.com", text: localizations.guiWebsite),
         const _CreativeCommons(),

@@ -42,6 +42,9 @@ class _HomePageState extends State<HomePage> {
                   icon: const FaIcon(FontAwesomeIcons.puzzlePiece),
                   text: localizations.tabMod),
               Tab(
+                  icon: const FaIcon(FontAwesomeIcons.box),
+                  text: localizations.tabModpack),
+              Tab(
                   icon: const FaIcon(FontAwesomeIcons.globe),
                   text: localizations.tabWorld),
               Tab(
@@ -50,9 +53,6 @@ class _HomePageState extends State<HomePage> {
               Tab(
                   icon: const FaIcon(FontAwesomeIcons.gamepad),
                   text: localizations.tabVanilla),
-              Tab(
-                  icon: const FaIcon(FontAwesomeIcons.server),
-                  text: localizations.tabServer),
             ],
           ),
         ),

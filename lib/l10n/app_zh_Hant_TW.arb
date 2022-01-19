@@ -1,5 +1,6 @@
 {
   "addModBaseTitle": "基本資訊",
+  "addModCreating": "請稍後，正在建立模組中...",
   "addModDescriptionField": "模組簡介",
   "addModDescriptionTooltip": "請簡單扼要的敘述這個模組。",
   "addModIdField": "模組 ID",
@@ -38,8 +39,8 @@
   "languageName": "繁體中文",
   "tabHome": "首頁",
   "tabMod": "模組",
+  "tabModpack": "模組包",
   "tabResourcePack": "資源包",
-  "tabServer": "伺服器",
   "tabVanilla": "原版",
   "tabWorld": "地圖",
   "title": "RPMTW 當個創世神百科"

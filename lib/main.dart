@@ -1,6 +1,8 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
+import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -53,6 +55,11 @@ class _WikiAppState extends State<WikiApp> {
 
   @override
   Widget build(BuildContext context) {
+    /// https://github.com/flutter/flutter/issues/81215
+    TextStyle fontStyle = const TextStyle(
+        fontFeatures: [ui.FontFeature.proportionalFigures()],
+        fontFamily: "font");
+
     return MaterialApp(
         title: 'RPMTW Wiki',
         navigatorKey: NavigationService.navigationKey,
@@ -69,6 +76,21 @@ class _WikiAppState extends State<WikiApp> {
             primarySwatch: Colors.blue,
             brightness: Brightness.dark,
             fontFamily: "font",
+            textTheme: TextTheme(
+              bodyText2: fontStyle,
+              bodyText1: fontStyle,
+              headline6: fontStyle,
+              headline5: fontStyle,
+              headline4: fontStyle,
+              headline3: fontStyle,
+              headline2: fontStyle,
+              headline1: fontStyle,
+              caption: fontStyle,
+              button: fontStyle,
+              subtitle2: fontStyle,
+              subtitle1: fontStyle,
+              overline: fontStyle,
+            ),
             tooltipTheme: const TooltipThemeData(
                 textStyle: TextStyle(fontFamily: "font", color: Colors.black))),
         initialRoute: HomePage.route,
@@ -113,7 +135,9 @@ class _WikiAppState extends State<WikiApp> {
                   settings: settings, builder: (context) => const HomePage());
             }
           } catch (e) {
-            print(e);
+            if (kDebugMode) {
+              print(e);
+            }
             return MaterialPageRoute(
                 settings: settings, builder: (context) => const HomePage());
           }

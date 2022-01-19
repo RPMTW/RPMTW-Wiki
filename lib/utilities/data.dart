@@ -8,13 +8,18 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 NavigatorState get navigation => NavigationService.navigationKey.currentState!;
 AppLocalizations get localizations => AppLocalizations.of(navigation.context)!;
 
-String developmentRPMWikiUrl = "http://localhost:45213";
-String developmentRPMTWAccountUrl = "http://localhost:41351";
+bool development = false;
 
-String rpmtwAccountOauth2 =
-    "$developmentRPMTWAccountUrl?rpmtw_auth_callback=$developmentRPMWikiUrl"
+const String developmentRPMWikiUrl = "http://localhost:45213";
+const String productionRPMWikiUrl = "https://wiki.rpmtw.com";
+const String developmentRPMTWAccountUrl = "http://localhost:41351";
+const String productionRPMTWAccountUrl = "https://account.rpmtw.com";
+
+String get rpmtwAccountUrl =>
+    development ? developmentRPMTWAccountUrl : productionRPMTWAccountUrl;
+String get rpmtwAccountOauth2 =>
+    "$rpmtwAccountUrl?rpmtw_auth_callback=${development ? developmentRPMWikiUrl : productionRPMWikiUrl}"
     r"/auth?auth_token=${token}";
-String rpmtwAccountUrl = developmentRPMTWAccountUrl;
 
 late String href;
 

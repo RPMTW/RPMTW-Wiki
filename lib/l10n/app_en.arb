@@ -1,5 +1,6 @@
 {
   "addModBaseTitle": "Basic info",
+  "addModCreating": "Please wait, mods are being created...",
   "addModDescriptionField": "Mod description",
   "addModDescriptionTooltip": "Please give a brief description of this mod.",
   "addModIdField": "Mod id",
@@ -38,8 +39,8 @@
   "languageName": "English (US)",
   "tabHome": "Home",
   "tabMod": "Mod",
+  "tabModpack": "Modpack",
   "tabResourcePack": "Resource Pack",
-  "tabServer": "Server",
   "tabVanilla": "Vanilla",
   "tabWorld": "World",
   "title": "RPMTW Minecraft Wiki"
