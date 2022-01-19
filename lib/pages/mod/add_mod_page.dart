@@ -1,7 +1,9 @@
 import 'dart:html';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,7 +18,6 @@ import 'package:rpmtw_wiki/widget/editor_tool_bar.dart';
 import 'package:rpmtw_wiki/widget/form_field.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
-import 'package:rpmtw_wiki/widget/row_scroll_view.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
@@ -24,7 +25,8 @@ import 'package:rpmtw_wiki/widget/title_bar.dart';
 import 'package:split_view/split_view.dart';
 import 'package:undo/undo.dart';
 
-final GlobalKey<FormState> _formKey = GlobalKey();
+final GlobalKey<FormState> _formKey1 = GlobalKey();
+final GlobalKey<FormState> _formKey2 = GlobalKey();
 
 class AddModPage extends StatefulWidget {
   static const String route = '/mod/add';
@@ -36,13 +38,15 @@ class AddModPage extends StatefulWidget {
 
 class _AddModPageState extends State<AddModPage> {
   final GlobalKey<_BaseInfoState> _baseInfoKey = GlobalKey();
+  final GlobalKey<_DetailedInfoState> _detailedInfoKey = GlobalKey();
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) {
+    if (!_formKey1.currentState!.validate()) {
       return;
     }
-    _formKey.currentState!.save();
+    _formKey1.currentState!.save();
     _BaseInfoState baseInfoState = _baseInfoKey.currentState!;
+    _DetailedInfoState detailedInfoState = _detailedInfoKey.currentState!;
 
     final List<String> supportVersions = baseInfoState.supportVersions;
     List<ModLoader> loaders = [];
@@ -61,6 +65,9 @@ class _AddModPageState extends State<AddModPage> {
               id: baseInfoState.id,
               description: baseInfoState.description,
               loaders: loaders,
+              relationMods: detailedInfoState.relationMods,
+              integration: detailedInfoState.integration,
+              side: detailedInfoState.side,
             ));
   }
 
@@ -108,11 +115,56 @@ class _AddModPageState extends State<AddModPage> {
           children: [
             _BaseInfo(key: _baseInfoKey),
             const _Content(),
-            const Text("test")
+            _DetailedInfo(key: _detailedInfoKey)
           ],
         ),
       ),
     );
+  }
+}
+
+class _DetailedInfo extends StatefulWidget {
+  const _DetailedInfo({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_DetailedInfo> createState() => _DetailedInfoState();
+}
+
+class _DetailedInfoState extends State<_DetailedInfo> {
+  List<RelationMod>? relationMods;
+  ModIntegrationPlatform integration = ModIntegrationPlatform();
+  List<ModSide>? side;
+
+  @override
+  Widget build(BuildContext context) {
+    return BasePage(
+        child: Form(
+      key: _formKey2,
+      child: Column(
+        children: [
+          RPMTWFormField(
+            fieldName: "CurseForge Project ID",
+            hintText: "Example: 461500",
+            onSaved: (value) {
+              integration = integration.copyWith(
+                curseForgeID: value,
+              );
+            },
+          ),
+          RPMTWFormField(
+            fieldName: "Modrinth Project ID",
+            hintText: "Example: ZukQzaRP",
+            onSaved: (value) {
+              integration = integration.copyWith(
+                modrinthID: value,
+              );
+            },
+          ),
+        ],
+      ),
+    ));
   }
 }
 
@@ -125,6 +177,8 @@ class _BaseInfo extends StatefulWidget {
 
 class _BaseInfoState extends State<_BaseInfo>
     with AutomaticKeepAliveClientMixin {
+  final TextStyle _titleTextStyle = const TextStyle(fontSize: 18);
+
   bool _loading = true;
   List<MinecraftVersion> _allMinecraftVersions = [];
 
@@ -135,6 +189,7 @@ class _BaseInfoState extends State<_BaseInfo>
   String? id;
   String? description;
   List<String> supportVersions = [];
+  Uint8List? imageBytes;
 
   @override
   bool get wantKeepAlive => true;
@@ -242,7 +297,7 @@ class _BaseInfoState extends State<_BaseInfo>
     return BasePage(
       loading: _loading,
       child: Form(
-        key: _formKey,
+        key: _formKey1,
         child: Column(
           children: [
             RPMTWFormField(
@@ -295,10 +350,61 @@ class _BaseInfoState extends State<_BaseInfo>
               allVersions: _allMinecraftVersions,
               onChanged: (versions) => supportVersions = versions,
             ),
-            const SEOText("模組封面："),
+            SizedBox(height: kSplitHight),
+            _buildModImage(),
           ],
         ),
       ),
+    );
+  }
+
+  Column _buildModImage() {
+    return Column(
+      children: [
+        SEOText("模組封面圖：", style: _titleTextStyle),
+        ElevatedButton.icon(
+            onPressed: () async {
+              FilePickerResult? result = await FilePicker.platform.pickFiles(
+                type: FileType.image,
+              );
+
+              if (result != null) {
+                setState(() {
+                  imageBytes = result.files.first.bytes;
+                });
+              }
+            },
+            icon: const Icon(Icons.file_upload),
+            label: const Text("上傳封面圖")),
+        SizedBox(height: kSplitHight),
+        Builder(builder: (context) {
+          if (imageBytes != null) {
+            return Column(
+              children: [
+                Stack(
+                  children: [
+                    Image.memory(imageBytes!, width: 350, height: 350),
+                    Positioned(
+                        right: 1,
+                        top: 1,
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                imageBytes = null;
+                              });
+                            },
+                            tooltip: "移除封面圖",
+                            icon: const Icon(Icons.close))),
+                  ],
+                ),
+                SizedBox(height: kSplitHight),
+              ],
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        })
+      ],
     );
   }
 
@@ -306,7 +412,7 @@ class _BaseInfoState extends State<_BaseInfo>
     return StatefulBuilder(builder: (context, _setState) {
       return Column(
         children: [
-          SEOText(localizations.addModLoader),
+          SEOText(localizations.addModLoader, style: _titleTextStyle),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -396,7 +502,7 @@ class _ContentState extends State<_Content> {
                   children: [
                     const Icon(Icons.text_snippet),
                     SizedBox(width: kSplitWidth / 2),
-                    Text("原始文章", style: _textStyle),
+                    SEOText("原始文章", style: _textStyle),
                   ],
                 ),
                 const RPMTWDivider(),
@@ -438,7 +544,7 @@ class _ContentState extends State<_Content> {
                     children: [
                       const Icon(Icons.preview),
                       SizedBox(width: kSplitWidth / 2),
-                      Text("預覽文章", style: _textStyle),
+                      SEOText("預覽文章", style: _textStyle),
                     ],
                   ),
                   const RPMTWDivider(),
@@ -615,119 +721,76 @@ class _VersionChoiceState extends State<_VersionChoice> {
 
   @override
   Widget build(BuildContext context) {
-    /*
-    DropDownMultiSelect(
-                        onChanged: (List<String> x) {
-                          setState(() {
-                            versions = x;
-                          });
-                          widget.onChanged(x);
-                        },
-                        options: widget.allVersions.map((v) => v.id).toList(),
-                        selectedValues: versions,
-                        whenEmpty: '請選擇版本',
-                      ),
-                    ), */
-
     return Column(
       children: [
         SizedBox(width: kSplitWidth),
-        SEOText(localizations.addModSupportedVersionField),
-        RowScrollView(
-          child: Column(
-            children: [
-              FormField<List<String>>(
-                initialValue: versions,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    String error = localizations.addModSupportedVersionNull;
-                    Utility.showErrorFlushbar(context, error);
+        SEOText(localizations.addModSupportedVersionField,
+            style: const TextStyle(fontSize: 18)),
+        FormField<List<String>>(
+          initialValue: versions,
+          validator: (value) {
+            if (value!.isEmpty) {
+              String error = localizations.addModSupportedVersionNull;
+              Utility.showErrorFlushbar(context, error);
 
-                    return error;
-                  }
-                  return null;
-                },
-                builder: (field) {
-                  return UnmanagedRestorationScope(
-                      bucket: field.bucket,
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.1,
-                          child: Stack(
-                            children: [
-                              Align(
-                                  child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 10),
-                                      child: Text(versions.isNotEmpty
-                                          ? versions
-                                              .reduce((a, b) => a + ' , ' + b)
-                                          : "請選擇版本")),
-                                  alignment: Alignment.centerLeft),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: DropdownButtonFormField<String>(
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 15,
-                                      horizontal: 10,
-                                    ),
-                                  ),
-                                  isDense: true,
-                                  onChanged: (x) {},
-                                  value: null,
-                                  selectedItemBuilder: (context) {
-                                    return widget.allVersions
-                                        .map((e) => DropdownMenuItem(
-                                              child: Container(),
-                                            ))
-                                        .toList();
-                                  },
-                                  items: widget.allVersions.map((e) {
-                                    String versionID = e.id;
+              return error;
+            }
+            return null;
+          },
+          builder: (field) {
+            return UnmanagedRestorationScope(
+                bucket: field.bucket,
+                child: SizedBox(
+                  width: 200,
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      hintText: versions.isNotEmpty
+                          ? versions.reduce((a, b) => a + ' , ' + b)
+                          : "請選擇版本",
+                    ),
+                    isDense: true,
+                    onChanged: (x) {},
+                    selectedItemBuilder: (context) {
+                      return widget.allVersions
+                          .map((e) => DropdownMenuItem(
+                                child: Container(),
+                              ))
+                          .toList();
+                    },
+                    items: widget.allVersions.map((e) {
+                      String versionID = e.id;
 
-                                    return DropdownMenuItem<String>(
-                                      enabled: false,
-                                      child: Row(
-                                        children: [
-                                          StatefulBuilder(builder:
-                                              (context, _setCheckBoxState) {
-                                            return Checkbox(
-                                                value: versions
-                                                    .contains(versionID),
-                                                onChanged: (isSelected) {
-                                                  if (isSelected!) {
-                                                    var ns = versions;
-                                                    ns.add(versionID);
-                                                    widget.onChanged(ns);
-                                                  } else {
-                                                    var ns = versions;
-                                                    ns.remove(versionID);
-                                                    widget.onChanged(ns);
-                                                  }
-                                                  _setCheckBoxState(() {});
-                                                });
-                                          }),
-                                          Text(versionID)
-                                        ],
-                                      ),
-                                      value: versionID,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          )));
-                },
-              ),
-              ...?kIsWebDesktop
-                  ? [
-                      const SizedBox(height: 10) // 放置可滾動 widget 中滾軸的位置
-                    ]
-                  : null,
-            ],
-          ),
+                      return DropdownMenuItem<String>(
+                        enabled: false,
+                        child: Row(
+                          children: [
+                            StatefulBuilder(
+                                builder: (context, _setCheckBoxState) {
+                              return Checkbox(
+                                  value: versions.contains(versionID),
+                                  onChanged: (isSelected) {
+                                    if (isSelected!) {
+                                      var ns = versions;
+                                      ns.add(versionID);
+                                      widget.onChanged(ns);
+                                    } else {
+                                      var ns = versions;
+                                      ns.remove(versionID);
+                                      widget.onChanged(ns);
+                                    }
+                                    _setCheckBoxState(() {});
+                                    setState(() {});
+                                  });
+                            }),
+                            SEOText(versionID)
+                          ],
+                        ),
+                        value: versionID,
+                      );
+                    }).toList(),
+                  ),
+                ));
+          },
         ),
       ],
     );
