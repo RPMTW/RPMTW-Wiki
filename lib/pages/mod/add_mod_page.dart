@@ -25,8 +25,8 @@ import 'package:rpmtw_wiki/widget/title_bar.dart';
 import 'package:split_view/split_view.dart';
 import 'package:undo/undo.dart';
 
-final GlobalKey<FormState> _formKey1 = GlobalKey();
-final GlobalKey<FormState> _formKey2 = GlobalKey();
+final GlobalKey<FormState> _formKey = GlobalKey();
+const TextStyle _titleTextStyle = TextStyle(fontSize: 20, color: Colors.blue);
 
 class AddModPage extends StatefulWidget {
   static const String route = '/mod/add';
@@ -41,12 +41,13 @@ class _AddModPageState extends State<AddModPage> {
   final GlobalKey<_DetailedInfoState> _detailedInfoKey = GlobalKey();
 
   void _submit() {
-    if (!_formKey1.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
-    _formKey1.currentState!.save();
-    _BaseInfoState baseInfoState = _baseInfoKey.currentState!;
-    _DetailedInfoState detailedInfoState = _detailedInfoKey.currentState!;
+    _formKey.currentState!.save();
+
+    final _BaseInfoState baseInfoState = _baseInfoKey.currentState!;
+    final _DetailedInfoState? detailedInfoState = _detailedInfoKey.currentState;
 
     final List<String> supportVersions = baseInfoState.supportVersions;
     List<ModLoader> loaders = [];
@@ -65,58 +66,61 @@ class _AddModPageState extends State<AddModPage> {
               id: baseInfoState.id,
               description: baseInfoState.description,
               loaders: loaders,
-              relationMods: detailedInfoState.relationMods,
-              integration: detailedInfoState.integration,
-              side: detailedInfoState.side,
+              relationMods: detailedInfoState?.relationMods,
+              integration: detailedInfoState?.integration,
+              side: detailedInfoState?.side,
             ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: TitleBar(
-          title: localizations.addModTitle,
-          onBackPressed: () => navigation.pushNamed(HomePage.route),
-          bottom: TabBar(
-            isScrollable: Utility.isWebMobile,
-            tabs: [
-              Tab(
-                text: localizations.addModBaseTitle,
-              ),
-              const Tab(
-                text: "文章內容",
-              ),
-              const Tab(
-                text: "詳細資訊",
+    return Form(
+      key: _formKey,
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: TitleBar(
+            title: localizations.addModTitle,
+            onBackPressed: () => navigation.pushNamed(HomePage.route),
+            bottom: TabBar(
+              isScrollable: Utility.isWebMobile,
+              tabs: [
+                Tab(
+                  text: localizations.addModBaseTitle,
+                ),
+                Tab(
+                  text: localizations.addModIntroductionTitle,
+                ),
+                Tab(
+                  text: localizations.addModDetailedTitle,
+                )
+              ],
+            ),
+            actions: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Tooltip(
+                    message: localizations.addModSubmitTooltip,
+                    child: ElevatedButton.icon(
+                        onPressed: () => _submit(),
+                        icon: const Icon(Icons.send),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.green)),
+                        label: Text(localizations.guiSubmit)),
+                  )
+                ],
               )
             ],
           ),
-          actions: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Tooltip(
-                  message: localizations.addModSubmitTooltip,
-                  child: ElevatedButton.icon(
-                      onPressed: () => _submit(),
-                      icon: const Icon(Icons.send),
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.green)),
-                      label: Text(localizations.guiSubmit)),
-                )
-              ],
-            )
-          ],
-        ),
-        body: TabBarView(
-          children: [
-            _BaseInfo(key: _baseInfoKey),
-            const _Content(),
-            _DetailedInfo(key: _detailedInfoKey)
-          ],
+          body: TabBarView(
+            children: [
+              _BaseInfo(key: _baseInfoKey),
+              const _Introduction(),
+              _DetailedInfo(key: _detailedInfoKey)
+            ],
+          ),
         ),
       ),
     );
@@ -135,36 +139,153 @@ class _DetailedInfo extends StatefulWidget {
 class _DetailedInfoState extends State<_DetailedInfo> {
   List<RelationMod>? relationMods;
   ModIntegrationPlatform integration = ModIntegrationPlatform();
-  List<ModSide>? side;
+  List<ModSide> side = [];
+
+  void _saveSideData(
+      {required ModSide value, required ModSideEnvironment environment}) {
+    if (side.any((e) => e.environment == environment)) {
+      /// 如果已經選擇過相同執行環境則刪除
+      side.removeWhere((e) => e.environment == environment);
+    }
+
+    side.add(value);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BasePage(
-        child: Form(
-      key: _formKey2,
-      child: Column(
-        children: [
-          RPMTWFormField(
-            fieldName: "CurseForge Project ID",
-            hintText: "Example: 461500",
-            onSaved: (value) {
-              integration = integration.copyWith(
-                curseForgeID: value,
-              );
-            },
-          ),
-          RPMTWFormField(
-            fieldName: "Modrinth Project ID",
-            hintText: "Example: ZukQzaRP",
-            onSaved: (value) {
-              integration = integration.copyWith(
-                modrinthID: value,
-              );
-            },
-          ),
-        ],
-      ),
+        child: Column(
+      children: [
+        SizedBox(height: kSplitHight),
+        SEOText(localizations.addModDetailedIntegration,
+            style: _titleTextStyle),
+        RPMTWFormField(
+          fieldName: "CurseForge Project ID",
+          hintText: localizations.addModDetailedCurseForgeHint,
+          onSaved: (value) {
+            integration = integration.copyWith(
+              curseForgeID: value,
+            );
+          },
+        ),
+        RPMTWFormField(
+          fieldName: "Modrinth Project ID",
+          hintText: localizations.addModDetailedModrinthHint,
+          onSaved: (value) {
+            integration = integration.copyWith(
+              modrinthID: value,
+            );
+          },
+        ),
+        SizedBox(height: kSplitHight),
+        SEOText(localizations.addModDetailedEnvironment,
+            style: _titleTextStyle),
+        _ModSideChoice(
+            environment: ModSideEnvironment.client,
+            onSaved: (value) => _saveSideData(
+                value: value, environment: ModSideEnvironment.client)),
+        _ModSideChoice(
+            environment: ModSideEnvironment.server,
+            onSaved: (value) => _saveSideData(
+                value: value, environment: ModSideEnvironment.server))
+      ],
     ));
+  }
+}
+
+class _ModSideChoice extends StatefulWidget {
+  final ModSideEnvironment environment;
+  final void Function(ModSide) onSaved;
+  const _ModSideChoice(
+      {Key? key, required this.environment, required this.onSaved})
+      : super(key: key);
+
+  @override
+  State<_ModSideChoice> createState() => _ModSideChoiceState();
+}
+
+class _ModSideChoiceState extends State<_ModSideChoice> {
+  bool isRequired = false;
+  bool isOptional = false;
+  bool isUnsupported = false;
+
+  void onChanged({required bool value, required ModRequireType requireType}) {
+    switch (requireType) {
+      case ModRequireType.required:
+        isRequired = value;
+        isOptional = false;
+        isUnsupported = false;
+        break;
+      case ModRequireType.optional:
+        isOptional = value;
+        isRequired = false;
+        isUnsupported = false;
+        break;
+      case ModRequireType.unsupported:
+        isUnsupported = value;
+        isRequired = false;
+        isOptional = false;
+        break;
+    }
+    widget.onSaved(ModSide(
+      environment: widget.environment,
+      requireType: requireType,
+    ));
+    setState(() {});
+  }
+
+  String toI18nEnvironmentString(ModSideEnvironment environment) {
+    switch (environment) {
+      case ModSideEnvironment.client:
+        return localizations.modSideClient;
+      case ModSideEnvironment.server:
+        return localizations.modSideServer;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SEOText(
+          toI18nEnvironmentString(widget.environment),
+          style: const TextStyle(fontSize: 18),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                SEOText(localizations.modSideRequire),
+                Checkbox(
+                    value: isRequired,
+                    onChanged: (value) => onChanged(
+                        value: value!, requireType: ModRequireType.required)),
+              ],
+            ),
+            Row(
+              children: [
+                SEOText(localizations.modSideOptional),
+                Checkbox(
+                    value: isOptional,
+                    onChanged: (value) => onChanged(
+                        value: value!, requireType: ModRequireType.optional)),
+              ],
+            ),
+            Row(
+              children: [
+                SEOText(localizations.modSideUnsupported),
+                Checkbox(
+                    value: isUnsupported,
+                    onChanged: (value) => onChanged(
+                        value: value!,
+                        requireType: ModRequireType.unsupported)),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -177,8 +298,6 @@ class _BaseInfo extends StatefulWidget {
 
 class _BaseInfoState extends State<_BaseInfo>
     with AutomaticKeepAliveClientMixin {
-  final TextStyle _titleTextStyle = const TextStyle(fontSize: 18);
-
   bool _loading = true;
   List<MinecraftVersion> _allMinecraftVersions = [];
 
@@ -213,7 +332,7 @@ class _BaseInfoState extends State<_BaseInfo>
     });
   }
 
-  void _showCheckModConflictMenu(BuildContext context) {
+  void _showCheckModExistsMenu(BuildContext context) {
     StateSetter? setFilterState;
     final RenderBox button = context.findRenderObject()! as RenderBox;
     final RenderBox overlay =
@@ -235,11 +354,11 @@ class _BaseInfoState extends State<_BaseInfo>
           enabled: false,
           child: DefaultTextStyle(
               style: Theme.of(context).textTheme.titleMedium!,
-              child: const Text("檢查模組是否已存在"))),
+              child: Text(localizations.addModBaseCheckExists))),
       PopupMenuItem(
           enabled: false,
           child: RPMTextField(
-            hintText: "模組名稱或模組 ID",
+            hintText: localizations.addModBaseCheckExistsHint,
             onChanged: (value) {
               setFilterState?.call(() {
                 filter = value;
@@ -255,12 +374,8 @@ class _BaseInfoState extends State<_BaseInfo>
               return FutureBuilder<List<MinecraftMod>>(
                   future: apiClient.minecraftResource.search(filter: filter),
                   builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Text(
-                        "搜尋模組失敗",
-                      );
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.done) {
+                    if (!snapshot.hasError &&
+                        snapshot.connectionState == ConnectionState.done) {
                       List<MinecraftMod> mods = snapshot.data!;
                       return SizedBox(
                         width: 50,
@@ -296,64 +411,61 @@ class _BaseInfoState extends State<_BaseInfo>
     super.build(context);
     return BasePage(
       loading: _loading,
-      child: Form(
-        key: _formKey1,
-        child: Column(
-          children: [
-            RPMTWFormField(
-              fieldName: localizations.addModOriginalNameField,
-              hintText: localizations.addModOriginalNameHintText,
-              onSaved: (value) => name = value,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return "模組名稱不得為空";
-                }
-                return null;
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: kSplitHight),
-                  Row(
-                    children: [
-                      SizedBox(width: kSplitWidth),
-                      OutlinedButton.icon(
-                          onPressed: () => _showCheckModConflictMenu(context),
-                          icon: const Icon(Icons.rule),
-                          label: const Text("檢查模組是否已存在")),
-                    ],
-                  ),
-                  SizedBox(height: kSplitHight),
-                  const RPMTWDivider(),
-                ],
-              ),
+      child: Column(
+        children: [
+          RPMTWFormField(
+            fieldName: localizations.addModOriginalNameField,
+            hintText: localizations.addModOriginalNameHintText,
+            onSaved: (value) => name = value,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return localizations.addModOriginalNameValidator;
+              }
+              return null;
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: kSplitHight),
+                Row(
+                  children: [
+                    SizedBox(width: kSplitWidth),
+                    OutlinedButton.icon(
+                        onPressed: () => _showCheckModExistsMenu(context),
+                        icon: const Icon(Icons.rule),
+                        label: Text(localizations.addModBaseCheckExists)),
+                  ],
+                ),
+                SizedBox(height: kSplitHight),
+                const RPMTWDivider(),
+              ],
             ),
-            RPMTWFormField(
-              fieldName: localizations.addModTranslatedNameField,
-              hintText: localizations.addModTranslatedNameHintText,
-              helperText: localizations.addModTranslatedNameTooltip,
-            ),
-            RPMTWFormField(
-              fieldName: localizations.addModIdField,
-              hintText: localizations.addModIdHintText,
-              helperText: localizations.addModIdTooltip,
-              onSaved: (value) => id = value,
-            ),
-            RPMTWFormField(
-              fieldName: localizations.addModDescriptionField,
-              helperText: localizations.addModDescriptionTooltip,
-              lockLine: false,
-              onSaved: (value) => description = value,
-            ),
-            _buildLoaderCheckbox(),
-            _VersionChoice(
-              allVersions: _allMinecraftVersions,
-              onChanged: (versions) => supportVersions = versions,
-            ),
-            SizedBox(height: kSplitHight),
-            _buildModImage(),
-          ],
-        ),
+          ),
+          RPMTWFormField(
+            fieldName: localizations.addModTranslatedNameField,
+            hintText: localizations.addModTranslatedNameHintText,
+            helperText: localizations.addModTranslatedNameTooltip,
+          ),
+          RPMTWFormField(
+            fieldName: localizations.addModIdField,
+            hintText: localizations.addModIdHintText,
+            helperText: localizations.addModIdTooltip,
+            onSaved: (value) => id = value,
+          ),
+          RPMTWFormField(
+            fieldName: localizations.addModDescriptionField,
+            helperText: localizations.addModDescriptionTooltip,
+            lockLine: false,
+            onSaved: (value) => description = value,
+          ),
+          _buildLoaderCheckbox(),
+          _VersionChoice(
+            allVersions: _allMinecraftVersions,
+            onChanged: (versions) => supportVersions = versions,
+          ),
+          SizedBox(height: kSplitHight),
+          _buildModImage(),
+        ],
       ),
     );
   }
@@ -361,7 +473,8 @@ class _BaseInfoState extends State<_BaseInfo>
   Column _buildModImage() {
     return Column(
       children: [
-        SEOText("模組封面圖：", style: _titleTextStyle),
+        SEOText(localizations.addModBaseImageTitle, style: _titleTextStyle),
+        SizedBox(height: kSplitHight),
         ElevatedButton.icon(
             onPressed: () async {
               FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -375,7 +488,7 @@ class _BaseInfoState extends State<_BaseInfo>
               }
             },
             icon: const Icon(Icons.file_upload),
-            label: const Text("上傳封面圖")),
+            label: Text(localizations.addModBaseImageUpload)),
         SizedBox(height: kSplitHight),
         Builder(builder: (context) {
           if (imageBytes != null) {
@@ -393,7 +506,7 @@ class _BaseInfoState extends State<_BaseInfo>
                                 imageBytes = null;
                               });
                             },
-                            tooltip: "移除封面圖",
+                            tooltip: localizations.addModBaseImageRemove,
                             icon: const Icon(Icons.close))),
                   ],
                 ),
@@ -441,16 +554,16 @@ class _BaseInfoState extends State<_BaseInfo>
   }
 }
 
-class _Content extends StatefulWidget {
-  const _Content({
+class _Introduction extends StatefulWidget {
+  const _Introduction({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<_Content> createState() => _ContentState();
+  State<_Introduction> createState() => _IntroductionState();
 }
 
-class _ContentState extends State<_Content> {
+class _IntroductionState extends State<_Introduction> {
   late final TextEditingController _controller;
   late final SimpleStack _changeController;
 
@@ -502,7 +615,8 @@ class _ContentState extends State<_Content> {
                   children: [
                     const Icon(Icons.text_snippet),
                     SizedBox(width: kSplitWidth / 2),
-                    SEOText("原始文章", style: _textStyle),
+                    SEOText(localizations.addModIntroductionOriginal,
+                        style: _textStyle),
                   ],
                 ),
                 const RPMTWDivider(),
@@ -529,7 +643,7 @@ class _ContentState extends State<_Content> {
                     const FaIcon(FontAwesomeIcons.markdown),
                     SizedBox(width: kSplitWidth / 2),
                     LinkText(
-                      text: "RPMWiki 支援 Github Markdown 語法",
+                      text: localizations.addModIntroductionMarkdown,
                       link: _githubMarkdownUrl(),
                     ),
                   ],
@@ -544,7 +658,8 @@ class _ContentState extends State<_Content> {
                     children: [
                       const Icon(Icons.preview),
                       SizedBox(width: kSplitWidth / 2),
-                      SEOText("預覽文章", style: _textStyle),
+                      SEOText(localizations.addModIntroductionPreview,
+                          style: _textStyle),
                     ],
                   ),
                   const RPMTWDivider(),
@@ -725,7 +840,7 @@ class _VersionChoiceState extends State<_VersionChoice> {
       children: [
         SizedBox(width: kSplitWidth),
         SEOText(localizations.addModSupportedVersionField,
-            style: const TextStyle(fontSize: 18)),
+            style: _titleTextStyle),
         FormField<List<String>>(
           initialValue: versions,
           validator: (value) {
@@ -741,12 +856,12 @@ class _VersionChoiceState extends State<_VersionChoice> {
             return UnmanagedRestorationScope(
                 bucket: field.bucket,
                 child: SizedBox(
-                  width: 200,
+                  width: 220,
                   child: DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       hintText: versions.isNotEmpty
-                          ? versions.reduce((a, b) => a + ' , ' + b)
-                          : "請選擇版本",
+                          ? versions.reduce((a, b) => a + '、' + b)
+                          : localizations.addModSupportedVersionHint,
                     ),
                     isDense: true,
                     onChanged: (x) {},

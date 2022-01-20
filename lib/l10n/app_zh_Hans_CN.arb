@@ -5,7 +5,7 @@
   "addModIdField": "Mod id",
   "addModIdHintText": "示例：jei",
   "addModIdTooltip": "请细分大小写，Mod id 通常会放在Mod档案内的 mcmod.info/mods.toml/fabric.mod.json 中，如果不清楚则不要填写。",
-  "addModLoader": "Mod载入器：",
+  "addModLoader": "Mod载入器",
   "addModOriginalNameField": "Mod 名称（原文）",
   "addModOriginalNameHintText": "示例： Just Enough Items (JEI)",
   "addModTitle": "新增 Mod",

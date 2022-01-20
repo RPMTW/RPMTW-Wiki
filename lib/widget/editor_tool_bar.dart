@@ -88,11 +88,11 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
       children: [
         ToolbarButton(
             icon: FontAwesomeIcons.heading,
-            tooltip: "標題",
+            tooltip: localizations.editorToolbarHeading,
             onPressed: () => wrapWith(leftSide: '# ')),
         ToolbarButton(
           icon: FontAwesomeIcons.bold,
-          tooltip: "粗體",
+          tooltip: localizations.editorToolbarBold,
           onPressed: () => wrapWith(
             leftSide: '**',
             rightSide: '**',
@@ -100,7 +100,7 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.italic,
-          tooltip: "斜體",
+          tooltip: localizations.editorToolbarItalic,
           onPressed: () => wrapWith(
             leftSide: '*',
             rightSide: '*',
@@ -108,7 +108,7 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.underline,
-          tooltip: "下劃線",
+          tooltip: localizations.editorToolbarUnderline,
           onPressed: () => wrapWith(
             leftSide: '__',
             rightSide: '__',
@@ -116,7 +116,7 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.strikethrough,
-          tooltip: "刪除線",
+          tooltip: localizations.editorToolbarStrikethrough,
           onPressed: () => wrapWith(
             leftSide: '~~',
             rightSide: '~~',
@@ -124,7 +124,7 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.link,
-          tooltip: "連結",
+          tooltip: localizations.editorToolbarLink,
           onPressed: () {
             showDialog(
                 context: context,
@@ -133,12 +133,12 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.list,
-          tooltip: "清單",
+          tooltip: localizations.editorToolbarList,
           onPressed: () => wrapWith(leftSide: '- '),
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.image,
-          tooltip: "圖片",
+          tooltip: localizations.editorToolbarImage,
           onPressed: () {
             showDialog(
                 context: context,
@@ -147,19 +147,19 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.code,
-          tooltip: "程式碼方塊",
+          tooltip: localizations.editorToolbarCode,
           onPressed: () => wrapWith(leftSide: '```\n', rightSide: '\n```'),
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.quoteLeft,
-          tooltip: "引用",
+          tooltip: localizations.editorToolbarQuote,
           onPressed: () {
             wrapWith(leftSide: '> ');
           },
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.undo,
-          tooltip: "復原",
+          tooltip: localizations.editorToolbarUndo,
           onPressed: () {
             if (changeController.canUndo) {
               changeController.undo();
@@ -169,7 +169,7 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.redo,
-          tooltip: "取消復原",
+          tooltip: localizations.editorToolbarRedo,
           onPressed: () {
             if (changeController.canRedo) {
               changeController.redo();
@@ -179,7 +179,7 @@ class EditorToolbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         ToolbarButton(
           icon: FontAwesomeIcons.trashAlt,
-          tooltip: "清除",
+          tooltip: localizations.editorToolbarClear,
           onPressed: () {
             controller.clear();
             setState(() {});
