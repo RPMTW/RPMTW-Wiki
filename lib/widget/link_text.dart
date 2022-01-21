@@ -10,32 +10,41 @@ class LinkText extends StatelessWidget {
   final String link;
   final TextAlign? textAlign;
   final double? fontSize;
+  final bool seo;
 
   const LinkText(
       {Key? key,
       required this.link,
       required this.text,
       this.textAlign,
-      this.fontSize})
+      this.fontSize,
+      this.seo = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return LinkRenderer(
-      anchorText: text,
-      link: link,
-      child: Text.rich(
-        TextSpan(
-          style: TextStyle(
-            color: Colors.lightBlue,
-            fontSize: fontSize,
-          ),
-          text: text,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () => window.open(link, ""),
+    Text textWidget = Text.rich(
+      TextSpan(
+        style: TextStyle(
+          color: Colors.lightBlue,
+          fontSize: fontSize,
         ),
-        textAlign: textAlign,
+        text: text,
+        recognizer: TapGestureRecognizer()..onTap = () => window.open(link, ""),
       ),
+      textAlign: textAlign,
     );
+
+    if (seo) {
+      return LinkRenderer(
+        anchorText: text,
+        link: link,
+        child: TextRenderer(
+          text: textWidget,
+        ),
+      );
+    } else {
+      return textWidget;
+    }
   }
 }
