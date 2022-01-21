@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/models/account.dart';
-import 'package:rpmtw_wiki/screen/home_page.dart';
+import 'package:rpmtw_wiki/pages/base_page.dart';
+import 'package:rpmtw_wiki/pages/home_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
-import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class AuthSuccessDialog extends StatefulWidget {
   final String token;
@@ -26,41 +26,44 @@ class _AuthSuccessDialogState extends State<AuthSuccessDialog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<Account>(
-        future: logInIng(),
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            Account account = snapshot.data!;
-            return AlertDialog(
-              title: SEOText(localizations.guiSuccess),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SEOText(localizations.authSuccess),
-                  SEOText(account.username),
+      body: BasePage(
+        child: FutureBuilder<Account>(
+          future: logInIng(),
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.hasData) {
+              Account account = snapshot.data!;
+              return AlertDialog(
+                title: Text(localizations.guiSuccess),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(localizations.authSuccess),
+                    Text(account.username),
+                  ],
+                ),
+                actions: [
+                  OkClose(
+                    seo: false,
+                    onOk: () {
+                      navigation.pushNamed(HomePage.route);
+                    },
+                  )
                 ],
-              ),
-              actions: [
-                OkClose(
-                  onOk: () {
-                    navigation.pushNamed(HomePage.route);
-                  },
-                )
-              ],
-            );
-          } else {
-            return AlertDialog(
-              title: SEOText(localizations.authLogInIng),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  CircularProgressIndicator(),
-                ],
-              ),
-            );
-          }
-        },
+              );
+            } else {
+              return AlertDialog(
+                title: Text(localizations.authLogInIng),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

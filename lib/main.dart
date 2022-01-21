@@ -1,12 +1,15 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
+import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:rpmtw_api_client/rpmtw_api_client.dart';
-import 'package:rpmtw_wiki/screen/home_page.dart';
+import 'package:rpmtw_wiki/pages/home_page.dart';
+import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 
@@ -52,6 +55,11 @@ class _WikiAppState extends State<WikiApp> {
 
   @override
   Widget build(BuildContext context) {
+    /// https://github.com/flutter/flutter/issues/81215
+    TextStyle fontStyle = const TextStyle(
+        fontFeatures: [ui.FontFeature.proportionalFigures()],
+        fontFamily: "font");
+
     return MaterialApp(
         title: 'RPMTW Wiki',
         navigatorKey: NavigationService.navigationKey,
@@ -67,31 +75,69 @@ class _WikiAppState extends State<WikiApp> {
         theme: ThemeData(
             primarySwatch: Colors.blue,
             brightness: Brightness.dark,
-            fontFamily: "font"),
+            fontFamily: "font",
+            textTheme: TextTheme(
+              bodyText2: fontStyle,
+              bodyText1: fontStyle,
+              headline6: fontStyle,
+              headline5: fontStyle,
+              headline4: fontStyle,
+              headline3: fontStyle,
+              headline2: fontStyle,
+              headline1: fontStyle,
+              caption: fontStyle,
+              button: fontStyle,
+              subtitle2: fontStyle,
+              subtitle1: fontStyle,
+              overline: fontStyle,
+            ),
+            tooltipTheme: const TooltipThemeData(
+                textStyle: TextStyle(fontFamily: "font", color: Colors.black))),
         initialRoute: HomePage.route,
         locale: locale,
         onGenerateRoute: (settings) {
           try {
-            Uri uri = Uri.parse(href);
-            String name = settings.name ?? uri.path;
+            Uri hrefUri = Uri.parse(href);
+            String name = settings.name ?? hrefUri.path;
+            Uri routeUri = Uri.parse(name);
 
-            if (uri.path.startsWith("/auth")) {
-              Map<String, String> query = uri.queryParameters;
+            if (hrefUri.path.startsWith("/auth")) {
+              Map<String, String> query = hrefUri.queryParameters;
               String token = query['auth_token']!;
-              href = uri.replace(path: settings.name).toString();
+              href = hrefUri.replace(path: settings.name).toString();
+
               return MaterialPageRoute(
                   settings: settings,
-                  builder: (context) => AuthSuccessDialog(token: token));
+                  builder: (context) {
+                    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                      showDialog(
+                          context: context,
+                          builder: (context) =>
+                              AuthSuccessDialog(token: token));
+                    });
+                    return const HomePage();
+                  });
             }
+            if (name.startsWith(HomePage.route)) {
+              int tabIndex = 0;
+              if (routeUri.queryParameters.containsKey("tab_index")) {
+                tabIndex = int.parse(routeUri.queryParameters["tab_index"]!);
+              }
 
-            if (name == HomePage.route || name == '/index.html') {
               return MaterialPageRoute(
-                  settings: settings, builder: (context) => const HomePage());
+                  settings: settings,
+                  builder: (context) => HomePage(tabIndex: tabIndex));
+            } else if (name == AddModPage.route) {
+              return MaterialPageRoute(
+                  settings: settings, builder: (context) => const AddModPage());
             } else {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());
             }
           } catch (e) {
+            if (kDebugMode) {
+              print(e);
+            }
             return MaterialPageRoute(
                 settings: settings, builder: (context) => const HomePage());
           }

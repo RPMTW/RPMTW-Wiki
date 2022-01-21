@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  Web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache flutter
+        uses: actions/cache@v2
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter-2.10.0-0.1.pre
+      - uses: subosito/flutter-action@master
+        with:
+          channel: beta
+          flutter-version: 2.10.0-0.1.pre
+      - uses: bluefireteam/flutter-gh-pages@v7
+        with:
+          webRenderer: html
