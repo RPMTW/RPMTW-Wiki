@@ -89,9 +89,7 @@ class _AccountManageButtonState extends State<AccountManageButton> {
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.user),
             tooltip: localizations.authLogIn,
-            onPressed: () {
-              window.location.href = rpmtwAccountOauth2;
-            },
+            onPressed: () => AccountHandler.login(),
           ),
           const SizedBox(width: 15)
         ],

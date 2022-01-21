@@ -1,9 +1,9 @@
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
 import 'package:rpmtw_api_client/rpmtw_api_client.dart';
 import 'package:rpmtw_wiki/models/account.dart';
+import 'package:rpmtw_wiki/utilities/data.dart';
 
 class AccountHandler {
   static late html.Storage storage;
@@ -52,6 +52,18 @@ class AccountHandler {
       html.window.localStorage['rpmtw_account'] = json.encode(accountJson);
     } else {
       storage.remove('rpmtw_account');
+    }
+  }
+
+  static void login() {
+    html.window.location.href = rpmtwAccountOauth2;
+  }
+
+  static void checkHasAccount(Function function) {
+    if (hasAccount) {
+      function.call();
+    } else {
+      login();
     }
   }
 }
