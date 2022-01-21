@@ -12,7 +12,8 @@
             "toolArgs": [
                 "--web-port=45213",
                 "--web-renderer",
-                "html"
+                "html",
+                "--dart-define=wiki.development=true",
             ],
         },
         {

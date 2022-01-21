@@ -36,7 +36,7 @@ void main() async {
 
   AccountHandler.init();
   href = window.location.href;
-  RPMTWApiClient.init(development: true); // Initialize RPMTWApiClient
+  RPMTWApiClient.init(development: development); // Initialize RPMTWApiClient
   runApp(const WikiApp());
 }
 

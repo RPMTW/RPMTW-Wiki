@@ -8,7 +8,8 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 NavigatorState get navigation => NavigationService.navigationKey.currentState!;
 AppLocalizations get localizations => AppLocalizations.of(navigation.context)!;
 
-bool development = false;
+bool development =
+    const bool.fromEnvironment("wiki.development", defaultValue: false);
 
 const String developmentRPMWikiUrl = "http://localhost:45213";
 const String productionRPMWikiUrl = "https://wiki.rpmtw.com";
