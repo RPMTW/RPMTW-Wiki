@@ -7,6 +7,7 @@ class RPMTWFormField extends StatelessWidget {
   final String fieldName;
   final TextEditingController? controller;
   final ValueChanged<String>? onSaved;
+  final ValueChanged<String>? onChanged;
   final TextAlign? textAlign;
   final TextInputType? keyboardType;
   final VoidCallback? onEditingComplete;
@@ -18,6 +19,7 @@ class RPMTWFormField extends StatelessWidget {
   final bool hasDivider;
   final bool lockLine;
   final Widget? child;
+  final bool seo;
 
   const RPMTWFormField(
       {Key? key,
@@ -25,6 +27,7 @@ class RPMTWFormField extends StatelessWidget {
       this.helperText,
       this.controller,
       this.onSaved,
+      this.onChanged,
       this.textAlign,
       this.keyboardType,
       this.onEditingComplete,
@@ -33,7 +36,8 @@ class RPMTWFormField extends StatelessWidget {
       this.validator,
       this.prefixIcon,
       this.hintText,
-      this.child})
+      this.child,
+      this.seo = true})
       : super(key: key);
 
   double get splitWidth => kIsWebMobile ? 12 : 25;
@@ -66,6 +70,7 @@ class RPMTWFormField extends StatelessWidget {
               maxLines: lockLine ? 1 : null,
               textAlign: textAlign ?? TextAlign.start,
               onSaved: (value) => onSaved?.call(value!),
+              onChanged: (value) => onChanged?.call(value),
               keyboardType: keyboardType,
               onEditingComplete: onEditingComplete,
             )),
@@ -97,10 +102,15 @@ class RPMTWFormField extends StatelessWidget {
               const Icon(Icons.lightbulb),
               SizedBox(width: splitWidth - 5),
               Expanded(
-                child: SEOText(helperText!,
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 103, 170, 214))),
-              ),
+                  child: seo
+                      ? SEOText(helperText!,
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 103, 170, 214)))
+                      : Text(
+                          helperText!,
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 103, 170, 214)),
+                        )),
             ],
           ),
         ],

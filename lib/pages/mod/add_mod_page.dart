@@ -13,10 +13,12 @@ import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/home_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/editor_tool_bar.dart';
 import 'package:rpmtw_wiki/widget/form_field.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
+import 'package:rpmtw_wiki/widget/mod_select_menu.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
@@ -187,9 +189,167 @@ class _DetailedInfoState extends State<_DetailedInfo> {
         _ModSideChoice(
             environment: ModSideEnvironment.server,
             onSaved: (value) => _saveSideData(
-                value: value, environment: ModSideEnvironment.server))
+                value: value, environment: ModSideEnvironment.server)),
+        SizedBox(height: kSplitHight),
+        SEOText(localizations.addModDetailedRelation, style: _titleTextStyle),
+        SizedBox(height: kSplitHight),
+        _RelationMod(
+          onSaved: (value) => relationMods = value,
+        ),
+        SizedBox(height: kSplitHight),
       ],
     ));
+  }
+}
+
+class _RelationMod extends StatefulWidget {
+  final void Function(List<RelationMod>?) onSaved;
+  const _RelationMod({Key? key, required this.onSaved}) : super(key: key);
+
+  @override
+  _RelationModState createState() => _RelationModState();
+}
+
+class _RelationModState extends State<_RelationMod> {
+  List<RelationMod>? relationMods;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        OutlinedButton.icon(
+            onPressed: () {
+              ModSelectMenu menu = ModSelectMenu(
+                  title: localizations.addModDetailedRelationMenu,
+                  onSelected: (mod) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return _RelationModInfoDialog(
+                              mod: mod,
+                              onSaved: (relationMod) {
+                                relationMods ??= [];
+                                relationMods!.add(relationMod);
+                                widget.onSaved(relationMods);
+                                setState(() {});
+                              });
+                        });
+                  });
+              menu.show(context);
+            },
+            icon: const FaIcon(FontAwesomeIcons.staylinked),
+            label: SEOText(localizations.addModDetailedRelationAdd)),
+        SizedBox(height: kSplitHight),
+        if (relationMods != null)
+          Column(
+            children: relationMods!
+                .map((relationMod) => FutureBuilder<MinecraftMod>(
+                    future: RPMTWApiClient.lastInstance.minecraftResource
+                        .getMinecraftMod(relationMod.modUUID),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        MinecraftMod mod = snapshot.data!;
+                        return ExpansionTile(
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.expand_more),
+                              SizedBox(width: kSplitWidth),
+                              IconButton(
+                                icon: const FaIcon(FontAwesomeIcons.trash),
+                                tooltip: localizations.guiDelete,
+                                onPressed: () {
+                                  relationMods!.remove(relationMod);
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                          title: SEOText(mod.name, textAlign: TextAlign.center),
+                          subtitle: SEOText(relationMod.type.i18n,
+                              textAlign: TextAlign.center),
+                          children: [
+                            SEOText(relationMod.condition ??
+                                localizations
+                                    .addModDetailedRelationConditionCommon),
+                            if (mod.description != null)
+                              SEOText(mod.description!),
+                          ],
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    }))
+                .toList(),
+          )
+      ],
+    );
+  }
+}
+
+class _RelationModInfoDialog extends StatefulWidget {
+  final MinecraftMod mod;
+  final ValueChanged<RelationMod>? onSaved;
+  const _RelationModInfoDialog({Key? key, required this.mod, this.onSaved})
+      : super(key: key);
+
+  @override
+  State<_RelationModInfoDialog> createState() => _RelationModInfoDialogState();
+}
+
+class _RelationModInfoDialogState extends State<_RelationModInfoDialog> {
+  String? condition;
+  RelationType type = RelationType.dependency;
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(builder: (context) {
+      return AlertDialog(
+        title: Text(localizations.addModDetailedRelationInfo),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(widget.mod.name),
+          RPMTWFormField(
+            fieldName: localizations.addModDetailedRelationCondition,
+            helperText: localizations.addModDetailedRelationHelper,
+            seo: false,
+            onChanged: (value) {
+              condition = value;
+            },
+          ),
+          SizedBox(height: kSplitHight),
+          Text(localizations.addModDetailedRelationType,
+              style: _titleTextStyle),
+          DropdownButton<RelationType>(
+              value: type,
+              items: RelationType.values
+                  .map((e) => DropdownMenuItem<RelationType>(
+                      value: e, child: Text(e.i18n)))
+                  .toList(),
+              onChanged: (_type) {
+                setState(() {
+                  type = _type!;
+                });
+              })
+        ]),
+        actions: [
+          TextButton(
+            child: Text(localizations.guiCancel),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text(localizations.guiSubmit),
+            onPressed: () {
+              Navigator.of(context).pop();
+              widget.onSaved?.call(RelationMod(
+                modUUID: widget.mod.uuid,
+                type: type,
+                condition: condition,
+              ));
+            },
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -326,84 +486,12 @@ class _BaseInfoState extends State<_BaseInfo>
           .toList();
       await Future.delayed(
           const Duration(milliseconds: 300)); // 故意小延遲，避免畫面看起來卡頓
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     });
-  }
-
-  void _showCheckModExistsMenu(BuildContext context) {
-    StateSetter? setFilterState;
-    final RenderBox button = context.findRenderObject()! as RenderBox;
-    final RenderBox overlay =
-        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero,
-            ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
-
-    String? filter;
-    List<PopupMenuEntry<Widget>> items = [
-      PopupMenuItem(
-          enabled: false,
-          child: DefaultTextStyle(
-              style: Theme.of(context).textTheme.titleMedium!,
-              child: Text(localizations.addModBaseCheckExists))),
-      PopupMenuItem(
-          enabled: false,
-          child: RPMTextField(
-            hintText: localizations.addModBaseCheckExistsHint,
-            onChanged: (value) {
-              setFilterState?.call(() {
-                filter = value;
-              });
-            },
-          )),
-      PopupMenuItem(
-          enabled: false,
-          child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleMedium!,
-            child: StatefulBuilder(builder: (context, _setFilterState) {
-              setFilterState = _setFilterState;
-              return FutureBuilder<List<MinecraftMod>>(
-                  future: apiClient.minecraftResource.search(filter: filter),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasError &&
-                        snapshot.connectionState == ConnectionState.done) {
-                      List<MinecraftMod> mods = snapshot.data!;
-                      return SizedBox(
-                        width: 50,
-                        height: mods.length * 68.0,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: mods.length,
-                            itemBuilder: ((context, index) {
-                              MinecraftMod mod = mods[index];
-                              return ListTile(
-                                onTap: () {
-                                  // TODO:開啟該模組的頁面
-                                },
-                                title: Tooltip(
-                                    message: mod.uuid, child: Text(mod.name)),
-                                subtitle: mod.id != null ? Text(mod.id!) : null,
-                              );
-                            })),
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  });
-            }),
-          ))
-    ];
-
-    showMenu(context: context, position: position, items: items);
   }
 
   @override
@@ -431,7 +519,15 @@ class _BaseInfoState extends State<_BaseInfo>
                   children: [
                     SizedBox(width: kSplitWidth),
                     OutlinedButton.icon(
-                        onPressed: () => _showCheckModExistsMenu(context),
+                        onPressed: () {
+                          ModSelectMenu menu = ModSelectMenu(
+                              title: localizations.addModBaseCheckExists,
+                              onSelected: (mod) {
+                                // TODO: 開啟模組的詳細資訊
+                              });
+
+                          menu.show(context);
+                        },
                         icon: const Icon(Icons.rule),
                         label: Text(localizations.addModBaseCheckExists)),
                   ],
@@ -790,15 +886,20 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
         future: _creating(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
+            MinecraftMod mod = snapshot.data!;
             return AlertDialog(
               title: Text(localizations.guiSuccess),
-              content: Column(mainAxisSize: MainAxisSize.min, children: const [
-                Text("模組建立成功！"),
-                LinkText(link: "https://", text: "瀏覽此模組", seo: false),
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                Text(localizations.addModCreateSuccess),
+                LinkText(
+                    link: "$rpmtwWikiUrl/mod/view/${mod.uuid}",
+                    text: localizations.addModCreateBrowse,
+                    seo: false),
               ]),
               actions: [
                 OkClose(
                   onOk: () => navigation.pushNamed(HomePage.route),
+                  seo: false,
                 )
               ],
             );

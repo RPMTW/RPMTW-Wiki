@@ -20,6 +20,8 @@ String get rpmtwAccountUrl =>
 String get rpmtwAccountOauth2 =>
     "$rpmtwAccountUrl?rpmtw_auth_callback=${development ? developmentRPMWikiUrl : productionRPMWikiUrl}"
     r"/auth?auth_token=${token}";
+String get rpmtwWikiUrl =>
+    development ? developmentRPMWikiUrl : productionRPMWikiUrl;
 
 late String href;
 
