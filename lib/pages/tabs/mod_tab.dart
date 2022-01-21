@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
+import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 
 class ModTab extends StatefulWidget {
@@ -16,11 +18,10 @@ class _ModTabState extends State<ModTab> {
   Widget build(BuildContext context) {
     return BasePage(
         child: Column(
-      children: const [
-        SizedBox(
-          height: 10,
-        ),
-        _Action(),
+      children: [
+        SizedBox(height: kSplitHight),
+        const _Action(),
+        SizedBox(height: kSplitHight)
       ],
     ));
   }
@@ -38,10 +39,9 @@ class _Action extends StatelessWidget {
       children: [
         const RPMTWVerticalDivider(),
         OutlinedButton(
-            child: const Text("新增模組條目"),
-            onPressed: () {
-              navigation.pushNamed(AddModPage.route);
-            }),
+            child: Text(localizations.addModTitle),
+            onPressed: () => AccountHandler.checkHasAccount(
+                () => navigation.pushNamed(AddModPage.route))),
       ],
     );
   }

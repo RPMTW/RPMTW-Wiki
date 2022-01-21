@@ -27,7 +27,6 @@ import 'package:rpmtw_wiki/widget/title_bar.dart';
 import 'package:split_view/split_view.dart';
 import 'package:undo/undo.dart';
 
-final GlobalKey<FormState> _formKey = GlobalKey();
 const TextStyle _titleTextStyle = TextStyle(fontSize: 20, color: Colors.blue);
 
 class AddModPage extends StatefulWidget {
@@ -39,6 +38,7 @@ class AddModPage extends StatefulWidget {
 }
 
 class _AddModPageState extends State<AddModPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
   final GlobalKey<_BaseInfoState> _baseInfoKey = GlobalKey();
   final GlobalKey<_DetailedInfoState> _detailedInfoKey = GlobalKey();
 

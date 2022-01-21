@@ -22,5 +22,5 @@ jobs:
           channel: beta
           flutter-version: 2.10.0-0.1.pre
       - uses: bluefireteam/flutter-gh-pages@v7
-        with:
-          webRenderer: html
+        # with:
+        #   webRenderer: html

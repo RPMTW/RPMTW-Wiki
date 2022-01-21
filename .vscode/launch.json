@@ -11,8 +11,8 @@
             "program": "lib/main.dart",
             "toolArgs": [
                 "--web-port=45213",
-                "--web-renderer",
-                "html",
+                // "--web-renderer",
+                // "html",
                 "--dart-define=wiki.development=true",
             ],
         },
@@ -25,7 +25,8 @@
             "toolArgs": [
                 "--web-port=45213",
                 "--web-renderer",
-                "html"
+                "html",
+                "--dart-define=wiki.development=true",
             ],
         }
     ]
