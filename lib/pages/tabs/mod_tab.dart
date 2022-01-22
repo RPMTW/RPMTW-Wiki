@@ -76,24 +76,8 @@ class _ModsViewState extends State<_ModsView> {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SEOText(localizations.viewModSearch,
-                style: const TextStyle(fontSize: 20)),
-            SizedBox(width: kSplitWidth),
-            SizedBox(
-              height: 50,
-              width: 300,
-              child: RPMTextField(
-                hintText: localizations.viewModSearchHint,
-                onChanged: (value) {
-                  debouncedAutocompleteSearch([value]);
-                },
-              ),
-            ),
-          ],
-        ),
+        _Search(debouncedAutocompleteSearch: debouncedAutocompleteSearch),
+        SizedBox(height: kSplitHight),
         Expanded(
           child: FutureBuilder<List<MinecraftMod>>(
               future: apiClient.minecraftResource.search(filter: filter),
@@ -136,6 +120,58 @@ class _ModsViewState extends State<_ModsView> {
         ),
       ],
     );
+  }
+}
+
+class _Search extends StatelessWidget {
+  const _Search({
+    Key? key,
+    required this.debouncedAutocompleteSearch,
+  }) : super(key: key);
+
+  final Debounce debouncedAutocompleteSearch;
+
+  @override
+  Widget build(BuildContext context) {
+    if (kIsWebDesktop) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SEOText(localizations.viewModSearch,
+              style: const TextStyle(fontSize: 20)),
+          SizedBox(width: kSplitWidth),
+          SizedBox(
+            height: 50,
+            width: 400,
+            child: RPMTextField(
+              hintText: localizations.viewModSearchHint,
+              onChanged: (value) {
+                debouncedAutocompleteSearch([value]);
+              },
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SEOText(localizations.viewModSearch,
+              style: const TextStyle(fontSize: 20)),
+          SizedBox(height: kSplitHight),
+          SizedBox(
+            height: 50,
+            width: 350,
+            child: RPMTextField(
+              hintText: localizations.viewModSearchHint,
+              onChanged: (value) {
+                debouncedAutocompleteSearch([value]);
+              },
+            ),
+          ),
+        ],
+      );
+    }
   }
 }
 

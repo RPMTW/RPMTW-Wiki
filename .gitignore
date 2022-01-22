@@ -19,6 +19,11 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+lib/l10n/app_ar.arb
+lib/l10n/app_cs.arb
+lib/l10n/app_da.arb
+lib/l10n/app_de.arb
+lib/l10n/app_el.arb
 lib/l10n/app_es.arb
 lib/l10n/app_fi.arb
 lib/l10n/app_fr.arb
@@ -37,11 +42,6 @@ lib/l10n/app_tr.arb
 lib/l10n/app_uk.arb
 lib/l10n/app_vi.arb
 lib/l10n/app_zh.arb
-lib/l10n/app_el.arb
-lib/l10n/app_de.arb
-lib/l10n/app_da.arb
-lib/l10n/app_cs.arb
-lib/l10n/app_ar.arb
-lib/l10n/app_zh_Hant_HK.arb
 lib/l10n/app_zh_Hans_CN.arb
+lib/l10n/app_zh_Hant_HK.arb
 lib/l10n/app_zh_Hant_TW.arb
