@@ -1,7 +1,7 @@
 {
     "addModBaseCheckExists": "检查模组是否已经存在",
     "addModBaseCheckExistsHint": "模组名称或模组 ID",
-    "addModBaseImageRemove": "移除封面图",
+    "addModBaseImageRemove": "删除封面图",
     "addModBaseImageTitle": "模组封面图",
     "addModBaseImageUpload": "上传封面图",
     "addModBaseTitle": "基本信息",
@@ -81,7 +81,7 @@
     "guiSuccess": "成功",
     "guiWIP": "此功能仍在开发中，暂时无法使用，抱歉造成您的困扰。",
     "guiWebsite": "RPMTW 官方网站",
-    "languageName": "简体中文",
+    "languageName": "简体中文 (中国)",
     "modSideClient": "客户端",
     "modSideOptional": "可选",
     "modSideRequire": "必装",
