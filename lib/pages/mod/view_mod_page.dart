@@ -156,7 +156,7 @@ class _DetailsInfoState extends State<_DetailsInfo> {
   }
 
   Widget _buildModID() {
-    if (mod.id != null) {
+    if (mod.id != null && mod.id!.isNotEmpty) {
       return Column(
         children: [
           SEOText(localizations.addModIdField, style: _titleStyle),
@@ -243,7 +243,7 @@ class _BaseInfoState extends State<_BaseInfo> {
   }
 
   Widget _buildDescription() {
-    if (mod.description != null) {
+    if (mod.description != null && mod.description!.isNotEmpty) {
       return SEOSelectableText(mod.description!);
     } else {
       return Container();

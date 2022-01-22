@@ -79,14 +79,14 @@ class _ModsViewState extends State<_ModsView> {
       children: [
         _Search(debouncedAutocompleteSearch: debouncedAutocompleteSearch),
         SizedBox(height: kSplitHight),
-        Expanded(
-          child: FutureBuilder<List<MinecraftMod>>(
-              future: apiClient.minecraftResource.search(filter: filter),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData) {
-                  List<MinecraftMod> mods = snapshot.data!;
-                  return GridView.builder(
+        FutureBuilder<List<MinecraftMod>>(
+            future: apiClient.minecraftResource.search(filter: filter),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                List<MinecraftMod> mods = snapshot.data!;
+                return Expanded(
+                  child: GridView.builder(
                     itemCount: mods.length,
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -110,15 +110,15 @@ class _ModsViewState extends State<_ModsView> {
                         },
                       );
                     },
-                  );
-                } else {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [CircularProgressIndicator()],
-                  );
-                }
-              }),
-        ),
+                  ),
+                );
+              } else {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [CircularProgressIndicator()],
+                );
+              }
+            }),
       ],
     );
   }
