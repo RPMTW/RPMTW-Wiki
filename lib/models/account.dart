@@ -12,16 +12,16 @@ class Account extends User {
       required String? avatarStorageUUID,
       required this.token})
       : super(
-            uuid: uuid,
-            username: username,
-            email: email,
-            emailVerified: emailVerified,
-            avatarStorageUUID: avatarStorageUUID,
-    );
+          uuid: uuid,
+          username: username,
+          email: email,
+          emailVerified: emailVerified,
+          avatarStorageUUID: avatarStorageUUID,
+        );
 
   Widget seoAvatar({double fontSize = 18}) => ImageRenderer(
       child: avatar(fontSize: fontSize),
-      link: avatarUrl(RPMTWApiClient.lastInstance.baseUrl)!,
+      link: avatarUrl(RPMTWApiClient.lastInstance.baseUrl) ?? "",
       alt: "$username's avatar");
 
   factory Account.fromMap(Map<String, dynamic> map) {
@@ -37,12 +37,12 @@ class Account extends User {
   @override
   Map<String, dynamic> toMap() {
     return {
-        'uuid': uuid,
-        'username': username,
-        'email': email,
-        'emailVerified': emailVerified,
-        'avatarStorageUUID': avatarStorageUUID,
-        'token': token
+      'uuid': uuid,
+      'username': username,
+      'email': email,
+      'emailVerified': emailVerified,
+      'avatarStorageUUID': avatarStorageUUID,
+      'token': token
     };
   }
 }
