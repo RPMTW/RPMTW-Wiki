@@ -93,5 +93,8 @@
     "tabResourcePack": "資源包",
     "tabVanilla": "原版",
     "tabWorld": "地圖",
-    "title": "RPMTW 當個創世神百科"
+    "title": "RPMTW 當個創世神百科",
+    "viewModCount": "瀏覽次數：",
+    "viewModSearch": "搜尋模組",
+    "viewModSearchHint": "模組名稱、模組譯名、模組 ID..."
 }
