@@ -10,6 +10,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:rpmtw_api_client/rpmtw_api_client.dart';
 import 'package:rpmtw_wiki/pages/home_page.dart';
 import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
+import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 
@@ -130,6 +131,12 @@ class _WikiAppState extends State<WikiApp> {
             } else if (name == AddModPage.route) {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const AddModPage());
+            } else if (name.startsWith(ViewModPage.route)) {
+              String uuid = routeUri.pathSegments[2];
+
+              return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => ViewModPage(uuid: uuid));
             } else {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());

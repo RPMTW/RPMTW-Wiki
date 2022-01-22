@@ -81,6 +81,7 @@
     "guiSuccess": "成功",
     "guiWIP": "此功能仍在開發中，暫時無法使用，抱歉造成您的困擾。",
     "guiWebsite": "RPMTW 官方網站",
+    "guiSeparator": "、",
     "languageName": "繁體中文 (台灣)",
     "modSideClient": "客戶端",
     "modSideOptional": "可選",

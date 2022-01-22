@@ -3,6 +3,7 @@ import 'package:rate_limiter/rate_limiter.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
+import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
@@ -228,7 +229,9 @@ class _ModItemState extends State<_ModItem> {
           },
         ),
       ),
-      onTap: () {},
+      onTap: () {
+        navigation.pushNamed("${ViewModPage.route}${widget.mod.uuid}");
+      },
     );
   }
 

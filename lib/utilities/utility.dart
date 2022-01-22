@@ -1,7 +1,10 @@
+import 'dart:html';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 bool get kIsWebMobile => Utility.isWebMobile;
 bool get kIsWebDesktop => Utility.isWebDesktop;
@@ -42,5 +45,13 @@ class Utility {
                 data.viewPadding.top -
                 data.viewPadding.bottom) *
             0.8);
+  }
+
+  static void openUrl(String url, {String? name}) {
+    if (kIsWeb) {
+      window.open(url, name ?? "");
+    } else {
+      launch(url);
+    }
   }
 }
