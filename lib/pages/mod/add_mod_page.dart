@@ -17,6 +17,7 @@ import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/editor_tool_bar.dart';
 import 'package:rpmtw_wiki/widget/form_field.dart';
+import 'package:rpmtw_wiki/widget/keep_alive_wrapper.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/mod_select_menu.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
@@ -40,6 +41,7 @@ class AddModPage extends StatefulWidget {
 class _AddModPageState extends State<AddModPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final GlobalKey<_BaseInfoState> _baseInfoKey = GlobalKey();
+  final GlobalKey<_IntroductionState> _introductionKey = GlobalKey();
   final GlobalKey<_DetailedInfoState> _detailedInfoKey = GlobalKey();
 
   void _submit() {
@@ -50,6 +52,7 @@ class _AddModPageState extends State<AddModPage> {
 
     final _BaseInfoState baseInfoState = _baseInfoKey.currentState!;
     final _DetailedInfoState? detailedInfoState = _detailedInfoKey.currentState;
+    final _IntroductionState? introductionState = _introductionKey.currentState;
 
     final List<String> supportVersions = baseInfoState.supportVersions;
     List<ModLoader> loaders = [];
@@ -71,6 +74,9 @@ class _AddModPageState extends State<AddModPage> {
               relationMods: detailedInfoState?.relationMods,
               integration: detailedInfoState?.integration,
               side: detailedInfoState?.side,
+              imageBytes: baseInfoState.imageBytes,
+              introduction: introductionState?.introduction,
+              translatedName: baseInfoState.translatedName,
             ));
   }
 
@@ -118,9 +124,9 @@ class _AddModPageState extends State<AddModPage> {
           ),
           body: TabBarView(
             children: [
-              _BaseInfo(key: _baseInfoKey),
-              const _Introduction(),
-              _DetailedInfo(key: _detailedInfoKey)
+              KeepAliveWrapper(child: _BaseInfo(key: _baseInfoKey)),
+              KeepAliveWrapper(child: _Introduction(key: _introductionKey)),
+              KeepAliveWrapper(child: _DetailedInfo(key: _detailedInfoKey))
             ],
           ),
         ),
@@ -456,8 +462,7 @@ class _BaseInfo extends StatefulWidget {
   _BaseInfoState createState() => _BaseInfoState();
 }
 
-class _BaseInfoState extends State<_BaseInfo>
-    with AutomaticKeepAliveClientMixin {
+class _BaseInfoState extends State<_BaseInfo> {
   bool _loading = true;
   List<MinecraftVersion> _allMinecraftVersions = [];
 
@@ -465,13 +470,11 @@ class _BaseInfoState extends State<_BaseInfo>
   bool isFabric = false;
 
   String? name;
+  String? translatedName;
   String? id;
   String? description;
   List<String> supportVersions = [];
   Uint8List? imageBytes;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -496,7 +499,6 @@ class _BaseInfoState extends State<_BaseInfo>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BasePage(
       loading: _loading,
       child: Column(
@@ -541,6 +543,7 @@ class _BaseInfoState extends State<_BaseInfo>
             fieldName: localizations.addModTranslatedNameField,
             hintText: localizations.addModTranslatedNameHintText,
             helperText: localizations.addModTranslatedNameTooltip,
+            onSaved: (value) => translatedName = value,
           ),
           RPMTWFormField(
             fieldName: localizations.addModIdField,
@@ -665,6 +668,8 @@ class _IntroductionState extends State<_Introduction> {
 
   final TextStyle _textStyle = const TextStyle(fontSize: 25);
 
+  String? introduction;
+
   @override
   void initState() {
     _controller = TextEditingController();
@@ -694,10 +699,12 @@ class _IntroductionState extends State<_Introduction> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = Utility.getSize(context);
+
     return BasePage(
       child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.8,
+        width: size.width,
+        height: size.height,
         child: SplitView(
           viewMode:
               kIsWebDesktop ? SplitViewMode.Horizontal : SplitViewMode.Vertical,
@@ -723,6 +730,11 @@ class _IntroductionState extends State<_Introduction> {
                     maxLength: null,
                     onChanged: (value) {
                       _changeController.modify(value);
+                      if (value.isNotEmpty) {
+                        introduction = value;
+                      } else {
+                        introduction = null;
+                      }
                       setState(() {});
                     },
                   ),
@@ -787,6 +799,9 @@ class _SubmitModDialog extends StatefulWidget {
   final ModIntegrationPlatform? integration;
   final List<ModSide>? side;
   final List<ModLoader>? loaders;
+  final Uint8List? imageBytes;
+  final String? introduction;
+  final String? translatedName;
 
   const _SubmitModDialog({
     Key? key,
@@ -798,6 +813,9 @@ class _SubmitModDialog extends StatefulWidget {
     this.integration,
     this.side,
     this.loaders,
+    this.imageBytes,
+    this.introduction,
+    this.translatedName,
   }) : super(key: key);
 
   @override
@@ -869,7 +887,7 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
   Future<MinecraftMod> _creating() async {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
     apiClient.setGlobalToken(AccountHandler.token!);
-    return apiClient.minecraftResource.createMinecraftMod(
+    MinecraftMod mod = await apiClient.minecraftResource.createMinecraftMod(
       name: widget.name,
       supportVersions: widget.supportVersions,
       id: widget.id,
@@ -879,6 +897,22 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
       side: widget.side,
       loader: widget.loaders,
     );
+
+    Storage? imageStorage;
+    if (widget.imageBytes != null) {
+      /// 上傳模組封面圖
+      imageStorage = await apiClient.storageResource
+          .createStorageByBytes(widget.imageBytes!);
+    }
+
+    /// 建立模組維基資訊
+    await apiClient.minecraftResource.createWikiModData(
+        modUUID: mod.uuid,
+        translatedName: widget.translatedName,
+        introduction: widget.introduction,
+        imageStorageUUID: imageStorage?.uuid);
+
+    return mod;
   }
 
   FutureBuilder<MinecraftMod> _buildCreatingDialog() {

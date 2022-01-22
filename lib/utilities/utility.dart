@@ -29,4 +29,18 @@ class Utility {
     );
     await flushbar.show(context);
   }
+
+  static Size getSize(BuildContext context) {
+    MediaQueryData data = MediaQuery.of(context);
+    Size _size = data.size;
+
+    return Size(
+        _size.width,
+        (_size.height -
+                data.padding.top -
+                data.padding.bottom -
+                data.viewPadding.top -
+                data.viewPadding.bottom) *
+            0.8);
+  }
 }

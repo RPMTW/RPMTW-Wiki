@@ -93,5 +93,8 @@
   "tabResourcePack": "Resource Pack",
   "tabVanilla": "Vanilla",
   "tabWorld": "World",
-  "title": "RPMTW Minecraft Wiki"
+  "title": "RPMTW Minecraft Wiki",
+  "viewModCount": "View count:",
+  "viewModSearch": "Search mods",
+  "viewModSearchHint": "Mod name, Mod translation, Mod ID..."
 }
