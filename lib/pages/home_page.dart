@@ -5,6 +5,7 @@ import 'package:rpmtw_wiki/pages/tabs/mod_tab.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rpmtw_wiki/widget/keep_alive_wrapper.dart';
 
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 import 'package:rpmtw_wiki/widget/title_bar.dart';
@@ -57,8 +58,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: const TabBarView(children: [
-          HomeTab(),
-          ModTab(),
+          KeepAliveWrapper(child: HomeTab()),
+          KeepAliveWrapper(child: ModTab()),
           _WIPTab(),
           _WIPTab(),
           _WIPTab(),

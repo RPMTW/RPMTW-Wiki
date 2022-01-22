@@ -12,9 +12,13 @@ class AccountHandler {
   static void init() {
     storage = html.window.localStorage;
     if (storage.containsKey('rpmtw_account')) {
-      Map<String, dynamic> accountMap =
-          json.decode(storage['rpmtw_account']!).cast<String, dynamic>();
-      account = Account.fromMap(accountMap);
+      try {
+        Map<String, dynamic> accountMap =
+            json.decode(storage['rpmtw_account']!).cast<String, dynamic>();
+        account = Account.fromMap(accountMap);
+      } catch (e) {
+        storage.remove('rpmtw_account');
+      }
     }
   }
 
@@ -35,8 +39,6 @@ class AccountHandler {
         email: user.email,
         emailVerified: user.emailVerified,
         avatarStorageUUID: user.avatarStorageUUID,
-        status: user.statusCode,
-        message: user.statusMessage,
         token: token);
     return set(account);
   }
