@@ -10,9 +10,11 @@
     "addModCreating": "請稍後，正在建立模組中...",
     "addModDescriptionField": "模組簡介",
     "addModDescriptionTooltip": "請簡單扼要的敘述這個模組。",
+    "addModDetailedCurseForgeField": "CurseForge 專案 ID",
     "addModDetailedCurseForgeHint": "範例： 461500",
     "addModDetailedEnvironment": "執行環境",
     "addModDetailedIntegration": "連動平台",
+    "addModDetailedModrinthField": "Modrinth 專案 ID",
     "addModDetailedModrinthHint": "範例： ZukQzaRP",
     "addModDetailedRelation": "關聯模組",
     "addModDetailedRelationAdd": "新增關聯模組",
@@ -81,6 +83,7 @@
     "guiSuccess": "成功",
     "guiWIP": "此功能仍在開發中，暫時無法使用，抱歉造成您的困擾。",
     "guiWebsite": "RPMTW 官方網站",
+    "guiSeparator": "、",
     "languageName": "繁體中文 (台灣)",
     "modSideClient": "客戶端",
     "modSideOptional": "可選",
@@ -96,5 +99,9 @@
     "title": "RPMTW 當個創世神百科",
     "viewModCount": "瀏覽次數：",
     "viewModSearch": "搜尋模組",
-    "viewModSearchHint": "模組名稱、模組譯名、模組 ID..."
+    "viewModSearchHint": "模組名稱、模組譯名、模組 ID...",
+    "viewModTitle": "瀏覽模組",
+    "viewModComment": "留言",
+    "viewModCreateAt": "收錄日期",
+    "viewModLastUpdate": "最後更新"
 }

@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -21,6 +20,7 @@ import 'package:rpmtw_wiki/widget/keep_alive_wrapper.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/mod_select_menu.dart';
 import 'package:rpmtw_wiki/widget/ok_close.dart';
+import 'package:rpmtw_wiki/widget/relation_mod_view.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
@@ -168,7 +168,7 @@ class _DetailedInfoState extends State<_DetailedInfo> {
         SEOText(localizations.addModDetailedIntegration,
             style: _titleTextStyle),
         RPMTWFormField(
-          fieldName: "CurseForge Project ID",
+          fieldName: localizations.addModDetailedCurseForgeField,
           hintText: localizations.addModDetailedCurseForgeHint,
           onSaved: (value) {
             integration = integration.copyWith(
@@ -177,7 +177,7 @@ class _DetailedInfoState extends State<_DetailedInfo> {
           },
         ),
         RPMTWFormField(
-          fieldName: "Modrinth Project ID",
+          fieldName: localizations.addModDetailedModrinthField,
           hintText: localizations.addModDetailedModrinthHint,
           onSaved: (value) {
             integration = integration.copyWith(
@@ -247,46 +247,10 @@ class _RelationModState extends State<_RelationMod> {
             label: SEOText(localizations.addModDetailedRelationAdd)),
         SizedBox(height: kSplitHight),
         if (relationMods != null)
-          Column(
-            children: relationMods!
-                .map((relationMod) => FutureBuilder<MinecraftMod>(
-                    future: RPMTWApiClient.lastInstance.minecraftResource
-                        .getMinecraftMod(relationMod.modUUID),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        MinecraftMod mod = snapshot.data!;
-                        return ExpansionTile(
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.expand_more),
-                              SizedBox(width: kSplitWidth),
-                              IconButton(
-                                icon: const FaIcon(FontAwesomeIcons.trash),
-                                tooltip: localizations.guiDelete,
-                                onPressed: () {
-                                  relationMods!.remove(relationMod);
-                                  setState(() {});
-                                },
-                              ),
-                            ],
-                          ),
-                          title: SEOText(mod.name, textAlign: TextAlign.center),
-                          subtitle: SEOText(relationMod.type.i18n,
-                              textAlign: TextAlign.center),
-                          children: [
-                            SEOText(relationMod.condition ??
-                                localizations
-                                    .addModDetailedRelationConditionCommon),
-                            if (mod.description != null)
-                              SEOText(mod.description!),
-                          ],
-                        );
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    }))
-                .toList(),
+          RelationModView(
+            relationMods: relationMods!,
+            onRelationModChanged: (value) => relationMods = value,
+            isEditable: true,
           )
       ],
     );
@@ -776,7 +740,8 @@ class _IntroductionState extends State<_Introduction> {
                     data: _controller.text,
                     onTapLink: (String text, String? href, String title) {
                       if (href != null) {
-                        window.open(href, title.isNotEmpty ? title : text);
+                        Utility.openUrl(href,
+                            name: title.isNotEmpty ? title : text);
                       }
                     },
                   ),
@@ -995,7 +960,8 @@ class _VersionChoiceState extends State<_VersionChoice> {
                   child: DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       hintText: versions.isNotEmpty
-                          ? versions.reduce((a, b) => a + '、' + b)
+                          ? versions.reduce(
+                              (a, b) => a + localizations.guiSeparator + b)
                           : localizations.addModSupportedVersionHint,
                     ),
                     isDense: true,
