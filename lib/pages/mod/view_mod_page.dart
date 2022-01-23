@@ -2,7 +2,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
-import 'package:rpmtw_wiki/models/mod_info.dart';
 
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
@@ -30,7 +29,6 @@ class ViewModPage extends StatefulWidget {
 class _ViewModPageState extends State<ViewModPage> {
   bool loading = true;
   late MinecraftMod mod;
-  late WikiModData wikiData;
 
   @override
   void initState() {
@@ -41,9 +39,8 @@ class _ViewModPageState extends State<ViewModPage> {
 
   Future<void> load() async {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
-    mod = await apiClient.minecraftResource.getMinecraftMod(widget.uuid);
-    wikiData =
-        await apiClient.minecraftResource.getWikiModDataByModUUID(mod.uuid);
+    mod = await apiClient.minecraftResource
+        .getMinecraftMod(widget.uuid, recordViewCount: true);
 
     setState(() {
       loading = false;
@@ -61,8 +58,6 @@ class _ViewModPageState extends State<ViewModPage> {
       );
     }
 
-    ModInfo modInfo = ModInfo(mod: mod, wikiData: wikiData);
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -70,7 +65,7 @@ class _ViewModPageState extends State<ViewModPage> {
           title: "${localizations.viewModTitle} - ${mod.name}",
           logo: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: wikiData.imageWidget(width: 50, height: 50)),
+              child: mod.imageWidget(width: 50, height: 50)),
           onBackPressed: () => navigation.pop(),
           bottom: TabBar(
             isScrollable: Utility.isWebMobile,
@@ -90,10 +85,10 @@ class _ViewModPageState extends State<ViewModPage> {
         body: TabBarView(
           children: [
             KeepAliveWrapper(
-              child: _BaseInfo(modInfo: modInfo),
+              child: _BaseInfo(mod: mod),
             ),
             KeepAliveWrapper(child: SEOText(localizations.guiWIP)),
-            KeepAliveWrapper(child: _DetailsInfo(modInfo: modInfo)),
+            KeepAliveWrapper(child: _DetailsInfo(mod: mod)),
           ],
         ),
       ),
@@ -102,10 +97,10 @@ class _ViewModPageState extends State<ViewModPage> {
 }
 
 class _DetailsInfo extends StatefulWidget {
-  final ModInfo modInfo;
+  final MinecraftMod mod;
   const _DetailsInfo({
     Key? key,
-    required this.modInfo,
+    required this.mod,
   }) : super(key: key);
 
   @override
@@ -113,8 +108,7 @@ class _DetailsInfo extends StatefulWidget {
 }
 
 class _DetailsInfoState extends State<_DetailsInfo> {
-  MinecraftMod get mod => widget.modInfo.mod;
-  WikiModData get wikiData => widget.modInfo.wikiData;
+  MinecraftMod get mod => widget.mod;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +150,7 @@ class _DetailsInfoState extends State<_DetailsInfo> {
   }
 
   Widget _buildModID() {
-    if (mod.id != null) {
+    if (mod.id != null && mod.id!.isNotEmpty) {
       return Column(
         children: [
           SEOText(localizations.addModIdField, style: _titleStyle),
@@ -199,18 +193,17 @@ class _DetailsInfoState extends State<_DetailsInfo> {
 class _BaseInfo extends StatefulWidget {
   const _BaseInfo({
     Key? key,
-    required this.modInfo,
+    required this.mod,
   }) : super(key: key);
 
-  final ModInfo modInfo;
+  final MinecraftMod mod;
 
   @override
   State<_BaseInfo> createState() => _BaseInfoState();
 }
 
 class _BaseInfoState extends State<_BaseInfo> {
-  MinecraftMod get mod => widget.modInfo.mod;
-  WikiModData get wikiData => widget.modInfo.wikiData;
+  MinecraftMod get mod => widget.mod;
 
   @override
   Widget build(BuildContext context) {
@@ -220,11 +213,11 @@ class _BaseInfoState extends State<_BaseInfo> {
         SizedBox(height: kSplitHight),
         ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: wikiData.imageWidget(width: 150, height: 150)),
+            child: mod.imageWidget(width: 150, height: 150)),
         SizedBox(height: kSplitHight),
         SEOSelectableText(mod.name, style: const TextStyle(fontSize: 20)),
-        wikiData.translatedName != null
-            ? SEOSelectableText(wikiData.translatedName!,
+        (mod.translatedName != null && mod.translatedName != "")
+            ? SEOSelectableText(mod.translatedName!,
                 style: const TextStyle(fontSize: 20))
             : Container(),
         SizedBox(height: kSplitHight),
@@ -235,7 +228,7 @@ class _BaseInfoState extends State<_BaseInfo> {
         _buildSupportVersions(),
         SizedBox(height: kSplitHight),
         SEOText(localizations.viewModCount, style: _titleStyle),
-        SEOSelectableText(wikiData.viewCount.toString()),
+        SEOSelectableText(mod.viewCount.toString()),
         SizedBox(height: kSplitHight),
         _buildIntroduction(),
       ],
@@ -243,7 +236,7 @@ class _BaseInfoState extends State<_BaseInfo> {
   }
 
   Widget _buildDescription() {
-    if (mod.description != null) {
+    if (mod.description != null && mod.description!.isNotEmpty) {
       return SEOSelectableText(mod.description!);
     } else {
       return Container();
@@ -278,7 +271,7 @@ class _BaseInfoState extends State<_BaseInfo> {
   }
 
   Widget _buildIntroduction() {
-    if (wikiData.introduction != null) {
+    if (mod.introduction != null) {
       double width =
           kIsWebDesktop ? MediaQuery.of(context).size.width / 3 : kSplitWidth;
       return Column(
@@ -290,7 +283,7 @@ class _BaseInfoState extends State<_BaseInfo> {
               Expanded(
                 child: MarkdownBody(
                   selectable: true,
-                  data: wikiData.introduction!,
+                  data: mod.introduction!,
                   onTapLink: (String text, String? href, String title) {
                     if (href != null) {
                       Utility.openUrl(href,

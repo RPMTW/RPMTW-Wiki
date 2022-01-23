@@ -31,16 +31,21 @@ class _RelationModViewState extends State<RelationModView> {
     super.initState();
   }
 
+  Future<MinecraftMod> load(String modUUID) async {
+    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    return await apiClient.minecraftResource.getMinecraftMod(modUUID);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: relationMods
           .map((relationMod) => FutureBuilder<MinecraftMod>(
-              future: RPMTWApiClient.lastInstance.minecraftResource
-                  .getMinecraftMod(relationMod.modUUID),
+              future: load(relationMod.modUUID),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   MinecraftMod mod = snapshot.data!;
+
                   return ExpansionTile(
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -63,6 +68,8 @@ class _RelationModViewState extends State<RelationModView> {
                             : []
                       ],
                     ),
+                    leading: mod.imageWidget(width: 50, height: 50) ??
+                        const Icon(Icons.image),
                     title: SEOText(mod.name, textAlign: TextAlign.center),
                     subtitle: SEOText(relationMod.type.i18n,
                         textAlign: TextAlign.center),

@@ -75,21 +75,7 @@ class ModSelectMenu {
                             Navigator.of(context).pop();
                             onSelected?.call(mod);
                           },
-                          leading: FutureBuilder<WikiModData>(
-                              future: apiClient.minecraftResource
-                                  .getWikiModDataByModUUID(mod.uuid),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  WikiModData wikiData = snapshot.data!;
-                                  if (wikiData.imageStorageUUID != null) {
-                                    return wikiData.imageWidget()!;
-                                  } else {
-                                    return const Icon(Icons.image);
-                                  }
-                                } else {
-                                  return const CircularProgressIndicator();
-                                }
-                              }),
+                          leading: mod.imageWidget() ?? const Icon(Icons.image),
                           title:
                               Tooltip(message: mod.uuid, child: Text(mod.name)),
                           subtitle: mod.id != null ? Text(mod.id!) : null,
