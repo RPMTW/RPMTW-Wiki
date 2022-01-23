@@ -39,7 +39,8 @@ class _ViewModPageState extends State<ViewModPage> {
 
   Future<void> load() async {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
-    mod = await apiClient.minecraftResource.getMinecraftMod(widget.uuid);
+    mod = await apiClient.minecraftResource
+        .getMinecraftMod(widget.uuid, recordViewCount: true);
 
     setState(() {
       loading = false;
