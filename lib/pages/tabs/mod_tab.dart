@@ -95,20 +95,7 @@ class _ModsViewState extends State<_ModsView> {
                     itemBuilder: (context, index) {
                       MinecraftMod mod = mods[index];
 
-                      return FutureBuilder<WikiModData>(
-                        future: apiClient.minecraftResource
-                            .getWikiModDataByModUUID(mod.uuid),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            final WikiModData? wikiData = snapshot.data;
-
-                            return _ModItem(wikiData: wikiData, mod: mod);
-                          } else {
-                            return const CircularProgressIndicator();
-                          }
-                        },
-                      );
+                      return _ModItem(mod: mod);
                     },
                   ),
                 );
@@ -179,11 +166,9 @@ class _Search extends StatelessWidget {
 class _ModItem extends StatefulWidget {
   const _ModItem({
     Key? key,
-    required this.wikiData,
     required this.mod,
   }) : super(key: key);
 
-  final WikiModData? wikiData;
   final MinecraftMod mod;
 
   @override
@@ -212,17 +197,17 @@ class _ModItemState extends State<_ModItem> {
                     child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (widget.wikiData?.imageStorageUUID != null)
-                      widget.wikiData!.imageWidget(width: 100, height: 100)!
+                    if (widget.mod.imageStorageUUID != null)
+                      widget.mod.imageWidget(width: 100, height: 100)!
                     else
                       const Icon(Icons.image, size: 100),
                     SEOSelectableText(widget.mod.name,
                         style: const TextStyle(fontSize: 16)),
-                    if (widget.wikiData?.translatedName != null)
-                      SEOSelectableText(widget.wikiData!.translatedName!,
+                    if (widget.mod.translatedName != null)
+                      SEOSelectableText(widget.mod.translatedName!,
                           style: subtitleStyle),
                     SEOText(
-                        "${localizations.viewModCount} ${(widget.wikiData?.viewCount ?? 0).toString()}",
+                        "${localizations.viewModCount} ${(widget.mod.viewCount).toString()}",
                         style: subtitleStyle),
                   ],
                 )));

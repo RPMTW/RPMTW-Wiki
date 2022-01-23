@@ -507,13 +507,25 @@ class _BaseInfoState extends State<_BaseInfo> {
             fieldName: localizations.addModTranslatedNameField,
             hintText: localizations.addModTranslatedNameHintText,
             helperText: localizations.addModTranslatedNameTooltip,
-            onSaved: (value) => translatedName = value,
+            onSaved: (value) {
+              if (value.isEmpty) {
+                translatedName = null;
+              } else {
+                translatedName = value;
+              }
+            },
           ),
           RPMTWFormField(
             fieldName: localizations.addModIdField,
             hintText: localizations.addModIdHintText,
             helperText: localizations.addModIdTooltip,
-            onSaved: (value) => id = value,
+            onSaved: (value) {
+              if (value.isEmpty) {
+                id = null;
+              } else {
+                id = value;
+              }
+            },
           ),
           RPMTWFormField(
             fieldName: localizations.addModDescriptionField,
@@ -852,16 +864,6 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
   Future<MinecraftMod> _creating() async {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
     apiClient.setGlobalToken(AccountHandler.token!);
-    MinecraftMod mod = await apiClient.minecraftResource.createMinecraftMod(
-      name: widget.name,
-      supportVersions: widget.supportVersions,
-      id: widget.id,
-      description: widget.description,
-      relationMods: widget.relationMods,
-      integration: widget.integration,
-      side: widget.side,
-      loader: widget.loaders,
-    );
 
     Storage? imageStorage;
     if (widget.imageBytes != null) {
@@ -870,9 +872,15 @@ class _SubmitModDialogState extends State<_SubmitModDialog> {
           .createStorageByBytes(widget.imageBytes!);
     }
 
-    /// 建立模組維基資訊
-    await apiClient.minecraftResource.createWikiModData(
-        modUUID: mod.uuid,
+    MinecraftMod mod = await apiClient.minecraftResource.createMinecraftMod(
+        name: widget.name,
+        supportVersions: widget.supportVersions,
+        id: widget.id,
+        description: widget.description,
+        relationMods: widget.relationMods,
+        integration: widget.integration,
+        side: widget.side,
+        loader: widget.loaders,
         translatedName: widget.translatedName,
         introduction: widget.introduction,
         imageStorageUUID: imageStorage?.uuid);

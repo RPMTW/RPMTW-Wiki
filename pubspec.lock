@@ -244,14 +244,14 @@ packages:
       name: rpmtw_api_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5+5"
+    version: "1.0.6+1"
   rpmtw_api_client_flutter:
     dependency: "direct main"
     description:
       name: rpmtw_api_client_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5+5"
+    version: "1.0.6"
   seo_renderer:
     dependency: "direct main"
     description:

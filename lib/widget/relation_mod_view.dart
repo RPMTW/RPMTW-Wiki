@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
-import 'package:rpmtw_wiki/models/mod_info.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
@@ -32,27 +31,20 @@ class _RelationModViewState extends State<RelationModView> {
     super.initState();
   }
 
-  Future<ModInfo> load(String modUUID) async {
+  Future<MinecraftMod> load(String modUUID) async {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
-    MinecraftMod mod =
-        await apiClient.minecraftResource.getMinecraftMod(modUUID);
-    WikiModData wikiData =
-        await apiClient.minecraftResource.getWikiModDataByModUUID(modUUID);
-
-    return ModInfo(mod: mod, wikiData: wikiData);
+    return await apiClient.minecraftResource.getMinecraftMod(modUUID);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: relationMods
-          .map((relationMod) => FutureBuilder<ModInfo>(
+          .map((relationMod) => FutureBuilder<MinecraftMod>(
               future: load(relationMod.modUUID),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  ModInfo modInfo = snapshot.data!;
-                  MinecraftMod mod = modInfo.mod;
-                  WikiModData wikiData = modInfo.wikiData;
+                  MinecraftMod mod = snapshot.data!;
 
                   return ExpansionTile(
                     trailing: Row(
@@ -76,7 +68,8 @@ class _RelationModViewState extends State<RelationModView> {
                             : []
                       ],
                     ),
-                    leading: wikiData.imageWidget(width: 50, height: 50),
+                    leading: mod.imageWidget(width: 50, height: 50) ??
+                        const Icon(Icons.image),
                     title: SEOText(mod.name, textAlign: TextAlign.center),
                     subtitle: SEOText(relationMod.type.i18n,
                         textAlign: TextAlign.center),
