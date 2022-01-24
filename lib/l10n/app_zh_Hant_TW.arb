@@ -107,5 +107,8 @@
     "viewModCreateAt": "收錄日期",
     "viewModLastUpdate": "最後更新",
     "viewModCopyUUID": "複製 UUID",
-    "editModTitle": "編輯模組"
+    "editModTitle": "編輯模組",
+    "editModSuccess": "成功編輯模組。",
+    "editModChangelog": "變更日誌",
+    "submitModProcessing": "請稍後，正在處理中..."
 }
