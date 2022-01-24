@@ -17,6 +17,7 @@ void main(List<String> arguments) async {
       String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
           "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
       String url = "https://wiki.rpmtw.com/#/mod/view/${mod.uuid}";
+      String title = "${mod.name} | RPMTW Wiki";
 
       String html = """
 <!DOCTYPE html>
@@ -26,6 +27,8 @@ void main(List<String> arguments) async {
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="$description">
   <meta property="og:image" content="$imageUrl" />
+  <meta property="og:description" content="$description">
+  <meta property="og:title" content="$title">
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -34,7 +37,7 @@ void main(List<String> arguments) async {
   <meta name="keywords" content="RPMTW,minecraft,mod,RPMTW Wiki,Minecraft Wiki,RPMWiki,當個創世神百科,我的世界百科">
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>${mod.name} | RPMTW Wiki</title>
+  <title>$title</title>
 </head>
 
 <meta http-equiv="refresh" content="0; url=$url" />
@@ -46,7 +49,7 @@ void main(List<String> arguments) async {
     """;
 
       File file = File(join(Directory.current.parent.parent.path, "web", "mod",
-          "view", mod.uuid));
+          "view", "${mod.uuid}.html"));
       await file.create(recursive: true);
       await file.writeAsString(html);
     }
