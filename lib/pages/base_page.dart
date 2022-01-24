@@ -4,7 +4,7 @@ import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/widget/link_text.dart';
 import 'package:rpmtw_wiki/widget/row_scroll_view.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
-import 'dart:html';
+import 'package:universal_html/html.dart';
 
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 

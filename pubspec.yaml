@@ -38,6 +38,11 @@ dependencies:
   rate_limiter: ^0.1.1
   url_launcher: ^6.0.18
 
+  # TODO: 支援 IO 端 (Android/iOS/Windows/Linux/Mac)
+
+  universal_html: ^2.0.8
+  universal_io: ^2.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
