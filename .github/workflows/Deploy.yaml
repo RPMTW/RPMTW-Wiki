@@ -24,6 +24,7 @@ jobs:
       - name: SEO fetch wiki mods
         run: |
           cd script/seo_fetch_mods
+          dart pub get
           dart run bin/seo_fetch_mods.dart
       - uses: bluefireteam/flutter-gh-pages@v7
         # with:
