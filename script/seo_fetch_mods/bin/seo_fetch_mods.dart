@@ -55,7 +55,7 @@ void main(List<String> arguments) async {
       File file = File(join(webDir, "mod", "view", "${mod.uuid}.html"));
       await file.create(recursive: true);
       await file.writeAsString(html);
-      sitemap.entries.add(SitemapEntry()..location);
+      sitemap.entries.add(SitemapEntry()..location = url);
     }
 
     if (mods.length < 50) {
