@@ -33,7 +33,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : const SizedBox.shrink(),
       leadingWidth: onBackPressed != null ? 56.0 : 0.0,
-      centerTitle: Utility.isWebDesktop,
+      centerTitle: Utility.isDesktop,
       title: _buildTitle(),
       toolbarHeight: toolbarHeight,
       bottom: bottom,
@@ -52,7 +52,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
 
   Row _buildTitle() {
     return Row(
-      mainAxisAlignment: Utility.isWebMobile
+      mainAxisAlignment: Utility.isMobile
           ? MainAxisAlignment.start
           : MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,

@@ -40,7 +40,7 @@ class RPMTWFormField extends StatelessWidget {
       this.seo = true})
       : super(key: key);
 
-  double get splitWidth => kIsWebMobile ? 12 : 25;
+  double get splitWidth => kIsMobile ? 12 : 25;
 
   @override
   Widget build(BuildContext context) {

@@ -30,7 +30,7 @@ class _AccountManageButtonState extends State<AccountManageButton> {
           child: Row(
             children: [
               SizedBox(width: 30, height: 30, child: account.seoAvatar()),
-              ...Utility.isWebMobile //手機板將不顯示詳細名稱
+              ...Utility.isMobile //手機板將不顯示詳細名稱
                   ? []
                   : [
                       const SizedBox(

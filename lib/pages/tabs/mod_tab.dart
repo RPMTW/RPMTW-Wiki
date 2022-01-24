@@ -121,7 +121,7 @@ class _Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWebDesktop) {
+    if (kIsDesktop) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

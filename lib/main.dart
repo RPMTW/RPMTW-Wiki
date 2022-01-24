@@ -1,3 +1,4 @@
+import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
 import 'package:universal_html/html.dart';
 import 'dart:ui' as ui;
 
@@ -136,6 +137,12 @@ class _WikiAppState extends State<WikiApp> {
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) => ViewModPage(uuid: uuid));
+            } else if (name.startsWith(EditModPage.route)) {
+              String uuid = routeUri.pathSegments[2];
+
+              return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => EditModPage(uuid: uuid));
             } else {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());

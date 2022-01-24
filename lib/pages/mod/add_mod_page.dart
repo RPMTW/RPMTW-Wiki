@@ -89,9 +89,9 @@ class _AddModPageState extends State<AddModPage> {
         child: Scaffold(
           appBar: TitleBar(
             title: localizations.addModTitle,
-            onBackPressed: () => navigation.pushNamed(HomePage.route),
+            onBackPressed: () => navigation.pop(),
             bottom: TabBar(
-              isScrollable: Utility.isWebMobile,
+              isScrollable: Utility.isMobile,
               tabs: [
                 Tab(
                   text: localizations.addModBaseTitle,
@@ -683,7 +683,7 @@ class _IntroductionState extends State<_Introduction> {
         height: size.height,
         child: SplitView(
           viewMode:
-              kIsWebDesktop ? SplitViewMode.Horizontal : SplitViewMode.Vertical,
+              kIsDesktop ? SplitViewMode.Horizontal : SplitViewMode.Vertical,
           gripSize: 3,
           children: [
             Column(
@@ -702,7 +702,7 @@ class _IntroductionState extends State<_Introduction> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    maxLines: kIsWebDesktop ? 30 : 10,
+                    maxLines: kIsDesktop ? 30 : 10,
                     maxLength: null,
                     onChanged: (value) {
                       _changeController.modify(value);

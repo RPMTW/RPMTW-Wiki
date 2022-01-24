@@ -6,16 +6,19 @@ import 'package:rpmtw_api_client/rpmtw_api_client.dart';
 void main(List<String> arguments) async {
   RPMTWApiClient.init();
   RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+  int skip = 0;
 
-  List<MinecraftMod> mods = await apiClient.minecraftResource.search();
+  while (true) {
+    List<MinecraftMod> mods =
+        await apiClient.minecraftResource.search(skip: skip);
 
-  for (MinecraftMod mod in mods) {
-    String description = mod.description ?? "";
-    String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
-        "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
-    String url = "https://wiki.rpmtw.com/#/mod/view/${mod.uuid}";
+    for (MinecraftMod mod in mods) {
+      String description = mod.description ?? "";
+      String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
+          "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
+      String url = "https://wiki.rpmtw.com/#/mod/view/${mod.uuid}";
 
-    String html = """
+      String html = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,7 +34,7 @@ void main(List<String> arguments) async {
   <meta name="keywords" content="RPMTW,minecraft,mod,RPMTW Wiki,Minecraft Wiki,RPMWiki,當個創世神百科,我的世界百科">
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>RPMTW Wiki</title>
+  <title>${mod.name} | RPMTW Wiki</title>
 </head>
 
 <meta http-equiv="refresh" content="0; url=$url" />
@@ -42,11 +45,17 @@ void main(List<String> arguments) async {
 </html>
     """;
 
-    File file = File(join(Directory.current.parent.parent.path, "web", "#",
-        "mod", "view", mod.uuid));
-    await file.create(recursive: true);
-    await file.writeAsString(html);
-  }
+      File file = File(join(Directory.current.parent.parent.path, "web", "#",
+          "mod", "view", mod.uuid));
+      await file.create(recursive: true);
+      await file.writeAsString(html);
+    }
 
-  exit(0);
+    if (mods.length < 50) {
+      print("test");
+      exit(0);
+    }
+    
+    skip += 50;
+  }
 }

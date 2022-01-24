@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         appBar: TitleBar(
           title: localizations.title,
           bottom: TabBar(
-            isScrollable: Utility.isWebMobile,
+            isScrollable: Utility.isMobile,
             tabs: [
               Tab(
                   icon: const FaIcon(FontAwesomeIcons.home),

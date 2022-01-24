@@ -1,9 +1,12 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
 
 import 'package:rpmtw_wiki/pages/base_page.dart';
+import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
@@ -12,6 +15,7 @@ import 'package:rpmtw_wiki/widget/relation_mod_view.dart';
 import 'package:rpmtw_wiki/widget/seo_selectable_text.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 import 'package:rpmtw_wiki/widget/title_bar.dart';
+import 'package:share_plus/share_plus.dart';
 
 const TextStyle _titleStyle = TextStyle(fontSize: 25, color: Colors.blue);
 
@@ -63,12 +67,9 @@ class _ViewModPageState extends State<ViewModPage> {
       child: Scaffold(
         appBar: TitleBar(
           title: "${localizations.viewModTitle} - ${mod.name}",
-          logo: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: mod.imageWidget(width: 50, height: 50)),
           onBackPressed: () => navigation.pop(),
           bottom: TabBar(
-            isScrollable: Utility.isWebMobile,
+            isScrollable: Utility.isMobile,
             tabs: [
               Tab(
                 text: localizations.addModBaseTitle,
@@ -81,6 +82,48 @@ class _ViewModPageState extends State<ViewModPage> {
               ),
             ],
           ),
+          actions: [
+            PopupMenuButton(
+                tooltip: localizations.guiOptional,
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Text(localizations.editModTitle),
+                        value: 1,
+                      ),
+                      PopupMenuItem(
+                        child: Text(kIsDesktop
+                            ? localizations.guiCopyLink
+                            : localizations.guiShare),
+                        value: 2,
+                      ),
+                      PopupMenuItem(
+                        child: Text(localizations.viewModCopyUUID),
+                        value: 3,
+                      )
+                    ],
+                onSelected: (int index) {
+                  switch (index) {
+                    case 1:
+                      navigation.pushNamed(
+                        EditModPage.route + mod.uuid,
+                      );
+                      break;
+                    case 2:
+                      String url = rpmtwWikiUrl + "/#/mod/view/" + mod.uuid;
+                      if (kIsDesktop) {
+                        Clipboard.setData(ClipboardData(text: url));
+                      } else {
+                        Share.share(url);
+                      }
+                      break;
+                    case 3:
+                      Clipboard.setData(ClipboardData(text: mod.uuid));
+                      break;
+                    default:
+                      break;
+                  }
+                })
+          ],
         ),
         body: TabBarView(
           children: [
@@ -273,7 +316,7 @@ class _BaseInfoState extends State<_BaseInfo> {
   Widget _buildIntroduction() {
     if (mod.introduction != null) {
       double width =
-          kIsWebDesktop ? MediaQuery.of(context).size.width / 3 : kSplitWidth;
+          kIsDesktop ? MediaQuery.of(context).size.width / 3 : kSplitWidth;
       return Column(
         children: [
           SEOText(localizations.addModIntroductionTitle, style: _titleStyle),
