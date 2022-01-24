@@ -32,7 +32,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () => onBackPressed!.call(),
             )
           : const SizedBox.shrink(),
-      leadingWidth: onBackPressed != null ? 28.0 : 0.0,
+      leadingWidth: onBackPressed != null ? 38.0 : 0.0,
       centerTitle: Utility.isDesktop,
       title: _buildTitle(),
       toolbarHeight: toolbarHeight,

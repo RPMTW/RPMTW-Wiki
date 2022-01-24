@@ -13,5 +13,7 @@ environment:
 dev_dependencies:
   lints: ^1.0.0
 dependencies: 
+  intl: ^0.17.0
   path: ^1.8.1
   rpmtw_api_client: ^1.0.6+2
+  xml: ^5.3.1
