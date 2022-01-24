@@ -110,5 +110,6 @@
     "editModTitle": "編輯模組",
     "editModSuccess": "成功編輯模組。",
     "editModChangelog": "變更日誌",
+    "editModChangelogHint": "請輸入變更日誌",
     "submitModProcessing": "請稍後，正在處理中..."
 }
