@@ -7,7 +7,6 @@
     "addModBaseTitle": "基本情報",
     "addModCreateBrowse": "このModを参照する",
     "addModCreateSuccess": "Modを正常に作成しました!",
-    "addModCreating": "Modが作成されている間お待ちください...",
     "addModDescriptionField": "Modの説明",
     "addModDescriptionTooltip": "このModについて簡単に説明してください。",
     "addModDetailedCurseForgeHint": "例：461500",

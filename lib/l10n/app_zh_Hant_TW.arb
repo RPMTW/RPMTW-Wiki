@@ -7,7 +7,6 @@
     "addModBaseTitle": "基本資訊",
     "addModCreateBrowse": "瀏覽此模組",
     "addModCreateSuccess": "模組建立成功！",
-    "addModCreating": "請稍後，正在建立模組中...",
     "addModDescriptionField": "模組簡介",
     "addModDescriptionTooltip": "請簡單扼要的敘述這個模組。",
     "addModDetailedCurseForgeField": "CurseForge 專案 ID",
@@ -108,5 +107,9 @@
     "viewModCreateAt": "收錄日期",
     "viewModLastUpdate": "最後更新",
     "viewModCopyUUID": "複製 UUID",
-    "editModTitle": "編輯模組"
+    "editModTitle": "編輯模組",
+    "editModSuccess": "成功編輯模組。",
+    "editModChangelog": "變更日誌",
+    "editModChangelogHint": "請輸入變更日誌",
+    "submitModProcessing": "請稍後，正在處理中..."
 }
