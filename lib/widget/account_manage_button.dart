@@ -1,5 +1,5 @@
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+import 'package:universal_html/html.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,7 +30,7 @@ class _AccountManageButtonState extends State<AccountManageButton> {
           child: Row(
             children: [
               SizedBox(width: 30, height: 30, child: account.seoAvatar()),
-              ...Utility.isWebMobile //手機板將不顯示詳細名稱
+              ...Utility.isMobile //手機板將不顯示詳細名稱
                   ? []
                   : [
                       const SizedBox(

@@ -3,7 +3,7 @@ import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 
-class RPMTWFormField extends StatelessWidget {
+class RPMTWFormField extends StatefulWidget {
   final String fieldName;
   final TextEditingController? controller;
   final ValueChanged<String>? onSaved;
@@ -15,6 +15,7 @@ class RPMTWFormField extends StatelessWidget {
   final Widget? prefixIcon;
   final String? hintText;
   final String? helperText;
+  final String? defaultValue;
 
   final bool hasDivider;
   final bool lockLine;
@@ -37,10 +38,33 @@ class RPMTWFormField extends StatelessWidget {
       this.prefixIcon,
       this.hintText,
       this.child,
+      this.defaultValue,
       this.seo = true})
       : super(key: key);
 
-  double get splitWidth => kIsWebMobile ? 12 : 25;
+  @override
+  State<RPMTWFormField> createState() => _RPMTWFormFieldState();
+}
+
+class _RPMTWFormFieldState extends State<RPMTWFormField> {
+  double get splitWidth => kIsMobile ? 12 : 25;
+
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    if (widget.controller != null) {
+      controller = widget.controller!;
+    } else {
+      controller = TextEditingController();
+    }
+
+    if (widget.defaultValue != null) {
+      controller.text = widget.defaultValue!;
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +79,7 @@ class RPMTWFormField extends StatelessWidget {
                 child: TextFormField(
               controller: controller,
               validator: (value) {
-                String? error = validator?.call(value);
+                String? error = widget.validator?.call(value);
                 if (error != null) {
                   Utility.showErrorFlushbar(context, error);
                   return error;
@@ -63,23 +87,23 @@ class RPMTWFormField extends StatelessWidget {
                 return null;
               },
               decoration: InputDecoration(
-                labelText: fieldName,
-                prefixIcon: prefixIcon,
-                hintText: hintText,
+                labelText: widget.fieldName,
+                prefixIcon: widget.prefixIcon,
+                hintText: widget.hintText,
               ),
-              maxLines: lockLine ? 1 : null,
-              textAlign: textAlign ?? TextAlign.start,
-              onSaved: (value) => onSaved?.call(value!),
-              onChanged: (value) => onChanged?.call(value),
-              keyboardType: keyboardType,
-              onEditingComplete: onEditingComplete,
+              maxLines: widget.lockLine ? 1 : null,
+              textAlign: widget.textAlign ?? TextAlign.start,
+              onSaved: (value) => widget.onSaved?.call(value!),
+              onChanged: (value) => widget.onChanged?.call(value),
+              keyboardType: widget.keyboardType,
+              onEditingComplete: widget.onEditingComplete,
             )),
             SizedBox(width: splitWidth),
           ],
         ),
         _buildTooltip(context),
-        child ?? const SizedBox.shrink(),
-        (hasDivider && helperText != null)
+        widget.child ?? const SizedBox.shrink(),
+        (widget.hasDivider && widget.helperText != null)
             ? Column(
                 children: [
                   SizedBox(height: kSplitHight),
@@ -92,7 +116,7 @@ class RPMTWFormField extends StatelessWidget {
   }
 
   Widget _buildTooltip(BuildContext context) {
-    if (helperText != null) {
+    if (widget.helperText != null) {
       return Column(
         children: [
           const SizedBox(height: 3),
@@ -102,12 +126,12 @@ class RPMTWFormField extends StatelessWidget {
               const Icon(Icons.lightbulb),
               SizedBox(width: splitWidth - 5),
               Expanded(
-                  child: seo
-                      ? SEOText(helperText!,
+                  child: widget.seo
+                      ? SEOText(widget.helperText!,
                           style: const TextStyle(
                               color: Color.fromARGB(255, 103, 170, 214)))
                       : Text(
-                          helperText!,
+                          widget.helperText!,
                           style: const TextStyle(
                               color: Color.fromARGB(255, 103, 170, 214)),
                         )),

@@ -20,7 +20,7 @@ class RowScrollView extends StatelessWidget {
     return Align(
         alignment: center ? Alignment.center : Alignment.centerLeft,
         child: Scrollbar(
-            thickness: Utility.isWebMobile ? 0.0 : null,
+            thickness: Utility.isMobile ? 0.0 : null,
             controller: _controller,
             child: SingleChildScrollView(
                 controller: _controller,

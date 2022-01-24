@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'package:universal_html/html.dart';
 
 import 'package:flutter/material.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
@@ -32,8 +32,8 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () => onBackPressed!.call(),
             )
           : const SizedBox.shrink(),
-      leadingWidth: onBackPressed != null ? 56.0 : 0.0,
-      centerTitle: Utility.isWebDesktop,
+      leadingWidth: onBackPressed != null ? 28.0 : 0.0,
+      centerTitle: Utility.isDesktop,
       title: _buildTitle(),
       toolbarHeight: toolbarHeight,
       bottom: bottom,
@@ -52,24 +52,21 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
 
   Row _buildTitle() {
     return Row(
-      mainAxisAlignment: Utility.isWebMobile
-          ? MainAxisAlignment.start
-          : MainAxisAlignment.center,
+      mainAxisAlignment:
+          Utility.isMobile ? MainAxisAlignment.start : MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        InkResponse(
-          onTap: () {
-            if (logo == null) {
-              window.open("https://www.rpmtw.com", "RPMTW Website");
-            }
-          },
-          child: logo ??
-              Image.asset(
+        logo ??
+            InkResponse(
+              onTap: () {
+                window.open("https://www.rpmtw.com", "RPMTW Website");
+              },
+              child: Image.asset(
                 'assets/images/RPMTW_Logo.gif',
                 fit: BoxFit.contain,
                 width: 52,
               ),
-        ),
+            ),
         const SizedBox(width: 8),
         Expanded(
             child: SEOText(title ?? localizations.title,

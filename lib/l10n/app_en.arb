@@ -7,7 +7,6 @@
   "addModBaseTitle": "Basic info",
   "addModCreateBrowse": "Browse this mod",
   "addModCreateSuccess": "Mod created successfully!",
-  "addModCreating": "Please wait, mods are being created...",
   "addModDescriptionField": "Mod description",
   "addModDescriptionTooltip": "Please give a brief description of this mod.",
   "addModDetailedCurseForgeField": "CurseForge Project ID",
@@ -84,6 +83,9 @@
   "guiWIP": "This feature is still under development and is not available at this time, sorry for the inconvenience.",
   "guiWebsite": "RPMTW Official Website",
   "guiSeparator": ",",
+  "guiOptional": "Optional",
+  "guiShare": "Share",
+  "guiCopyLink": "Copy Link",
   "languageName": "English (US)",
   "modSideClient": "Client",
   "modSideOptional": "Optional",
@@ -103,5 +105,11 @@
   "viewModTitle": "Browse mods",
   "viewModComment": "Comment",
   "viewModCreateAt": "Creation date",
-  "viewModLastUpdate": "Last update"
+  "viewModLastUpdate": "Last update",
+  "viewModCopyUUID": "Copy UUID",
+  "editModTitle": "Edit mod",
+  "editModSuccess": "Mod successfully edited.",
+  "editModChangelog": "Changelog",
+  "editModChangelogHint": "Please enter the change log",
+  "submitModProcessing": "Please wait, it is being processed..."
 }
