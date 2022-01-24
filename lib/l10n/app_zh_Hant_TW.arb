@@ -84,6 +84,9 @@
     "guiWIP": "此功能仍在開發中，暫時無法使用，抱歉造成您的困擾。",
     "guiWebsite": "RPMTW 官方網站",
     "guiSeparator": "、",
+    "guiOptional": "選項",
+    "guiShare": "分享",
+    "guiCopyLink": "複製連結",
     "languageName": "繁體中文 (台灣)",
     "modSideClient": "客戶端",
     "modSideOptional": "可選",
@@ -103,5 +106,7 @@
     "viewModTitle": "瀏覽模組",
     "viewModComment": "留言",
     "viewModCreateAt": "收錄日期",
-    "viewModLastUpdate": "最後更新"
+    "viewModLastUpdate": "最後更新",
+    "viewModCopyUUID": "複製 UUID",
+    "editModTitle": "編輯模組"
 }
