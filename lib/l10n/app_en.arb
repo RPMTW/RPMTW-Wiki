@@ -110,7 +110,6 @@
   "editModTitle": "Edit mod",
   "editModSuccess": "Mod successfully edited.",
   "editModChangelog": "Changelog",
-  "editModChangelogHint": "Please enter which content you have changed...",
-  "editModChangelogNull": "Please enter the change log",
+  "editModChangelogHint": "Please enter the change log",
   "submitModProcessing": "Please wait, it is being processed..."
 }
