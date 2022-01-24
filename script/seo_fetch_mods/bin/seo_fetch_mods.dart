@@ -45,8 +45,8 @@ void main(List<String> arguments) async {
 </html>
     """;
 
-      File file = File(join(Directory.current.parent.parent.path, "web", "#",
-          "mod", "view", mod.uuid));
+      File file = File(join(Directory.current.parent.parent.path, "web", "mod",
+          "view", mod.uuid));
       await file.create(recursive: true);
       await file.writeAsString(html);
     }
@@ -55,7 +55,7 @@ void main(List<String> arguments) async {
       print("test");
       exit(0);
     }
-    
+
     skip += 50;
   }
 }
