@@ -17,14 +17,14 @@ jobs:
         with:
           path: /opt/hostedtoolcache/flutter
           key: ${{ runner.os }}-flutter-2.10.0-0.2.pre
-      - name: SEO fetch wiki mods
-        run: |
-          cd script/seo_fetch_mods
-          dart run bin/seo_fetch_mods.dart
       - uses: subosito/flutter-action@master
         with:
           channel: beta
           flutter-version: 2.10.0-0.2.pre
+      - name: SEO fetch wiki mods
+        run: |
+          cd script/seo_fetch_mods
+          dart run bin/seo_fetch_mods.dart
       - uses: bluefireteam/flutter-gh-pages@v7
         # with:
         #   webRenderer: html
