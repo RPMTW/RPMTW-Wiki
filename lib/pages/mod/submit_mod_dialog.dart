@@ -112,7 +112,7 @@ class _SubmitModDialogState extends State<SubmitModDialog> {
               if (widget.submitType == SubmitModDialogType.edit &&
                   changelog == null) {
                 Utility.showErrorFlushbar(
-                    context, localizations.editModChangelogNull);
+                    context, localizations.editModChangelogHint);
                 return;
               }
               showDialog(
