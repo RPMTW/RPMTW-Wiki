@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +8,7 @@ import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/extension.dart';
+import 'package:rpmtw_wiki/utilities/rpmtw_theme.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/keep_alive_wrapper.dart';
 import 'package:rpmtw_wiki/widget/relation_mod_view.dart';
@@ -16,8 +16,6 @@ import 'package:rpmtw_wiki/widget/seo_selectable_text.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 import 'package:rpmtw_wiki/widget/title_bar.dart';
 import 'package:share_plus/share_plus.dart';
-
-const TextStyle _titleStyle = TextStyle(fontSize: 25, color: Colors.blue);
 
 class ViewModPage extends StatefulWidget {
   static const String route = "/mod/view/";
@@ -183,10 +181,12 @@ class _DetailsInfoState extends State<_DetailsInfo> {
     DateFormat format = DateFormat.yMMMMEEEEd(locale.toString()).add_jms();
     return Column(
       children: [
-        SEOText(localizations.viewModCreateAt, style: _titleStyle),
+        SEOText(localizations.viewModCreateAt,
+            style: RPMTWTheme.titleTextStyle),
         SEOText(format.format(mod.createTime)),
         SizedBox(height: kSplitHight),
-        SEOText(localizations.viewModLastUpdate, style: _titleStyle),
+        SEOText(localizations.viewModLastUpdate,
+            style: RPMTWTheme.titleTextStyle),
         SEOText(format.format(mod.lastUpdate)),
       ],
     );
@@ -196,7 +196,8 @@ class _DetailsInfoState extends State<_DetailsInfo> {
     if (mod.id != null && mod.id!.isNotEmpty) {
       return Column(
         children: [
-          SEOText(localizations.addModIdField, style: _titleStyle),
+          SEOText(localizations.addModIdField,
+              style: RPMTWTheme.titleTextStyle),
           SEOSelectableText(mod.id!),
           SizedBox(height: kSplitHight),
         ],
@@ -210,7 +211,8 @@ class _DetailsInfoState extends State<_DetailsInfo> {
     if (mod.integration.isCurseForge || mod.integration.isModrinth) {
       return Column(
         children: [
-          SEOText(localizations.addModDetailedIntegration, style: _titleStyle),
+          SEOText(localizations.addModDetailedIntegration,
+              style: RPMTWTheme.titleTextStyle),
           ...mod.integration.curseForgeID != null
               ? [
                   SEOText(localizations.addModDetailedCurseForgeField),
@@ -270,7 +272,7 @@ class _BaseInfoState extends State<_BaseInfo> {
         SizedBox(height: kSplitHight),
         _buildSupportVersions(),
         SizedBox(height: kSplitHight),
-        SEOText(localizations.viewModCount, style: _titleStyle),
+        SEOText(localizations.viewModCount, style: RPMTWTheme.titleTextStyle),
         SEOSelectableText(mod.viewCount.toString()),
         SizedBox(height: kSplitHight),
         _buildIntroduction(),
@@ -290,7 +292,7 @@ class _BaseInfoState extends State<_BaseInfo> {
     if (mod.loader != null && mod.loader!.isNotEmpty) {
       return Column(
         children: [
-          SEOText(localizations.addModLoader, style: _titleStyle),
+          SEOText(localizations.addModLoader, style: RPMTWTheme.titleTextStyle),
           SEOText(mod.loader!
               .map((e) => e.name.toCapitalized())
               .join(localizations.guiSeparator)),
@@ -306,7 +308,8 @@ class _BaseInfoState extends State<_BaseInfo> {
 
     return Column(
       children: [
-        SEOText(localizations.addModSupportedVersionField, style: _titleStyle),
+        SEOText(localizations.addModSupportedVersionField,
+            style: RPMTWTheme.titleTextStyle),
         SEOText(
             supportVersions.map((e) => e.id).join(localizations.guiSeparator))
       ],
@@ -319,7 +322,8 @@ class _BaseInfoState extends State<_BaseInfo> {
           kIsDesktop ? MediaQuery.of(context).size.width / 3 : kSplitWidth;
       return Column(
         children: [
-          SEOText(localizations.addModIntroductionTitle, style: _titleStyle),
+          SEOText(localizations.addModIntroductionTitle,
+              style: RPMTWTheme.titleTextStyle),
           Row(
             children: [
               SizedBox(width: width),

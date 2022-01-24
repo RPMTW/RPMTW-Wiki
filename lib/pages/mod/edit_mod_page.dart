@@ -1,5 +1,10 @@
 import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
+import 'package:rpmtw_wiki/pages/mod/base_info_editor.dart';
+import 'package:rpmtw_wiki/pages/mod/detailed_info_editor.dart';
+import 'package:rpmtw_wiki/pages/mod/introduction_editor.dart';
+import 'package:rpmtw_wiki/pages/mod/submit_button.dart';
+import 'package:rpmtw_wiki/pages/mod/submit_mod_dialog.dart';
 
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
@@ -18,6 +23,11 @@ class EditModPage extends StatefulWidget {
 }
 
 class _EditModPageState extends State<EditModPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<BaseInfoEditorState> _baseInfoKey = GlobalKey();
+  final GlobalKey<IntroductionEditorState> _introductionKey = GlobalKey();
+  final GlobalKey<DetailedInfoEditorState> _detailedInfoKey = GlobalKey();
+
   bool loading = true;
   late MinecraftMod mod;
 
@@ -26,16 +36,6 @@ class _EditModPageState extends State<EditModPage> {
     super.initState();
 
     load();
-  }
-
-  Future<void> load() async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
-    mod = await apiClient.minecraftResource
-        .getMinecraftMod(widget.uuid, recordViewCount: true);
-
-    setState(() {
-      loading = false;
-    });
   }
 
   @override
@@ -49,40 +49,96 @@ class _EditModPageState extends State<EditModPage> {
       );
     }
 
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: TitleBar(
-          title: "${localizations.editModTitle} - ${mod.name}",
-          logo: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: mod.imageWidget(width: 50, height: 50)),
-          onBackPressed: () => navigation.pop(),
-          bottom: TabBar(
-            isScrollable: Utility.isMobile,
-            tabs: [
-              Tab(
-                text: localizations.addModBaseTitle,
-              ),
-              Tab(
-                text: localizations.addModIntroductionTitle,
-              ),
-              Tab(
-                text: localizations.addModDetailedTitle,
-              )
+    return Form(
+      key: _formKey,
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: TitleBar(
+            title: "${localizations.editModTitle} - ${mod.name}",
+            logo: const Icon(Icons.edit),
+            onBackPressed: () => navigation.pop(),
+            bottom: TabBar(
+              isScrollable: Utility.isMobile,
+              tabs: [
+                Tab(
+                  text: localizations.addModBaseTitle,
+                ),
+                Tab(
+                  text: localizations.addModIntroductionTitle,
+                ),
+                Tab(
+                  text: localizations.addModDetailedTitle,
+                )
+              ],
+            ),
+            actions: [SubmitButton(onPressed: () => _submit())],
+          ),
+          body: TabBarView(
+            children: [
+              KeepAliveWrapper(
+                  child:
+                      BaseInfoEditor.fromMinecraftMod(mod, key: _baseInfoKey)),
+              KeepAliveWrapper(
+                  child: IntroductionEditor(
+                      defaultIntroduction: mod.introduction,
+                      key: _introductionKey)),
+              KeepAliveWrapper(
+                  child: DetailedInfoEditor.fromMinecraftMod(mod,
+                      key: _detailedInfoKey)),
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            KeepAliveWrapper(
-              child: Container(),
-            ),
-            KeepAliveWrapper(child: Container()),
-            KeepAliveWrapper(child: Container()),
-          ],
-        ),
       ),
     );
+  }
+
+  Future<void> load() async {
+    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    mod = await apiClient.minecraftResource
+        .getMinecraftMod(widget.uuid, recordViewCount: true);
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+
+    final BaseInfoEditorState baseInfoState = _baseInfoKey.currentState!;
+    final DetailedInfoEditorState? detailedInfoState =
+        _detailedInfoKey.currentState;
+    final IntroductionEditorState? introductionState =
+        _introductionKey.currentState;
+
+    List<ModLoader> loaders = [];
+    if (baseInfoState.isFabric) {
+      loaders.add(ModLoader.fabric);
+    }
+    if (baseInfoState.isForge) {
+      loaders.add(ModLoader.forge);
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) => SubmitModDialog(
+              submitType: SubmitModDialogType.edit,
+              name: baseInfoState.name!,
+              supportVersions: baseInfoState.supportVersions,
+              id: baseInfoState.id,
+              description: baseInfoState.description,
+              loaders: loaders,
+              relationMods: detailedInfoState?.relationMods,
+              integration: detailedInfoState?.integration,
+              side: detailedInfoState?.side,
+              imageBytes: baseInfoState.imageBytes,
+              introduction: introductionState?.introduction,
+              translatedName: baseInfoState.translatedName,
+              editMod: mod,
+            ));
   }
 }

@@ -21,7 +21,7 @@ class Account extends User {
 
   Widget seoAvatar({double fontSize = 18}) => ImageRenderer(
       child: avatar(fontSize: fontSize),
-      link: avatarUrl(RPMTWApiClient.lastInstance.baseUrl) ?? "",
+      link: avatarUrl() ?? "",
       alt: "$username's avatar");
 
   factory Account.fromMap(Map<String, dynamic> map) {

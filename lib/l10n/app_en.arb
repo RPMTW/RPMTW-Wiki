@@ -7,7 +7,6 @@
   "addModBaseTitle": "Basic info",
   "addModCreateBrowse": "Browse this mod",
   "addModCreateSuccess": "Mod created successfully!",
-  "addModCreating": "Please wait, mods are being created...",
   "addModDescriptionField": "Mod description",
   "addModDescriptionTooltip": "Please give a brief description of this mod.",
   "addModDetailedCurseForgeField": "CurseForge Project ID",
@@ -86,7 +85,7 @@
   "guiSeparator": ",",
   "guiOptional": "Optional",
   "guiShare": "Share",
-  "guiCopyLink" : "Copy Link",
+  "guiCopyLink": "Copy Link",
   "languageName": "English (US)",
   "modSideClient": "Client",
   "modSideOptional": "Optional",
@@ -108,5 +107,10 @@
   "viewModCreateAt": "Creation date",
   "viewModLastUpdate": "Last update",
   "viewModCopyUUID": "Copy UUID",
-  "editModTitle": "Edit mod"
+  "editModTitle": "Edit mod",
+  "editModSuccess": "Mod successfully edited.",
+  "editModChangelog": "Changelog",
+  "editModChangelogHint": "Please enter which content you have changed...",
+  "editModChangelogNull": "Please enter the change log",
+  "submitModProcessing": "Please wait, it is being processed..."
 }
