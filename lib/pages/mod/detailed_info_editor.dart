@@ -44,7 +44,7 @@ class DetailedInfoEditorState extends State<DetailedInfoEditor> {
   void initState() {
     relationMods = widget.relationMods;
     integration = widget.integration;
-    side = widget.side;
+    side = List.from(widget.side);
     super.initState();
   }
 
@@ -102,11 +102,15 @@ class DetailedInfoEditorState extends State<DetailedInfoEditor> {
     ));
   }
 
-  ModRequireType parseDefaultRequireType(ModSideEnvironment environment) {
-    final _side = side.firstWhere((side) => side.environment == environment,
-        orElse: () => ModSide(
-            environment: environment, requireType: ModRequireType.optional));
-    return _side.requireType;
+  ModRequireType? parseDefaultRequireType(ModSideEnvironment environment) {
+    try {
+      final ModSide _side = side.firstWhere(
+        (side) => side.environment == environment,
+      );
+      return _side.requireType;
+    } catch (e) {
+      return null;
+    }
   }
 
   void _saveSideData(

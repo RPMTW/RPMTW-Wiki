@@ -9,7 +9,7 @@ class MinecraftVersionChoice extends StatefulWidget {
   final List<MinecraftVersion> allVersions;
   final void Function(List<String>) onChanged;
   final List<String>? defaultValue;
-  
+
   const MinecraftVersionChoice(
       {Key? key,
       required this.allVersions,
@@ -26,7 +26,7 @@ class _MinecraftVersionChoiceState extends State<MinecraftVersionChoice> {
 
   @override
   void initState() {
-    versions = widget.defaultValue ?? [];
+    versions = List<String>.from(widget.defaultValue ?? []);
     super.initState();
   }
 

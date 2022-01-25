@@ -107,7 +107,8 @@ class _ViewModPageState extends State<ViewModPage> {
                       );
                       break;
                     case 2:
-                      String url = rpmtwWikiUrl + "/#/mod/view/" + mod.uuid;
+                      String url =
+                          rpmtwWikiUrl + "/mod/view/" + mod.uuid;
                       if (kIsDesktop) {
                         Clipboard.setData(ClipboardData(text: url));
                       } else {
@@ -178,16 +179,15 @@ class _DetailsInfoState extends State<_DetailsInfo> {
   }
 
   Widget _buildDateTime() {
-    DateFormat format = DateFormat.yMMMMEEEEd(locale.toString()).add_jms();
     return Column(
       children: [
         SEOText(localizations.viewModCreateAt,
             style: RPMTWTheme.titleTextStyle),
-        SEOText(format.format(mod.createTime)),
+        SEOText(Utility.dateFormat(mod.createTime)),
         SizedBox(height: kSplitHight),
         SEOText(localizations.viewModLastUpdate,
             style: RPMTWTheme.titleTextStyle),
-        SEOText(format.format(mod.lastUpdate)),
+        SEOText(Utility.dateFormat(mod.lastUpdate)),
       ],
     );
   }

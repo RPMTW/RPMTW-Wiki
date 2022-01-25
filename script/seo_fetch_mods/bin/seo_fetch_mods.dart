@@ -17,11 +17,14 @@ void main(List<String> arguments) async {
         await apiClient.minecraftResource.search(skip: skip);
 
     for (MinecraftMod mod in mods) {
-      String description = mod.description ?? "";
+      String description =
+          "${mod.description ?? ""} | 從今天起開始使用 RPMWiki 吧！，RPMWiki 是個全新的 Minecraft 百科平台，Minecraft 中包羅萬象的知識內容全都在這裡，包含模組、模組包、地圖等內容";
+
       String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
           "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
-      String url = "https://wiki.rpmtw.com/#/mod/view/${mod.uuid}";
-      String title = "${mod.name} | RPMTW Wiki";
+      String url = "https://wiki.rpmtw.com/mod/view/${mod.uuid}";
+      String title = "${mod.name} | RPMWiki - 全台最大 Minecraft 模組百科";
+      String siteName = "RPMTW Wiki";
 
       String html = """
 <!DOCTYPE html>
@@ -31,12 +34,18 @@ void main(List<String> arguments) async {
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="$description">
   <meta property="og:image" content="$imageUrl" />
+  <meta property="og:image:width" content="256" />
+  <meta property="og:image:height" content="256" />
   <meta property="og:description" content="$description">
   <meta property="og:title" content="$title">
+  <meta property="og:site_name" content="$siteName">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="${mod.createTime.toIso8601String()}" />
+  <meta property="article:modified_time" content="${mod.lastUpdate.toIso8601String()}" />
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="RPMTW Wiki">
+  <meta name="apple-mobile-web-app-title" content="$title">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
   <meta name="keywords" content="RPMTW,minecraft,mod,RPMTW Wiki,Minecraft Wiki,RPMWiki,當個創世神百科,我的世界百科">
   <link rel="icon" type="image/png" href="favicon.png" />
@@ -128,7 +137,7 @@ class Sitemap {
 class SitemapEntry {
   String location = '';
   DateTime lastModified = DateTime.now();
-  String changeFrequency = 'yearly';
+  String changeFrequency = 'always';
   num priority = 0.5;
   final Map<String, String> _alternates = {};
   Map<String, String> get alternates => _alternates;

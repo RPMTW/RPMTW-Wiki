@@ -43,6 +43,7 @@ dependencies:
   universal_html: ^2.0.8
   universal_io: ^2.0.4
   share_plus: ^3.0.4
+  url_strategy: ^0.2.0
 
 dev_dependencies:
   flutter_test:

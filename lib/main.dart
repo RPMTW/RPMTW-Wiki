@@ -1,3 +1,4 @@
+import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
 import 'package:universal_html/html.dart';
 import 'dart:ui' as ui;
@@ -16,8 +17,11 @@ import 'package:rpmtw_wiki/utilities/data.dart';
 
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 import 'package:seo_renderer/seo_renderer.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
+  /// Remove the leading hash (#) from the URL
+  setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
 
   List<Locale> _locales;
@@ -143,6 +147,10 @@ class _WikiAppState extends State<WikiApp> {
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) => EditModPage(uuid: uuid));
+            } else if (name == ChangelogPage.route) {
+              return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => const ChangelogPage());
             } else {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());

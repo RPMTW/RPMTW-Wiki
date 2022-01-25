@@ -122,7 +122,6 @@ class _EditModPageState extends State<EditModPage> {
     if (baseInfoState.isForge) {
       loaders.add(ModLoader.forge);
     }
-
     showDialog(
         context: context,
         builder: (context) => SubmitModDialog(

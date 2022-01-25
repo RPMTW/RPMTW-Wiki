@@ -44,7 +44,6 @@ class _AuthSuccessDialogState extends State<AuthSuccessDialog> {
                 ),
                 actions: [
                   OkClose(
-                    seo: false,
                     onOk: () {
                       navigation.pushNamed(HomePage.route);
                     },
