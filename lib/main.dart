@@ -30,7 +30,7 @@ void main() async {
           languageCode: storage['rpmtw_locale_languageCode']!,
           scriptCode: storage['rpmtw_locale_scriptCode'],
           countryCode: storage['rpmtw_locale_countryCode']),
-    ];
+    ];  
   } else {
     _locales = WidgetsBinding.instance!.window.locales;
   }

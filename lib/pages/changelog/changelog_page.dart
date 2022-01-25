@@ -24,7 +24,7 @@ class _ChangelogPageState extends State<ChangelogPage> {
   Future<List<WikiChangelog>> load() async {
     List<WikiChangelog> changelogs = await apiClient.minecraftResource
         .filterChangelogs(dataUUID: widget.dataUUID);
-    return changelogs;
+    return changelogs.reversed.toList();
   }
 
   @override
@@ -51,7 +51,6 @@ class _ChangelogPageState extends State<ChangelogPage> {
                         itemCount: changelogs.length,
                         itemBuilder: (context, index) {
                           WikiChangelog changelog = changelogs[index];
-
                           return FutureBuilder<User>(
                               future: changelog.user,
                               builder: (context, snapshot) {
@@ -144,7 +143,7 @@ class _ChangelogPageState extends State<ChangelogPage> {
                                       } else if (result > 0) {
                                         str = "+$result";
                                       } else {
-                                        str = "-$result";
+                                        str = result.toString();
                                       }
 
                                       return SEOSelectableText(str);
