@@ -107,6 +107,7 @@
   "viewModCreateAt": "Creation date",
   "viewModLastUpdate": "Last update",
   "viewModCopyUUID": "Copy UUID",
+  "viewModHistory": "View edit history",
   "editModTitle": "Edit mod",
   "editModSuccess": "Mod successfully edited.",
   "editModChangelog": "Changelog",

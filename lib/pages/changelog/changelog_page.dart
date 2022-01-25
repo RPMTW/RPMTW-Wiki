@@ -11,7 +11,8 @@ import 'package:rpmtw_wiki/widget/title_bar.dart';
 
 class ChangelogPage extends StatefulWidget {
   static const String route = '/changelog';
-  const ChangelogPage({Key? key}) : super(key: key);
+  final String? dataUUID;
+  const ChangelogPage({Key? key, this.dataUUID}) : super(key: key);
 
   @override
   State<ChangelogPage> createState() => _ChangelogPageState();
@@ -21,8 +22,8 @@ class _ChangelogPageState extends State<ChangelogPage> {
   RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
 
   Future<List<WikiChangelog>> load() async {
-    List<WikiChangelog> changelogs =
-        await apiClient.minecraftResource.filterChangelogs();
+    List<WikiChangelog> changelogs = await apiClient.minecraftResource
+        .filterChangelogs(dataUUID: widget.dataUUID);
     return changelogs;
   }
 

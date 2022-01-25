@@ -147,10 +147,12 @@ class _WikiAppState extends State<WikiApp> {
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) => EditModPage(uuid: uuid));
-            } else if (name == ChangelogPage.route) {
+            } else if (name.startsWith(ChangelogPage.route)) {
+              Map<String, String> query = routeUri.queryParameters;
               return MaterialPageRoute(
                   settings: settings,
-                  builder: (context) => const ChangelogPage());
+                  builder: (context) =>
+                      ChangelogPage(dataUUID: query['data_uuid']));
             } else {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());
