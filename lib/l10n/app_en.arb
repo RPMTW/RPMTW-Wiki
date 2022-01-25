@@ -107,9 +107,36 @@
   "viewModCreateAt": "Creation date",
   "viewModLastUpdate": "Last update",
   "viewModCopyUUID": "Copy UUID",
+  "viewModHistory": "View edit history",
   "editModTitle": "Edit mod",
   "editModSuccess": "Mod successfully edited.",
   "editModChangelog": "Changelog",
   "editModChangelogHint": "Please enter the change log",
-  "submitModProcessing": "Please wait, it is being processed..."
+  "submitModProcessing": "Please wait, it is being processed...",
+  "changelogTitle": "Changelog",
+  "changelogTypeAddedMod": "Created mod",
+  "changelogTypeEditedMod": "Edited mod",
+  "changelogTypeRemovedMod": "Removed mod",
+  "changelogEditedData": "Edited the data of {dataName}",
+  "@changelogEditedData": {
+    "type": "text",
+    "placeholders": {
+      "dataName": {}
+    }
+  },
+  "changelogCreatedData": "Created the data of {dataName}",
+  "@changelogCreatedData": {
+    "type": "text",
+    "placeholders": {
+      "dataName": {}
+    }
+  },
+  "changelogRemovedData": "Removed the data of {dataName}",
+  "@changelogRemovedData": {
+    "type": "text",
+    "placeholders": {
+      "dataName": {}
+    }
+  },
+  "changelogNone": "No change"
 }

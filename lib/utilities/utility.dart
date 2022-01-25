@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:universal_html/html.dart';
 
 import 'package:another_flushbar/flushbar.dart';
@@ -12,15 +13,13 @@ double get kSplitWidth => Utility.isMobile ? 12 : 25;
 double get kSplitHight => Utility.isMobile ? 6 : 8;
 
 class Utility {
-  static final isMobile = 
-      defaultTargetPlatform == TargetPlatform.iOS ||
-          defaultTargetPlatform == TargetPlatform.android;
+  static final isMobile = defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.android;
 
-  static final isDesktop = 
-      defaultTargetPlatform == TargetPlatform.fuchsia ||
-          defaultTargetPlatform == TargetPlatform.linux ||
-          defaultTargetPlatform == TargetPlatform.macOS ||
-          defaultTargetPlatform == TargetPlatform.windows;
+  static final isDesktop = defaultTargetPlatform == TargetPlatform.fuchsia ||
+      defaultTargetPlatform == TargetPlatform.linux ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.windows;
 
   static Future<void> showErrorFlushbar(
       BuildContext context, String error) async {
@@ -53,5 +52,10 @@ class Utility {
     } else {
       launch(url);
     }
+  }
+
+  static String dateFormat(DateTime time) {
+    DateFormat format = DateFormat.yMMMMEEEEd(locale.toString()).add_jms();
+    return format.format(time);
   }
 }

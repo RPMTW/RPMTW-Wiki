@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:picture_verification_code/picture_verification_code.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
@@ -160,24 +161,29 @@ class _SubmitModDialogState extends State<SubmitModDialog> {
 
       MinecraftMod _mod = widget.editMod!;
 
+      DeepCollectionEquality listEquals = const DeepCollectionEquality();
+
       mod = await apiClient.minecraftResource.editMinecraftMod(
         uuid: _mod.uuid,
         changelog: changelog,
         name: _mod.name != widget.name ? widget.name : null,
-        supportVersions: _mod.supportVersions.map((e) => e.id).toList() !=
-                widget.supportVersions
+        supportVersions: !listEquals.equals(
+                _mod.supportVersions.map((e) => e.id).toList(),
+                widget.supportVersions)
             ? widget.supportVersions
             : null,
         id: _mod.id != widget.id ? widget.id : null,
         description:
             _mod.description != widget.description ? widget.description : null,
-        relationMods: _mod.relationMods != widget.relationMods
+        relationMods: !listEquals.equals(_mod.relationMods, widget.relationMods)
             ? widget.relationMods
             : null,
         integration:
             _mod.integration != widget.integration ? widget.integration : null,
-        side: _mod.side != widget.side ? widget.side : null,
-        loader: _mod.loader != widget.loaders ? widget.loaders : null,
+        side: !listEquals.equals(_mod.side, widget.side) ? widget.side : null,
+        loader: !listEquals.equals(_mod.loader, widget.loaders)
+            ? widget.loaders
+            : null,
         translatedName: _mod.translatedName != widget.translatedName
             ? widget.translatedName
             : null,
@@ -211,8 +217,8 @@ class _SubmitModDialogState extends State<SubmitModDialog> {
               ]),
               actions: [
                 OkClose(
-                  onOk: () => navigation.pushNamed(HomePage.route),
-                  seo: false,
+                  onOk: () =>
+                      navigation.pushNamed(HomePage.route + "?tab_index=1"),
                 )
               ],
             );

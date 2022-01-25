@@ -5,6 +5,7 @@ import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
 
 import 'package:rpmtw_wiki/pages/base_page.dart';
+import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/extension.dart';
@@ -80,48 +81,7 @@ class _ViewModPageState extends State<ViewModPage> {
               ),
             ],
           ),
-          actions: [
-            PopupMenuButton(
-                tooltip: localizations.guiOptional,
-                itemBuilder: (context) => [
-                      PopupMenuItem(
-                        child: Text(localizations.editModTitle),
-                        value: 1,
-                      ),
-                      PopupMenuItem(
-                        child: Text(kIsDesktop
-                            ? localizations.guiCopyLink
-                            : localizations.guiShare),
-                        value: 2,
-                      ),
-                      PopupMenuItem(
-                        child: Text(localizations.viewModCopyUUID),
-                        value: 3,
-                      )
-                    ],
-                onSelected: (int index) {
-                  switch (index) {
-                    case 1:
-                      navigation.pushNamed(
-                        EditModPage.route + mod.uuid,
-                      );
-                      break;
-                    case 2:
-                      String url = rpmtwWikiUrl + "/#/mod/view/" + mod.uuid;
-                      if (kIsDesktop) {
-                        Clipboard.setData(ClipboardData(text: url));
-                      } else {
-                        Share.share(url);
-                      }
-                      break;
-                    case 3:
-                      Clipboard.setData(ClipboardData(text: mod.uuid));
-                      break;
-                    default:
-                      break;
-                  }
-                })
-          ],
+          actions: _buildActions(),
         ),
         body: TabBarView(
           children: [
@@ -134,6 +94,93 @@ class _ViewModPageState extends State<ViewModPage> {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildActions() {
+    void edit() => navigation.pushNamed(
+          EditModPage.route + mod.uuid,
+        );
+
+    void share() {
+      String url = rpmtwWikiUrl + "/mod/view/" + mod.uuid;
+      if (kIsDesktop) {
+        Clipboard.setData(ClipboardData(text: url));
+      } else {
+        Share.share(url);
+      }
+    }
+
+    void copyUUID() => Clipboard.setData(ClipboardData(text: mod.uuid));
+
+    void viewHistory() => navigation.pushNamed(
+          "${ChangelogPage.route}?dataUUID=${mod.uuid}",
+        );
+
+    if (kIsMobile) {
+      return [
+        PopupMenuButton(
+            tooltip: localizations.guiOptional,
+            itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Text(localizations.editModTitle),
+                    value: 1,
+                  ),
+                  PopupMenuItem(
+                    child: Text(localizations.guiShare),
+                    value: 2,
+                  ),
+                  PopupMenuItem(
+                    child: Text(localizations.viewModCopyUUID),
+                    value: 3,
+                  ),
+                  PopupMenuItem(
+                    child: Text(localizations.viewModHistory),
+                    value: 4,
+                  )
+                ],
+            onSelected: (int index) {
+              switch (index) {
+                case 1:
+                  edit();
+                  break;
+                case 2:
+                  share();
+                  break;
+                case 3:
+                  copyUUID();
+                  break;
+                case 4:
+                  viewHistory();
+                  break;
+                default:
+                  break;
+              }
+            })
+      ];
+    } else {
+      return [
+        IconButton(
+          icon: const Icon(Icons.edit),
+          tooltip: localizations.editModTitle,
+          onPressed: edit,
+        ),
+        IconButton(
+          icon: const Icon(Icons.share),
+          tooltip: localizations.guiCopyLink,
+          onPressed: share,
+        ),
+        IconButton(
+          icon: const Icon(Icons.content_copy),
+          tooltip: localizations.viewModCopyUUID,
+          onPressed: copyUUID,
+        ),
+        IconButton(
+          icon: const Icon(Icons.history),
+          tooltip: localizations.viewModHistory,
+          onPressed: viewHistory,
+        ),
+      ];
+    }
   }
 }
 
@@ -178,16 +225,15 @@ class _DetailsInfoState extends State<_DetailsInfo> {
   }
 
   Widget _buildDateTime() {
-    DateFormat format = DateFormat.yMMMMEEEEd(locale.toString()).add_jms();
     return Column(
       children: [
         SEOText(localizations.viewModCreateAt,
             style: RPMTWTheme.titleTextStyle),
-        SEOText(format.format(mod.createTime)),
+        SEOText(Utility.dateFormat(mod.createTime)),
         SizedBox(height: kSplitHight),
         SEOText(localizations.viewModLastUpdate,
             style: RPMTWTheme.titleTextStyle),
-        SEOText(format.format(mod.lastUpdate)),
+        SEOText(Utility.dateFormat(mod.lastUpdate)),
       ],
     );
   }

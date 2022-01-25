@@ -134,7 +134,7 @@ class BaseInfoEditorState extends State<BaseInfoEditor> {
                           menu.show(context);
                         },
                         icon: const Icon(Icons.rule),
-                        label: Text(localizations.addModBaseCheckExists)),
+                        label: SEOText(localizations.addModBaseCheckExists)),
                   ],
                 ),
                 SizedBox(height: kSplitHight),
@@ -213,7 +213,7 @@ class BaseInfoEditorState extends State<BaseInfoEditor> {
               }
             },
             icon: const Icon(Icons.file_upload),
-            label: Text(localizations.addModBaseImageUpload)),
+            label: SEOText(localizations.addModBaseImageUpload)),
         SizedBox(height: kSplitHight),
         Builder(builder: (context) {
           if (imageBytes != null || imageStorageUUID != null) {

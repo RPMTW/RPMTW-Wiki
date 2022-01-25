@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class SubmitButton extends StatelessWidget {
   final void Function()? onPressed;
@@ -20,7 +21,7 @@ class SubmitButton extends StatelessWidget {
               icon: const Icon(Icons.send),
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.green)),
-              label: Text(localizations.guiSubmit)),
+              label: SEOText(localizations.guiSubmit)),
         )
       ],
     );

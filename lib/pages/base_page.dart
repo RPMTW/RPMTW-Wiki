@@ -87,7 +87,7 @@ class _FooterState extends State<_Footer> {
               return DropdownMenuItem<Locale>(
                 value: locale,
                 alignment: Alignment.center,
-                child: Text(lookupAppLocalizations(locale).languageName,
+                child: SEOText(lookupAppLocalizations(locale).languageName,
                     style: const TextStyle(fontSize: 17.5, fontFamily: 'font'),
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis),

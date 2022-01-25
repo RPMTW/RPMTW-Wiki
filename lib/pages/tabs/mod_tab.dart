@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rate_limiter/rate_limiter.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/pages/base_page.dart';
+import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
 import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
@@ -243,10 +244,13 @@ class _Action extends StatelessWidget {
       children: [
         const RPMTWVerticalDivider(),
         OutlinedButton(
-            child: Text(localizations.addModTitle),
+            child: SEOText(localizations.addModTitle),
             onPressed: () => AccountHandler.checkHasAccount(
                 () => navigation.pushNamed(AddModPage.route))),
         const RPMTWVerticalDivider(),
+        OutlinedButton(
+            child: const SEOText("查看編輯紀錄"),
+            onPressed: () => navigation.pushNamed(ChangelogPage.route)),
       ],
     );
   }
