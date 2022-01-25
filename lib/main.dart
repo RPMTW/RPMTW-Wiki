@@ -20,8 +20,6 @@ import 'package:seo_renderer/seo_renderer.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
-  /// Remove the leading hash (#) from the URL
-  setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
 
   List<Locale> _locales;
@@ -42,6 +40,8 @@ void main() async {
   AccountHandler.init();
   href = window.location.href;
   RPMTWApiClient.init(development: development); // Initialize RPMTWApiClient
+  /// Remove the leading hash (#) from the URL
+  setPathUrlStrategy();
   runApp(const WikiApp());
 }
 
