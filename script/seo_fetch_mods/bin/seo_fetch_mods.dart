@@ -30,7 +30,7 @@ void main(List<String> arguments) async {
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- <base href="\$FLUTTER_BASE_HREF"> -->
+  <base href="\$FLUTTER_BASE_HREF">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="$description">
