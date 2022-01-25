@@ -4,6 +4,7 @@ import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/row_scroll_view.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/seo_selectable_text.dart';
 import 'package:rpmtw_wiki/widget/title_bar.dart';
@@ -161,16 +162,19 @@ class _ChangelogPageState extends State<ChangelogPage> {
                                     leading: _buildUserImage(),
                                     title: SizedBox(
                                       height: 25,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SEOSelectableText(
-                                              changelog.changelog ?? ""),
-                                          const RPMTWVerticalDivider(),
-                                          _buildDataView(),
-                                          const RPMTWVerticalDivider(),
-                                          _buildDataCompare()
-                                        ],
+                                      child: RowScrollView(
+                                        center: false,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SEOSelectableText(
+                                                changelog.changelog ?? ""),
+                                            const RPMTWVerticalDivider(),
+                                            _buildDataView(),
+                                            const RPMTWVerticalDivider(),
+                                            _buildDataCompare()
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     subtitle: SEOSelectableText(
