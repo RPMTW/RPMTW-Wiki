@@ -17,7 +17,6 @@ import 'package:rpmtw_wiki/utilities/data.dart';
 
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 import 'package:seo_renderer/seo_renderer.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,8 +39,6 @@ void main() async {
   AccountHandler.init();
   href = window.location.href;
   RPMTWApiClient.init(development: development); // Initialize RPMTWApiClient
-  /// Remove the leading hash (#) from the URL
-  setUrlStrategy(_PathUrlStrategy());
   runApp(const WikiApp());
 }
 
@@ -165,34 +162,5 @@ class _WikiAppState extends State<WikiApp> {
                 settings: settings, builder: (context) => const HomePage());
           }
         });
-  }
-}
-
-class _PathUrlStrategy extends HashUrlStrategy {
-  final PlatformLocation _platformLocation;
-  _PathUrlStrategy([
-    this._platformLocation = const BrowserPlatformLocation(),
-  ])  : _basePath = stripTrailingSlash(extractPathname(
-          _platformLocation.getBaseHref()!,
-        )),
-        super(_platformLocation);
-
-  final String _basePath;
-
-  @override
-  String getPath() {
-    final String path = _platformLocation.pathname + _platformLocation.search;
-    if (_basePath.isNotEmpty && path.startsWith(_basePath)) {
-      return ensureLeadingSlash(path.substring(_basePath.length));
-    }
-    return ensureLeadingSlash(path);
-  }
-
-  @override
-  String prepareExternalUrl(String internalUrl) {
-    if (internalUrl.isNotEmpty && !internalUrl.startsWith('/')) {
-      internalUrl = '/$internalUrl';
-    }
-    return '$_basePath$internalUrl';
   }
 }
