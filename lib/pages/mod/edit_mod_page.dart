@@ -29,7 +29,7 @@ class _EditModPageState extends State<EditModPage> {
   final GlobalKey<DetailedInfoEditorState> _detailedInfoKey = GlobalKey();
 
   bool loading = true;
-  late MinecraftMod mod;
+  late final MinecraftMod mod;
 
   @override
   void initState() {
@@ -122,6 +122,7 @@ class _EditModPageState extends State<EditModPage> {
     if (baseInfoState.isForge) {
       loaders.add(ModLoader.forge);
     }
+
     showDialog(
         context: context,
         builder: (context) => SubmitModDialog(

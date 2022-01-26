@@ -77,7 +77,7 @@ class BaseInfoEditorState extends State<BaseInfoEditor> {
     translatedName = widget.translatedName;
     id = widget.id;
     description = widget.description;
-    supportVersions = widget.supportVersions;
+    supportVersions = List<String>.from(widget.supportVersions);
     imageStorageUUID = widget.imageStorageUUID;
 
     super.initState();

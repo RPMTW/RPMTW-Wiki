@@ -42,8 +42,11 @@ class DetailedInfoEditorState extends State<DetailedInfoEditor> {
 
   @override
   void initState() {
-    relationMods = widget.relationMods;
-    integration = widget.integration;
+    relationMods = widget.relationMods != null
+        ? List<RelationMod>.from(widget.relationMods!)
+        : null;
+
+    integration = ModIntegrationPlatform.fromMap(widget.integration.toMap());
     side = List.from(widget.side);
     super.initState();
   }

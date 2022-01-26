@@ -22,8 +22,12 @@ void main(List<String> arguments) async {
 
       String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
           "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
+      String name = mod.name;
+      if (mod.translatedName != null && mod.translatedName!.isNotEmpty) {
+        name += " (${mod.translatedName!})";
+      }
       String url = "https://wiki.rpmtw.com/mod/view/${mod.uuid}";
-      String title = "${mod.name} | RPMWiki - 全台最大 Minecraft 模組百科";
+      String title = "$name | RPMWiki - 全台最大 Minecraft 模組百科";
       String siteName = "RPMTW Wiki";
 
       String html = """
