@@ -22,7 +22,7 @@ void main(List<String> arguments) async {
 
       String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
           "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
-      String url = "https://wiki.rpmtw.com/#/mod/view/${mod.uuid}";
+      String url = "https://wiki.rpmtw.com/mod/view/${mod.uuid}";
       String title = "${mod.name} | RPMWiki - 全台最大 Minecraft 模組百科";
       String siteName = "RPMTW Wiki";
 
@@ -30,7 +30,7 @@ void main(List<String> arguments) async {
 <!DOCTYPE html>
 <html>
 <head>
-  <base href="\$FLUTTER_BASE_HREF">
+  <base href="/">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="$description">
@@ -181,7 +181,7 @@ void main(List<String> arguments) async {
 </html>
     """;
 
-      File file = File(join(webDir, "#", "mod", "view", "${mod.uuid}.html"));
+      File file = File(join(webDir, "mod", "view", "${mod.uuid}.html"));
       await file.create(recursive: true);
       await file.writeAsString(html);
       sitemap.entries.add(SitemapEntry()..location = url);
