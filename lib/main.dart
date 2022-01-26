@@ -1,6 +1,6 @@
 import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
-import 'package:universal_html/html.dart';
+import 'package:universal_html/html.dart' as html;
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -17,13 +17,15 @@ import 'package:rpmtw_wiki/utilities/data.dart';
 
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 import 'package:seo_renderer/seo_renderer.dart';
+import 'package:url_strategy/url_strategy.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   List<Locale> _locales;
-  if (window.localStorage.containsKey("rpmtw_locale_languageCode")) {
-    final storage = window.localStorage;
+  if (html.window.localStorage.containsKey("rpmtw_locale_languageCode")) {
+    final storage = html.window.localStorage;
     _locales = [
       Locale.fromSubtags(
           languageCode: storage['rpmtw_locale_languageCode']!,
@@ -37,8 +39,20 @@ void main() async {
       basicLocaleListResolution(_locales, AppLocalizations.supportedLocales);
 
   AccountHandler.init();
-  href = window.location.href;
+  href = html.window.location.href;
   RPMTWApiClient.init(development: development); // Initialize RPMTWApiClient
+
+  html.Element? base = html.document.querySelector('base');
+
+  if (base != null) {
+    base.setAttribute("href", "/");
+  } else {
+    html.document.createElement('base').setAttribute("href", "/");
+  }
+
+  print(const BrowserPlatformLocation().getBaseHref());
+  setPathUrlStrategy();
+  print(const BrowserPlatformLocation().getBaseHref());
   runApp(const WikiApp());
 }
 
@@ -149,7 +163,7 @@ class _WikiAppState extends State<WikiApp> {
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) =>
-                      ChangelogPage(dataUUID: query['data_uuid']));
+                      ChangelogPage(dataUUID: query['dataUUID']));
             } else {
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());
@@ -161,6 +175,10 @@ class _WikiAppState extends State<WikiApp> {
             return MaterialPageRoute(
                 settings: settings, builder: (context) => const HomePage());
           }
+        },
+        onUnknownRoute: (settings) {
+          return MaterialPageRoute(
+              settings: settings, builder: (context) => const HomePage());
         });
   }
 }
