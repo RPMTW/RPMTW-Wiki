@@ -110,5 +110,33 @@
     "viewModHistory": "Просмотр истории редактирования",
     "editModTitle": "Редактировать Mod",
     "editModSuccess": "Мод успешно отредактирован.",
-    "editModChangelog": "Изменения"
+    "editModChangelog": "Изменения",
+    "editModChangelogHint": "Пожалуйста, введите журнал изменений",
+    "submitModProcessing": "Пожалуйста, подождите, он обрабатывается...",
+    "changelogTitle": "Изменения",
+    "changelogTypeAddedMod": "Созданный mod",
+    "changelogTypeEditedMod": "Отредактированный mod",
+    "changelogTypeRemovedMod": "Удаленный mod",
+    "changelogEditedData": "Отредактировал данные {dataName}",
+    "@changelogEditedData": {
+        "type": "text",
+        "placeholders": {
+            "dataName": {}
+        }
+    },
+    "changelogCreatedData": "Создал данные о {dataName}",
+    "@changelogCreatedData": {
+        "type": "text",
+        "placeholders": {
+            "dataName": {}
+        }
+    },
+    "changelogRemovedData": "Удалены данные о {dataName}",
+    "@changelogRemovedData": {
+        "type": "text",
+        "placeholders": {
+            "dataName": {}
+        }
+    },
+    "changelogNone": "Без изменений"
 }
