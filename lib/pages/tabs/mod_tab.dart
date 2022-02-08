@@ -8,6 +8,7 @@ import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/non_scrollable_grid.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
 import 'package:rpmtw_wiki/widget/seo_selectable_text.dart';
@@ -86,19 +87,9 @@ class _ModsViewState extends State<_ModsView> {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
                 List<MinecraftMod> mods = snapshot.data!;
-                return Expanded(
-                  child: GridView.builder(
-                    itemCount: mods.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                    ),
-                    itemBuilder: (context, index) {
-                      MinecraftMod mod = mods[index];
-
-                      return _ModItem(mod: mod);
-                    },
-                  ),
+                return NonScrollableGrid(
+                  columnCount: MediaQuery.of(context).size.width ~/ 200,
+                  children: mods.map((e) => _ModItem(mod: e)).toList(),
                 );
               } else {
                 return Column(
