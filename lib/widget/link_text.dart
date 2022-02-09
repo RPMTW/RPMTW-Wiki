@@ -26,9 +26,9 @@ class LinkText extends StatelessWidget {
     Text textWidget = Text.rich(
       TextSpan(
         style: TextStyle(
-          color: Colors.lightBlue,
-          fontSize: fontSize,
-        ),
+            color: Colors.lightBlue,
+            fontSize: fontSize,
+            decoration: TextDecoration.underline),
         text: text,
         recognizer: TapGestureRecognizer()..onTap = () => window.open(link, ""),
       ),
