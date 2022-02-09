@@ -177,30 +177,38 @@ class _SearchState extends State<_Search> {
   }
 
   Widget _buildSortDropdownButton() {
-    return SizedBox(
-      width: kIsDesktop ? 150 : 120,
-      child: DropdownButton<ModSortType>(
-        value: sortType,
-        style: const TextStyle(color: Colors.lightBlue),
-        onChanged: (_sortType) {
-          setState(() {
-            sortType = _sortType!;
-          });
-          search();
-        },
-        isExpanded: true,
-        items: ModSortType.values
-            .map<DropdownMenuItem<ModSortType>>((ModSortType _sortType) {
-          return DropdownMenuItem<ModSortType>(
-            value: _sortType,
-            alignment: Alignment.center,
-            child: SEOText(_sortType.i18n,
-                style: const TextStyle(fontSize: 16, fontFamily: 'font'),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis),
-          );
-        }).toList(),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SEOText(localizations.modSortType,
+            style: const TextStyle(fontSize: 20)),
+        SizedBox(width: kSplitWidth),
+        SizedBox(
+          width: kIsDesktop ? 150 : 120,
+          child: DropdownButton<ModSortType>(
+            value: sortType,
+            style: const TextStyle(color: Colors.lightBlue),
+            onChanged: (_sortType) {
+              setState(() {
+                sortType = _sortType!;
+              });
+              search();
+            },
+            isExpanded: true,
+            items: ModSortType.values
+                .map<DropdownMenuItem<ModSortType>>((ModSortType _sortType) {
+              return DropdownMenuItem<ModSortType>(
+                value: _sortType,
+                alignment: Alignment.center,
+                child: SEOText(_sortType.i18n,
+                    style: const TextStyle(fontSize: 16, fontFamily: 'font'),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 }
