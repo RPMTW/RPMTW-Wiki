@@ -134,9 +134,9 @@ class _FooterState extends State<_Footer> {
             text: localizations.footerHelpSponsor),
       ),
       _FooterColumn(
-        heading: '資源',
-        s1: const LinkText(
-            link: "https://discord.gg/5xApZtgV2u", text: "Discord"),
+        heading: localizations.footerResources,
+        s1:  LinkText(
+            link: "https://discord.gg/5xApZtgV2u", text: localizations.footerResourcesDiscord),
         s2: LinkText(
             link: "https://www.rpmtw.com", text: localizations.guiWebsite),
       ),
