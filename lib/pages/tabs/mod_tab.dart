@@ -7,6 +7,7 @@ import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
 import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/non_scrollable_grid.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
@@ -55,6 +56,7 @@ class _ModsView extends StatefulWidget {
 class _ModsViewState extends State<_ModsView> {
   late RPMTWApiClient apiClient;
   String? filter;
+  ModSortType sortType = ModSortType.createTime;
 
   @override
   void initState() {
@@ -65,12 +67,13 @@ class _ModsViewState extends State<_ModsView> {
   @override
   Widget build(BuildContext context) {
     final debouncedAutocompleteSearch = debounce(
-      (String _filter) async {
+      (String _filter, ModSortType _sortType) async {
         if (_filter.isEmpty) {
           filter = null;
         } else {
           filter = _filter;
         }
+        sortType = _sortType;
         setState(() {});
       },
       const Duration(milliseconds: 500),
@@ -82,13 +85,14 @@ class _ModsViewState extends State<_ModsView> {
         _Search(debouncedAutocompleteSearch: debouncedAutocompleteSearch),
         SizedBox(height: kSplitHight),
         FutureBuilder<List<MinecraftMod>>(
-            future: apiClient.minecraftResource.search(filter: filter),
+            future: apiClient.minecraftResource
+                .search(filter: filter, sort: ModSortType.createTime),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
                 List<MinecraftMod> mods = snapshot.data!;
                 return NonScrollableGrid(
-                  columnCount: MediaQuery.of(context).size.width ~/ 200,
+                  columnCount: MediaQuery.of(context).size.width ~/ 180,
                   children: mods.map((e) => _ModItem(mod: e)).toList(),
                 );
               } else {
@@ -103,13 +107,25 @@ class _ModsViewState extends State<_ModsView> {
   }
 }
 
-class _Search extends StatelessWidget {
+class _Search extends StatefulWidget {
   const _Search({
     Key? key,
     required this.debouncedAutocompleteSearch,
   }) : super(key: key);
 
   final Debounce debouncedAutocompleteSearch;
+
+  @override
+  State<_Search> createState() => _SearchState();
+}
+
+class _SearchState extends State<_Search> {
+  ModSortType sortType = ModSortType.createTime;
+  String filter = "";
+
+  void search() {
+    widget.debouncedAutocompleteSearch([filter, sortType]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,10 +142,13 @@ class _Search extends StatelessWidget {
             child: RPMTextField(
               hintText: localizations.viewModSearchHint,
               onChanged: (value) {
-                debouncedAutocompleteSearch([value]);
+                filter = value;
+                search();
               },
             ),
           ),
+          SizedBox(width: kSplitWidth),
+          _buildSortDropdownButton()
         ],
       );
     } else {
@@ -145,13 +164,44 @@ class _Search extends StatelessWidget {
             child: RPMTextField(
               hintText: localizations.viewModSearchHint,
               onChanged: (value) {
-                debouncedAutocompleteSearch([value]);
+                filter = value;
+                search();
               },
             ),
           ),
+          SizedBox(height: kSplitHight),
+          _buildSortDropdownButton(),
         ],
       );
     }
+  }
+
+  Widget _buildSortDropdownButton() {
+    return SizedBox(
+      width: kIsDesktop ? 150 : 120,
+      child: DropdownButton<ModSortType>(
+        value: sortType,
+        style: const TextStyle(color: Colors.lightBlue),
+        onChanged: (_sortType) {
+          setState(() {
+            sortType = _sortType!;
+          });
+          search();
+        },
+        isExpanded: true,
+        items: ModSortType.values
+            .map<DropdownMenuItem<ModSortType>>((ModSortType _sortType) {
+          return DropdownMenuItem<ModSortType>(
+            value: _sortType,
+            alignment: Alignment.center,
+            child: SEOText(_sortType.i18n,
+                style: const TextStyle(fontSize: 16, fontFamily: 'font'),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis),
+          );
+        }).toList(),
+      ),
+    );
   }
 }
 
