@@ -9,6 +9,7 @@ import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/mouse_scale.dart';
 import 'package:rpmtw_wiki/widget/non_scrollable_grid.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
@@ -25,22 +26,23 @@ class ModTab extends StatefulWidget {
 class _ModTabState extends State<ModTab> {
   @override
   Widget build(BuildContext context) {
-    Size size = Utility.getSize(context);
-    return BasePage(
-        child: SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          SizedBox(height: kSplitHight),
-          const _Action(),
-          SizedBox(height: kSplitHight),
-          const RPMTWDivider(),
-          SizedBox(height: kSplitHight),
-          const Expanded(child: _ModsView()),
-        ],
-      ),
-    ));
+    Size size = Utility.getScreenSize(context);
+    return BasePage(builder: (context) {
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            SizedBox(height: kSplitHight),
+            const _Action(),
+            SizedBox(height: kSplitHight),
+            const RPMTWDivider(),
+            SizedBox(height: kSplitHight),
+            const Expanded(child: _ModsView()),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -226,58 +228,38 @@ class _ModItem extends StatefulWidget {
 }
 
 class _ModItemState extends State<_ModItem> {
-  double scale = 1.0;
-
   @override
   Widget build(BuildContext context) {
     TextStyle subtitleStyle = Theme.of(context).textTheme.bodyText2!;
     subtitleStyle = subtitleStyle.copyWith(color: Colors.white54);
 
     return InkWell(
-      child: MouseRegion(
-        onEnter: (e) => _mouseEnter(true),
-        onExit: (e) => _mouseEnter(false),
-        child: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 200),
-          tween: Tween<double>(begin: 1.0, end: scale),
-          builder: (BuildContext context, double value, _) {
-            return Transform.scale(
-                scale: value,
-                child: GridTile(
-                    child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.mod.imageStorageUUID != null)
-                      widget.mod.imageWidget(width: 100, height: 100)!
-                    else
-                      const Icon(Icons.image, size: 100),
-                    SEOSelectableText(widget.mod.name,
-                        style: const TextStyle(fontSize: 16)),
-                    if (widget.mod.translatedName != null)
-                      SEOSelectableText(widget.mod.translatedName!,
-                          style: subtitleStyle),
-                    SEOText(
-                        "${localizations.viewModCount} ${(widget.mod.viewCount).toString()}",
-                        style: subtitleStyle),
-                  ],
-                )));
-          },
-        ),
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      child: MouseScale(
+        child: GridTile(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.mod.imageStorageUUID != null)
+              widget.mod.imageWidget(width: 100, height: 100)!
+            else
+              const Icon(Icons.image, size: 100),
+            SEOSelectableText(widget.mod.name,
+                style: const TextStyle(fontSize: 16)),
+            if (widget.mod.translatedName != null)
+              SEOSelectableText(widget.mod.translatedName!,
+                  style: subtitleStyle),
+            SEOText(
+                "${localizations.viewModCount} ${(widget.mod.viewCount).toString()}",
+                style: subtitleStyle),
+          ],
+        )),
       ),
       onTap: () {
         navigation.pushNamed("${ViewModPage.route}${widget.mod.uuid}");
       },
     );
-  }
-
-  void _mouseEnter(bool hover) {
-    setState(() {
-      if (hover) {
-        scale = 1.15;
-      } else {
-        scale = 1.0;
-      }
-    });
   }
 }
 

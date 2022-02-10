@@ -62,10 +62,10 @@ class IntroductionEditorState extends State<IntroductionEditor> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = Utility.getSize(context);
+    Size size = Utility.getScreenSize(context);
 
-    return BasePage(
-      child: SizedBox(
+    return BasePage(builder: (context) {
+      return SizedBox(
         width: size.width,
         height: size.height,
         child: SplitView(
@@ -149,7 +149,7 @@ class IntroductionEditorState extends State<IntroductionEditor> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }

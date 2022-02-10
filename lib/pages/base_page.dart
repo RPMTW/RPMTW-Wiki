@@ -12,9 +12,9 @@ import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 
 class BasePage extends StatelessWidget {
-  final Widget child;
+  final WidgetBuilder builder;
   final bool loading;
-  const BasePage({Key? key, required this.child, this.loading = false})
+  const BasePage({Key? key, required this.builder, this.loading = false})
       : super(key: key);
 
   @override
@@ -35,7 +35,7 @@ class BasePage extends StatelessWidget {
                 ),
               );
             } else {
-              return child;
+              return builder.call(context);
             }
           }),
           const _Footer(),
@@ -135,8 +135,9 @@ class _FooterState extends State<_Footer> {
       ),
       _FooterColumn(
         heading: localizations.footerResources,
-        s1:  LinkText(
-            link: "https://discord.gg/5xApZtgV2u", text: localizations.footerResourcesDiscord),
+        s1: LinkText(
+            link: "https://discord.gg/5xApZtgV2u",
+            text: localizations.footerResourcesDiscord),
         s2: LinkText(
             link: "https://www.rpmtw.com", text: localizations.guiWebsite),
       ),
@@ -145,7 +146,8 @@ class _FooterState extends State<_Footer> {
 
   Column _buildRow2() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          kIsMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         const _CreativeCommons(),
         Text(localizations.guiCopyright),

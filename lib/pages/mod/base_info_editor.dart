@@ -102,96 +102,98 @@ class BaseInfoEditorState extends State<BaseInfoEditor> {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      loading: _loading,
-      child: Column(
-        children: [
-          RPMTWFormField(
-            fieldName: localizations.addModOriginalNameField,
-            hintText: localizations.addModOriginalNameHintText,
-            onSaved: (value) => name = value,
-            defaultValue: name,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return localizations.addModOriginalNameValidator;
-              }
-              return null;
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: kSplitHight),
-                Row(
+        loading: _loading,
+        builder: (context) {
+          return Column(
+            children: [
+              RPMTWFormField(
+                fieldName: localizations.addModOriginalNameField,
+                hintText: localizations.addModOriginalNameHintText,
+                onSaved: (value) => name = value,
+                defaultValue: name,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return localizations.addModOriginalNameValidator;
+                  }
+                  return null;
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(width: kSplitWidth),
-                    OutlinedButton.icon(
-                        onPressed: () {
-                          ModSelectMenu menu = ModSelectMenu(
-                              title: localizations.addModBaseCheckExists,
-                              onSelected: (mod) {
-                                // TODO: 開啟模組的詳細資訊
-                              });
+                    SizedBox(height: kSplitHight),
+                    Row(
+                      children: [
+                        SizedBox(width: kSplitWidth),
+                        OutlinedButton.icon(
+                            onPressed: () {
+                              ModSelectMenu menu = ModSelectMenu(
+                                  title: localizations.addModBaseCheckExists,
+                                  onSelected: (mod) {
+                                    // TODO: 開啟模組的詳細資訊
+                                  });
 
-                          menu.show(context);
-                        },
-                        icon: const Icon(Icons.rule),
-                        label: SEOText(localizations.addModBaseCheckExists)),
+                              menu.show(context);
+                            },
+                            icon: const Icon(Icons.rule),
+                            label:
+                                SEOText(localizations.addModBaseCheckExists)),
+                      ],
+                    ),
+                    SizedBox(height: kSplitHight),
+                    const RPMTWDivider(),
                   ],
                 ),
-                SizedBox(height: kSplitHight),
-                const RPMTWDivider(),
-              ],
-            ),
-          ),
-          RPMTWFormField(
-            fieldName: localizations.addModTranslatedNameField,
-            hintText: localizations.addModTranslatedNameHintText,
-            helperText: localizations.addModTranslatedNameTooltip,
-            defaultValue: translatedName,
-            onSaved: (value) {
-              if (value.isEmpty) {
-                translatedName = null;
-              } else {
-                translatedName = value;
-              }
-            },
-          ),
-          RPMTWFormField(
-            fieldName: localizations.addModIdField,
-            hintText: localizations.addModIdHintText,
-            helperText: localizations.addModIdTooltip,
-            defaultValue: id,
-            onSaved: (value) {
-              if (value.isEmpty) {
-                id = null;
-              } else {
-                id = value;
-              }
-            },
-          ),
-          RPMTWFormField(
-            fieldName: localizations.addModDescriptionField,
-            helperText: localizations.addModDescriptionTooltip,
-            lockLine: false,
-            defaultValue: description,
-            onSaved: (value) {
-              if (value.isEmpty) {
-                description = null;
-              } else {
-                description = value;
-              }
-            },
-          ),
-          _buildLoaderCheckbox(),
-          MinecraftVersionChoice(
-            allVersions: _allMinecraftVersions,
-            defaultValue: supportVersions,
-            onChanged: (versions) => supportVersions = versions,
-          ),
-          SizedBox(height: kSplitHight),
-          _buildModImage(),
-        ],
-      ),
-    );
+              ),
+              RPMTWFormField(
+                fieldName: localizations.addModTranslatedNameField,
+                hintText: localizations.addModTranslatedNameHintText,
+                helperText: localizations.addModTranslatedNameTooltip,
+                defaultValue: translatedName,
+                onSaved: (value) {
+                  if (value.isEmpty) {
+                    translatedName = null;
+                  } else {
+                    translatedName = value;
+                  }
+                },
+              ),
+              RPMTWFormField(
+                fieldName: localizations.addModIdField,
+                hintText: localizations.addModIdHintText,
+                helperText: localizations.addModIdTooltip,
+                defaultValue: id,
+                onSaved: (value) {
+                  if (value.isEmpty) {
+                    id = null;
+                  } else {
+                    id = value;
+                  }
+                },
+              ),
+              RPMTWFormField(
+                fieldName: localizations.addModDescriptionField,
+                helperText: localizations.addModDescriptionTooltip,
+                lockLine: false,
+                defaultValue: description,
+                onSaved: (value) {
+                  if (value.isEmpty) {
+                    description = null;
+                  } else {
+                    description = value;
+                  }
+                },
+              ),
+              _buildLoaderCheckbox(),
+              MinecraftVersionChoice(
+                allVersions: _allMinecraftVersions,
+                defaultValue: supportVersions,
+                onChanged: (versions) => supportVersions = versions,
+              ),
+              SizedBox(height: kSplitHight),
+              _buildModImage(),
+            ],
+          );
+        });
   }
 
   Column _buildModImage() {

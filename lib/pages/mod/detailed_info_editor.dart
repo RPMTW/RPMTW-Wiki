@@ -53,56 +53,57 @@ class DetailedInfoEditorState extends State<DetailedInfoEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-        child: Column(
-      children: [
-        SizedBox(height: kSplitHight),
-        SEOText(localizations.addModDetailedIntegration,
-            style: RPMTWTheme.titleTextStyle),
-        RPMTWFormField(
-          fieldName: localizations.addModDetailedCurseForgeField,
-          hintText: localizations.addModDetailedCurseForgeHint,
-          defaultValue: integration.curseForgeID,
-          onSaved: (value) {
-            integration = integration.copyWith(
-              curseForgeID: value,
-            );
-          },
-        ),
-        RPMTWFormField(
-          fieldName: localizations.addModDetailedModrinthField,
-          hintText: localizations.addModDetailedModrinthHint,
-          defaultValue: integration.modrinthID,
-          onSaved: (value) {
-            integration = integration.copyWith(
-              modrinthID: value,
-            );
-          },
-        ),
-        SizedBox(height: kSplitHight),
-        SEOText(localizations.addModDetailedEnvironment,
-            style: RPMTWTheme.titleTextStyle),
-        _ModSideChoice(
-            environment: ModSideEnvironment.client,
-            requireType: parseDefaultRequireType(ModSideEnvironment.client),
-            onSaved: (value) => _saveSideData(
-                value: value, environment: ModSideEnvironment.client)),
-        _ModSideChoice(
-            environment: ModSideEnvironment.server,
-            requireType: parseDefaultRequireType(ModSideEnvironment.server),
-            onSaved: (value) => _saveSideData(
-                value: value, environment: ModSideEnvironment.server)),
-        SizedBox(height: kSplitHight),
-        SEOText(localizations.addModDetailedRelation,
-            style: RPMTWTheme.titleTextStyle),
-        SizedBox(height: kSplitHight),
-        _RelationMod(
-          defaultValue: relationMods,
-          onSaved: (value) => relationMods = value,
-        ),
-        SizedBox(height: kSplitHight),
-      ],
-    ));
+    return BasePage(builder: (context) {
+      return Column(
+        children: [
+          SizedBox(height: kSplitHight),
+          SEOText(localizations.addModDetailedIntegration,
+              style: RPMTWTheme.titleTextStyle),
+          RPMTWFormField(
+            fieldName: localizations.addModDetailedCurseForgeField,
+            hintText: localizations.addModDetailedCurseForgeHint,
+            defaultValue: integration.curseForgeID,
+            onSaved: (value) {
+              integration = integration.copyWith(
+                curseForgeID: value,
+              );
+            },
+          ),
+          RPMTWFormField(
+            fieldName: localizations.addModDetailedModrinthField,
+            hintText: localizations.addModDetailedModrinthHint,
+            defaultValue: integration.modrinthID,
+            onSaved: (value) {
+              integration = integration.copyWith(
+                modrinthID: value,
+              );
+            },
+          ),
+          SizedBox(height: kSplitHight),
+          SEOText(localizations.addModDetailedEnvironment,
+              style: RPMTWTheme.titleTextStyle),
+          _ModSideChoice(
+              environment: ModSideEnvironment.client,
+              requireType: parseDefaultRequireType(ModSideEnvironment.client),
+              onSaved: (value) => _saveSideData(
+                  value: value, environment: ModSideEnvironment.client)),
+          _ModSideChoice(
+              environment: ModSideEnvironment.server,
+              requireType: parseDefaultRequireType(ModSideEnvironment.server),
+              onSaved: (value) => _saveSideData(
+                  value: value, environment: ModSideEnvironment.server)),
+          SizedBox(height: kSplitHight),
+          SEOText(localizations.addModDetailedRelation,
+              style: RPMTWTheme.titleTextStyle),
+          SizedBox(height: kSplitHight),
+          _RelationMod(
+            defaultValue: relationMods,
+            onSaved: (value) => relationMods = value,
+          ),
+          SizedBox(height: kSplitHight),
+        ],
+      );
+    });
   }
 
   ModRequireType? parseDefaultRequireType(ModSideEnvironment environment) {

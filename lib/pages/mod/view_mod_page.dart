@@ -297,32 +297,33 @@ class _BaseInfoState extends State<_BaseInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-        child: Column(
-      children: [
-        SizedBox(height: kSplitHight),
-        ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: mod.imageWidget(width: 150, height: 150)),
-        SizedBox(height: kSplitHight),
-        SEOSelectableText(mod.name, style: const TextStyle(fontSize: 20)),
-        (mod.translatedName != null && mod.translatedName != "")
-            ? SEOSelectableText(mod.translatedName!,
-                style: const TextStyle(fontSize: 20))
-            : Container(),
-        SizedBox(height: kSplitHight),
-        _buildDescription(),
-        SizedBox(height: kSplitHight),
-        _buildModLoaders(),
-        SizedBox(height: kSplitHight),
-        _buildSupportVersions(),
-        SizedBox(height: kSplitHight),
-        SEOText(localizations.viewModCount, style: RPMTWTheme.titleTextStyle),
-        SEOSelectableText(mod.viewCount.toString()),
-        SizedBox(height: kSplitHight),
-        _buildIntroduction(),
-      ],
-    ));
+    return BasePage(builder: (context) {
+      return Column(
+        children: [
+          SizedBox(height: kSplitHight),
+          ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: mod.imageWidget(width: 150, height: 150)),
+          SizedBox(height: kSplitHight),
+          SEOSelectableText(mod.name, style: const TextStyle(fontSize: 20)),
+          (mod.translatedName != null && mod.translatedName != "")
+              ? SEOSelectableText(mod.translatedName!,
+                  style: const TextStyle(fontSize: 20))
+              : Container(),
+          SizedBox(height: kSplitHight),
+          _buildDescription(),
+          SizedBox(height: kSplitHight),
+          _buildModLoaders(),
+          SizedBox(height: kSplitHight),
+          _buildSupportVersions(),
+          SizedBox(height: kSplitHight),
+          SEOText(localizations.viewModCount, style: RPMTWTheme.titleTextStyle),
+          SEOSelectableText(mod.viewCount.toString()),
+          SizedBox(height: kSplitHight),
+          _buildIntroduction(),
+        ],
+      );
+    });
   }
 
   Widget _buildDescription() {

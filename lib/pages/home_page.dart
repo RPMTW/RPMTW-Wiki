@@ -78,10 +78,12 @@ class _WIPTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      child: Center(
-        child:
-            SEOText(localizations.guiWIP, style: const TextStyle(fontSize: 30)),
-      ),
+      builder: (context) {
+        return Center(
+          child: SEOText(localizations.guiWIP,
+              style: const TextStyle(fontSize: 30)),
+        );
+      },
     );
   }
 }

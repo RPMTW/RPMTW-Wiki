@@ -65,7 +65,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
               child: SvgPicture.asset(
                 'assets/images/RPMWiki_Logo.svg',
                 fit: BoxFit.contain,
-                width: 55,
+                width: 40,
                 semanticsLabel: "RPMWiki Logo",
               ),
             ),
