@@ -27,7 +27,7 @@ class _ModTabState extends State<HomeTab> {
 
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
     apiClient.minecraftResource
-        .search(sort: ModSortType.viewCount, limit: 10)
+        .search(sort: ModSortType.viewCount, limit: 5)
         .then((value) {
       setState(() {
         mods = value;

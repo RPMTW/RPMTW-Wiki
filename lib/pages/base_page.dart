@@ -23,21 +23,18 @@ class BasePage extends StatelessWidget {
       child: ListView(
         controller: ScrollController(),
         children: [
-          Builder(builder: (context) {
-            if (loading) {
-              return Center(
-                child: Column(
-                  children: const [
-                    SizedBox(height: 20),
-                    CircularProgressIndicator(),
-                    SizedBox(height: 15),
-                  ],
-                ),
-              );
-            } else {
-              return builder.call(context);
-            }
-          }),
+          if (loading)
+            Center(
+              child: Column(
+                children: const [
+                  SizedBox(height: 20),
+                  CircularProgressIndicator(),
+                  SizedBox(height: 15),
+                ],
+              ),
+            )
+          else
+            builder.call(context),
           const _Footer(),
           const SizedBox(height: 5)
         ],
@@ -59,7 +56,9 @@ class _FooterState extends State<_Footer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: kIsDesktop ? const EdgeInsets.all(30) : null,
+      padding: kIsDesktop
+          ? const EdgeInsets.only(left: 30, top: 30, right: 30)
+          : null,
       child: Column(
         children: [
           const RPMTWDivider(),
