@@ -88,7 +88,7 @@ class _ModsViewState extends State<_ModsView> {
         SizedBox(height: kSplitHight),
         FutureBuilder<List<MinecraftMod>>(
             future: apiClient.minecraftResource
-                .search(filter: filter, sort: ModSortType.createTime),
+                .search(filter: filter, sort: sortType),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
