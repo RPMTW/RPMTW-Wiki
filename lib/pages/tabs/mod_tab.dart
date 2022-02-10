@@ -26,21 +26,16 @@ class ModTab extends StatefulWidget {
 class _ModTabState extends State<ModTab> {
   @override
   Widget build(BuildContext context) {
-    Size size = Utility.getScreenSize(context);
     return BasePage(builder: (context) {
-      return SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Column(
-          children: [
-            SizedBox(height: kSplitHight),
-            const _Action(),
-            SizedBox(height: kSplitHight),
-            const RPMTWDivider(),
-            SizedBox(height: kSplitHight),
-            const Expanded(child: _ModsView()),
-          ],
-        ),
+      return Column(
+        children: [
+          SizedBox(height: kSplitHight),
+          const _Action(),
+          SizedBox(height: kSplitHight),
+          const RPMTWDivider(),
+          SizedBox(height: kSplitHight),
+          const _ModsView(),
+        ],
       );
     });
   }
