@@ -38,3 +38,18 @@ extension StringCasingExtension on String {
 
   bool toBool() => this == "true";
 }
+
+extension ModSearchTypeExtension on ModSortType {
+  String get i18n {
+    switch (this) {
+      case ModSortType.createTime:
+        return localizations.modSortTypeCreateTime;
+      case ModSortType.viewCount:
+        return localizations.modSortTypeViewCount;
+      case ModSortType.name:
+        return localizations.modSortTypeName;
+      case ModSortType.lastUpdate:
+        return localizations.modSortTypeLastUpdate;
+    }
+  }
+}

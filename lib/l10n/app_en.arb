@@ -73,6 +73,15 @@
   "editorToolbarUndo": "Undo",
   "footerCC1": "Unless otherwise stated, all publicly available editorial content on this website is published using",
   "footerCC2": "CC BY-NC-SA 4.0 License Terms",
+  "footerDescription": "RPMWiki is a new Minecraft wiki platform, where all the knowledge content of Minecraft is available, including mods, modpacks, worlds, etc.",
+  "footerHelp": "Help",
+  "footerHelpFAQ": "FAQ",
+  "footerHelpSponsor": "Sponsor Us",
+  "footerAbout": "About",
+  "footerAboutConnect": "Connect Us",
+  "footerAboutUs": "About Us",
+  "footerResources": "Resources",
+  "footerResourcesDiscord": "Discord",
   "guiCancel": "Cancel",
   "guiConfirm": "Confirm",
   "guiCopyright": "Copyright © RPMTW 2021-2022 Powered by The RPMTW Team.",
@@ -92,6 +101,11 @@
   "modSideRequire": "Required",
   "modSideServer": "Server",
   "modSideUnsupported": "Unsupported",
+  "modSortType": "Sort by",
+  "modSortTypeCreateTime": "Create Time",
+  "modSortTypeViewCount": "View Count",
+  "modSortTypeName": "Name",
+  "modSortTypeLastUpdate": "Last Update",
   "tabHome": "Home",
   "tabMod": "Mod",
   "tabModpack": "Modpack",
@@ -138,5 +152,6 @@
       "dataName": {}
     }
   },
-  "changelogNone": "No change"
+  "changelogNone": "No change",
+  "homePopularMods": "Popular mods"
 }

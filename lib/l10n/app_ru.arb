@@ -9,9 +9,11 @@
     "addModCreateSuccess": "Mod создан успешно!",
     "addModDescriptionField": "Mod изображение",
     "addModDescriptionTooltip": "Пожалуйста, дайте краткое описание mod.",
+    "addModDetailedCurseForgeField": "CurseForge ID проекта",
     "addModDetailedCurseForgeHint": "Например:461500",
     "addModDetailedEnvironment": "Среда выполнения",
     "addModDetailedIntegration": "Платформа интеграции",
+    "addModDetailedModrinthField": "Modrinth ID проекта",
     "addModDetailedModrinthHint": "Например:ZukQzaRP",
     "addModDetailedRelation": "Родственный mod",
     "addModDetailedRelationAdd": "Добавить Родственный mod",
@@ -80,6 +82,10 @@
     "guiSuccess": "Успех",
     "guiWIP": "Эта функция находится в стадии разработки и в настоящее время недоступна, приносим извинения за неудобства.",
     "guiWebsite": "Официальный сайт RPMTW",
+    "guiSeparator": ",",
+    "guiOptional": "Дополнительно",
+    "guiShare": "Поделиться",
+    "guiCopyLink": "Копировать ссылку",
     "languageName": "русский",
     "modSideClient": "Клиент",
     "modSideOptional": "Дополнительно",
@@ -92,5 +98,45 @@
     "tabResourcePack": "Ресурсный пакет",
     "tabVanilla": "Оригинал",
     "tabWorld": "Мир",
-    "title": "RPMTW Minecraft Wiki"
+    "title": "RPMTW Minecraft Wiki",
+    "viewModCount": "Количество просмотров:",
+    "viewModSearch": "Поисковые Mods",
+    "viewModSearchHint": "Название Mod, перевод Mod, ID Mod...",
+    "viewModTitle": "Просмотреть Mods",
+    "viewModComment": "Комментарий",
+    "viewModCreateAt": "Дата создания",
+    "viewModLastUpdate": "Последнее обновление",
+    "viewModCopyUUID": "Копирование UUID",
+    "viewModHistory": "Просмотр истории редактирования",
+    "editModTitle": "Редактировать Mod",
+    "editModSuccess": "Мод успешно отредактирован.",
+    "editModChangelog": "Изменения",
+    "editModChangelogHint": "Пожалуйста, введите журнал изменений",
+    "submitModProcessing": "Пожалуйста, подождите, он обрабатывается...",
+    "changelogTitle": "Изменения",
+    "changelogTypeAddedMod": "Созданный mod",
+    "changelogTypeEditedMod": "Отредактированный mod",
+    "changelogTypeRemovedMod": "Удаленный mod",
+    "changelogEditedData": "Отредактировал данные {dataName}",
+    "@changelogEditedData": {
+        "type": "text",
+        "placeholders": {
+            "dataName": {}
+        }
+    },
+    "changelogCreatedData": "Создал данные о {dataName}",
+    "@changelogCreatedData": {
+        "type": "text",
+        "placeholders": {
+            "dataName": {}
+        }
+    },
+    "changelogRemovedData": "Удалены данные о {dataName}",
+    "@changelogRemovedData": {
+        "type": "text",
+        "placeholders": {
+            "dataName": {}
+        }
+    },
+    "changelogNone": "Без изменений"
 }

@@ -32,7 +32,7 @@ class Utility {
     await flushbar.show(context);
   }
 
-  static Size getSize(BuildContext context) {
+  static Size getScreenSize(BuildContext context) {
     MediaQueryData data = MediaQuery.of(context);
     Size _size = data.size;
 

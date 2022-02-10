@@ -27,42 +27,44 @@ class _AuthSuccessDialogState extends State<AuthSuccessDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BasePage(
-        child: FutureBuilder<Account>(
-          future: logInIng(),
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.hasData) {
-              Account account = snapshot.data!;
-              return AlertDialog(
-                title: Text(localizations.guiSuccess),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(localizations.authSuccess),
-                    Text(account.username),
+        builder: (context) {
+          return FutureBuilder<Account>(
+            future: logInIng(),
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.hasData) {
+                Account account = snapshot.data!;
+                return AlertDialog(
+                  title: Text(localizations.guiSuccess),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(localizations.authSuccess),
+                      Text(account.username),
+                    ],
+                  ),
+                  actions: [
+                    OkClose(
+                      onOk: () {
+                        navigation.pushNamed(HomePage.route);
+                      },
+                    )
                   ],
-                ),
-                actions: [
-                  OkClose(
-                    onOk: () {
-                      navigation.pushNamed(HomePage.route);
-                    },
-                  )
-                ],
-              );
-            } else {
-              return AlertDialog(
-                title: Text(localizations.authLogInIng),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              );
-            }
-          },
-        ),
+                );
+              } else {
+                return AlertDialog(
+                  title: Text(localizations.authLogInIng),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                );
+              }
+            },
+          );
+        },
       ),
     );
   }

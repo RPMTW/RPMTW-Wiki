@@ -1,3 +1,4 @@
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:universal_html/html.dart';
 
 import 'package:flutter/material.dart';
@@ -61,10 +62,11 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
               onTap: () {
                 window.open("https://www.rpmtw.com", "RPMTW Website");
               },
-              child: Image.asset(
-                'assets/images/RPMTW_Logo.gif',
+              child: SvgPicture.asset(
+                'assets/images/RPMWiki_Logo.svg',
                 fit: BoxFit.contain,
-                width: 52,
+                width: 40,
+                semanticsLabel: "RPMWiki Logo",
               ),
             ),
         const SizedBox(width: 8),

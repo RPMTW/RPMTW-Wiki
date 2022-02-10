@@ -14,6 +14,6 @@ class SEOText extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextRenderer(
         text:
-            Text(data, style: style, textAlign: textAlign, overflow: overflow));
+            Text(data, style: style, textAlign: textAlign, overflow: overflow,));
   }
 }

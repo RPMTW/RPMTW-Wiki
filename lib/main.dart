@@ -18,7 +18,6 @@ import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 import 'package:seo_renderer/seo_renderer.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,9 +49,7 @@ void main() async {
     html.document.createElement('base').setAttribute("href", "/");
   }
 
-  print(const BrowserPlatformLocation().getBaseHref());
   setPathUrlStrategy();
-  print(const BrowserPlatformLocation().getBaseHref());
   runApp(const WikiApp());
 }
 

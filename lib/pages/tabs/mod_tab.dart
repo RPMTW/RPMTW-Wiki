@@ -7,7 +7,10 @@ import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
 import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
+import 'package:rpmtw_wiki/widget/mouse_scale.dart';
+import 'package:rpmtw_wiki/widget/non_scrollable_grid.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_divider.dart';
 import 'package:rpmtw_wiki/widget/rpmtw-design/rpmtw_text_field.dart';
 import 'package:rpmtw_wiki/widget/seo_selectable_text.dart';
@@ -23,22 +26,23 @@ class ModTab extends StatefulWidget {
 class _ModTabState extends State<ModTab> {
   @override
   Widget build(BuildContext context) {
-    Size size = Utility.getSize(context);
-    return BasePage(
-        child: SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          SizedBox(height: kSplitHight),
-          const _Action(),
-          SizedBox(height: kSplitHight),
-          const RPMTWDivider(),
-          SizedBox(height: kSplitHight),
-          const Expanded(child: _ModsView()),
-        ],
-      ),
-    ));
+    Size size = Utility.getScreenSize(context);
+    return BasePage(builder: (context) {
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            SizedBox(height: kSplitHight),
+            const _Action(),
+            SizedBox(height: kSplitHight),
+            const RPMTWDivider(),
+            SizedBox(height: kSplitHight),
+            const Expanded(child: _ModsView()),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -54,6 +58,7 @@ class _ModsView extends StatefulWidget {
 class _ModsViewState extends State<_ModsView> {
   late RPMTWApiClient apiClient;
   String? filter;
+  ModSortType sortType = ModSortType.createTime;
 
   @override
   void initState() {
@@ -64,12 +69,13 @@ class _ModsViewState extends State<_ModsView> {
   @override
   Widget build(BuildContext context) {
     final debouncedAutocompleteSearch = debounce(
-      (String _filter) async {
+      (String _filter, ModSortType _sortType) async {
         if (_filter.isEmpty) {
           filter = null;
         } else {
           filter = _filter;
         }
+        sortType = _sortType;
         setState(() {});
       },
       const Duration(milliseconds: 500),
@@ -81,24 +87,15 @@ class _ModsViewState extends State<_ModsView> {
         _Search(debouncedAutocompleteSearch: debouncedAutocompleteSearch),
         SizedBox(height: kSplitHight),
         FutureBuilder<List<MinecraftMod>>(
-            future: apiClient.minecraftResource.search(filter: filter),
+            future: apiClient.minecraftResource
+                .search(filter: filter, sort: ModSortType.createTime),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
                 List<MinecraftMod> mods = snapshot.data!;
-                return Expanded(
-                  child: GridView.builder(
-                    itemCount: mods.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                    ),
-                    itemBuilder: (context, index) {
-                      MinecraftMod mod = mods[index];
-
-                      return _ModItem(mod: mod);
-                    },
-                  ),
+                return NonScrollableGrid(
+                  columnCount: MediaQuery.of(context).size.width ~/ 180,
+                  children: mods.map((e) => _ModItem(mod: e)).toList(),
                 );
               } else {
                 return Column(
@@ -112,13 +109,25 @@ class _ModsViewState extends State<_ModsView> {
   }
 }
 
-class _Search extends StatelessWidget {
+class _Search extends StatefulWidget {
   const _Search({
     Key? key,
     required this.debouncedAutocompleteSearch,
   }) : super(key: key);
 
   final Debounce debouncedAutocompleteSearch;
+
+  @override
+  State<_Search> createState() => _SearchState();
+}
+
+class _SearchState extends State<_Search> {
+  ModSortType sortType = ModSortType.createTime;
+  String filter = "";
+
+  void search() {
+    widget.debouncedAutocompleteSearch([filter, sortType]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +144,13 @@ class _Search extends StatelessWidget {
             child: RPMTextField(
               hintText: localizations.viewModSearchHint,
               onChanged: (value) {
-                debouncedAutocompleteSearch([value]);
+                filter = value;
+                search();
               },
             ),
           ),
+          SizedBox(width: kSplitWidth),
+          _buildSortDropdownButton()
         ],
       );
     } else {
@@ -154,13 +166,52 @@ class _Search extends StatelessWidget {
             child: RPMTextField(
               hintText: localizations.viewModSearchHint,
               onChanged: (value) {
-                debouncedAutocompleteSearch([value]);
+                filter = value;
+                search();
               },
             ),
           ),
+          SizedBox(height: kSplitHight),
+          _buildSortDropdownButton(),
         ],
       );
     }
+  }
+
+  Widget _buildSortDropdownButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SEOText(localizations.modSortType,
+            style: const TextStyle(fontSize: 20)),
+        SizedBox(width: kSplitWidth),
+        SizedBox(
+          width: kIsDesktop ? 150 : 120,
+          child: DropdownButton<ModSortType>(
+            value: sortType,
+            style: const TextStyle(color: Colors.lightBlue),
+            onChanged: (_sortType) {
+              setState(() {
+                sortType = _sortType!;
+              });
+              search();
+            },
+            isExpanded: true,
+            items: ModSortType.values
+                .map<DropdownMenuItem<ModSortType>>((ModSortType _sortType) {
+              return DropdownMenuItem<ModSortType>(
+                value: _sortType,
+                alignment: Alignment.center,
+                child: SEOText(_sortType.i18n,
+                    style: const TextStyle(fontSize: 16, fontFamily: 'font'),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -177,58 +228,38 @@ class _ModItem extends StatefulWidget {
 }
 
 class _ModItemState extends State<_ModItem> {
-  double scale = 1.0;
-
   @override
   Widget build(BuildContext context) {
     TextStyle subtitleStyle = Theme.of(context).textTheme.bodyText2!;
     subtitleStyle = subtitleStyle.copyWith(color: Colors.white54);
 
     return InkWell(
-      child: MouseRegion(
-        onEnter: (e) => _mouseEnter(true),
-        onExit: (e) => _mouseEnter(false),
-        child: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 200),
-          tween: Tween<double>(begin: 1.0, end: scale),
-          builder: (BuildContext context, double value, _) {
-            return Transform.scale(
-                scale: value,
-                child: GridTile(
-                    child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.mod.imageStorageUUID != null)
-                      widget.mod.imageWidget(width: 100, height: 100)!
-                    else
-                      const Icon(Icons.image, size: 100),
-                    SEOSelectableText(widget.mod.name,
-                        style: const TextStyle(fontSize: 16)),
-                    if (widget.mod.translatedName != null)
-                      SEOSelectableText(widget.mod.translatedName!,
-                          style: subtitleStyle),
-                    SEOText(
-                        "${localizations.viewModCount} ${(widget.mod.viewCount).toString()}",
-                        style: subtitleStyle),
-                  ],
-                )));
-          },
-        ),
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      child: MouseScale(
+        child: GridTile(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.mod.imageStorageUUID != null)
+              widget.mod.imageWidget(width: 100, height: 100)!
+            else
+              const Icon(Icons.image, size: 100),
+            SEOSelectableText(widget.mod.name,
+                style: const TextStyle(fontSize: 16)),
+            if (widget.mod.translatedName != null)
+              SEOSelectableText(widget.mod.translatedName!,
+                  style: subtitleStyle),
+            SEOText(
+                "${localizations.viewModCount} ${(widget.mod.viewCount).toString()}",
+                style: subtitleStyle),
+          ],
+        )),
       ),
       onTap: () {
         navigation.pushNamed("${ViewModPage.route}${widget.mod.uuid}");
       },
     );
-  }
-
-  void _mouseEnter(bool hover) {
-    setState(() {
-      if (hover) {
-        scale = 1.15;
-      } else {
-        scale = 1.0;
-      }
-    });
   }
 }
 
