@@ -16,11 +16,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.os }}-flutter-2.10.0-0.2.pre
+          key: ${{ runner.os }}-flutter-2.10.0-0.3.pre
       - uses: subosito/flutter-action@master
         with:
           channel: beta
-          flutter-version: 2.10.0-0.2.pre
+          flutter-version: 2.10.0-0.3.pre
       - name: SEO fetch wiki mods
         run: |
           cd script/seo_fetch_mods
