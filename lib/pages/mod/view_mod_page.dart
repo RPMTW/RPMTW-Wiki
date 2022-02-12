@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
+import 'package:rpmtw_wiki/main.dart';
 
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
@@ -36,7 +37,6 @@ class _ViewModPageState extends State<ViewModPage> {
   @override
   void initState() {
     super.initState();
-
     load();
   }
 
@@ -44,6 +44,7 @@ class _ViewModPageState extends State<ViewModPage> {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
     mod = await apiClient.minecraftResource
         .getMinecraftMod(widget.uuid, recordViewCount: true);
+    WikiApp.analytics.logViewMod(uuid: widget.uuid);
 
     setState(() {
       loading = false;

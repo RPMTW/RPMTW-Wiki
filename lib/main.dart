@@ -1,6 +1,6 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
-import 'package:universal_html/html.dart' as html;
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -8,53 +8,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:rpmtw_api_client/rpmtw_api_client.dart';
 import 'package:rpmtw_wiki/pages/home_page.dart';
 import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
 import 'package:rpmtw_wiki/pages/mod/view_mod_page.dart';
-import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/extension.dart';
 
 import 'package:rpmtw_wiki/widget/auth_success_dialog.dart';
 import 'package:seo_renderer/seo_renderer.dart';
-import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  List<Locale> _locales;
-  if (html.window.localStorage.containsKey("rpmtw_locale_languageCode")) {
-    final storage = html.window.localStorage;
-    _locales = [
-      Locale.fromSubtags(
-          languageCode: storage['rpmtw_locale_languageCode']!,
-          scriptCode: storage['rpmtw_locale_scriptCode'],
-          countryCode: storage['rpmtw_locale_countryCode']),
-    ];
-  } else {
-    _locales = WidgetsBinding.instance!.window.locales;
-  }
-  locale =
-      basicLocaleListResolution(_locales, AppLocalizations.supportedLocales);
-
-  AccountHandler.init();
-  href = html.window.location.href;
-  RPMTWApiClient.init(development: development); // Initialize RPMTWApiClient
-
-  html.Element? base = html.document.querySelector('base');
-
-  if (base != null) {
-    base.setAttribute("href", "/");
-  } else {
-    html.document.createElement('base').setAttribute("href", "/");
-  }
-
-  setPathUrlStrategy();
+  await Data.init();
   runApp(const WikiApp());
 }
 
 class WikiApp extends StatefulWidget {
   const WikiApp({Key? key}) : super(key: key);
+
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   State<WikiApp> createState() => _WikiAppState();
@@ -74,7 +48,7 @@ class _WikiAppState extends State<WikiApp> {
         fontFamily: "font");
 
     return MaterialApp(
-        title: 'RPMTW Wiki',
+        title: 'RPMWiki',
         navigatorKey: NavigationService.navigationKey,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
@@ -83,7 +57,7 @@ class _WikiAppState extends State<WikiApp> {
           GlobalCupertinoLocalizations.delegate,
           AppLocalizations.delegate,
         ],
-        navigatorObservers: [routeObserver],
+        navigatorObservers: [routeObserver, WikiApp.observer],
         supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
             primarySwatch: Colors.blue,
@@ -136,32 +110,43 @@ class _WikiAppState extends State<WikiApp> {
               if (routeUri.queryParameters.containsKey("tab_index")) {
                 tabIndex = int.parse(routeUri.queryParameters["tab_index"]!);
               }
-
+              WikiApp.analytics.logPageView(
+                  pageClass: "HomePage",
+                  pageName: "Home Page",
+                  parameters: {"tab_index": tabIndex.toString()});
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) => HomePage(tabIndex: tabIndex));
             } else if (name == AddModPage.route) {
+              WikiApp.analytics
+                  .logPageView(pageClass: "AddModPage", pageName: "Add Mod");
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const AddModPage());
             } else if (name.startsWith(ViewModPage.route)) {
               String uuid = routeUri.pathSegments[2];
-
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) => ViewModPage(uuid: uuid));
             } else if (name.startsWith(EditModPage.route)) {
               String uuid = routeUri.pathSegments[2];
-
               return MaterialPageRoute(
                   settings: settings,
                   builder: (context) => EditModPage(uuid: uuid));
             } else if (name.startsWith(ChangelogPage.route)) {
               Map<String, String> query = routeUri.queryParameters;
+              String? dataUUID = query["dataUUID"];
+              WikiApp.analytics.logPageView(
+                  pageClass: "ChangelogPage",
+                  pageName: "View Changelog",
+                  parameters: {
+                    "dataUUID": dataUUID,
+                  });
               return MaterialPageRoute(
                   settings: settings,
-                  builder: (context) =>
-                      ChangelogPage(dataUUID: query['dataUUID']));
+                  builder: (context) => ChangelogPage(dataUUID: dataUUID));
             } else {
+              WikiApp.analytics
+                  .logPageView(pageClass: "HomePage", pageName: "Home Page");
               return MaterialPageRoute(
                   settings: settings, builder: (context) => const HomePage());
             }

@@ -1,5 +1,6 @@
 import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
+import 'package:rpmtw_wiki/main.dart';
 import 'package:rpmtw_wiki/pages/mod/base_info_editor.dart';
 import 'package:rpmtw_wiki/pages/mod/detailed_info_editor.dart';
 import 'package:rpmtw_wiki/pages/mod/introduction_editor.dart';
@@ -7,6 +8,7 @@ import 'package:rpmtw_wiki/pages/mod/submit_button.dart';
 import 'package:rpmtw_wiki/pages/mod/submit_mod_dialog.dart';
 
 import 'package:rpmtw_wiki/utilities/data.dart';
+import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/keep_alive_wrapper.dart';
 import 'package:rpmtw_wiki/widget/title_bar.dart';
@@ -97,6 +99,7 @@ class _EditModPageState extends State<EditModPage> {
     RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
     mod = await apiClient.minecraftResource
         .getMinecraftMod(widget.uuid, recordViewCount: true);
+    WikiApp.analytics.logEditMod(uuid: widget.uuid);
 
     setState(() {
       loading = false;

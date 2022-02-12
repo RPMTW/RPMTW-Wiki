@@ -238,10 +238,6 @@ class Sitemap {
       lastMod.children.add(XmlText(dateFormatter.format(entry.lastModified)));
       url.children.add(lastMod);
 
-      final changeFrequency = XmlElement(XmlName('changefreq'));
-      changeFrequency.children.add(XmlText(entry.changeFrequency));
-      url.children.add(changeFrequency);
-
       final priority = XmlElement(XmlName('priority'));
       priority.children.add(XmlText(entry.priority.toString()));
       url.children.add(priority);
@@ -261,7 +257,6 @@ class Sitemap {
 class SitemapEntry {
   String location = '';
   DateTime lastModified = DateTime.now();
-  String changeFrequency = 'always';
   num priority = 0.5;
   final Map<String, String> _alternates = {};
   Map<String, String> get alternates => _alternates;

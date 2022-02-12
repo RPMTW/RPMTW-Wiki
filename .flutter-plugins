@@ -1,5 +1,9 @@
 # This is a generated file; do not edit or check into version control.
 file_picker=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/file_picker-4.3.3/
+firebase_analytics=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-9.1.0/
+firebase_analytics_web=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/firebase_analytics_web-0.4.0+6/
+firebase_core=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.12.0/
+firebase_core_web=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.5.4/
 flutter_plugin_android_lifecycle=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.5/
 share_plus=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/share_plus-3.0.4/
 share_plus_macos=/home/siongsng/.pub-cache/hosted/pub.dartlang.org/share_plus_macos-2.0.2/

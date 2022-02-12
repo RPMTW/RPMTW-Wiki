@@ -1,3 +1,6 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 
@@ -51,5 +54,57 @@ extension ModSearchTypeExtension on ModSortType {
       case ModSortType.lastUpdate:
         return localizations.modSortTypeLastUpdate;
     }
+  }
+}
+
+extension FirebaseAnalyticsExtension on FirebaseAnalytics {
+  Future<void> logPageView({
+    String? pageClass,
+    String? pageName,
+    Map<String, Object?>? parameters,
+    AnalyticsCallOptions? callOptions,
+  }) {
+    return logEvent(
+      name: 'page_view',
+      parameters: filterOutNulls(<String, Object?>{
+        "page_title": pageName,
+        "page_class": pageClass,
+      }..addAll(parameters ?? {})),
+      callOptions: callOptions,
+    );
+  }
+
+  Future<void> logViewMod({
+    required String uuid,
+    AnalyticsCallOptions? callOptions,
+  }) async {
+    await logPageView(
+      pageClass: "ViewModPage",
+      pageName: "View Mod",
+    );
+    await logEvent(
+      name: 'view_mod',
+      parameters: filterOutNulls(<String, Object?>{
+        "uuid": uuid,
+      }),
+      callOptions: callOptions,
+    );
+  }
+
+  Future<void> logEditMod({
+    required String uuid,
+    AnalyticsCallOptions? callOptions,
+  }) async {
+    await logPageView(
+      pageClass: "EditModPage",
+      pageName: "Edit Mod",
+    );
+    await logEvent(
+      name: 'edit_mod',
+      parameters: filterOutNulls(<String, Object?>{
+        "uuid": uuid,
+      }),
+      callOptions: callOptions,
+    );
   }
 }
