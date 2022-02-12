@@ -58,27 +58,14 @@ class Data {
       measurementId: 'G-EDV902NYW0',
     ));
     html.Storage localStorage = html.window.localStorage;
-    String userID;
-    if (localStorage.containsKey("userID")) {
-      userID = localStorage["userID"].toString();
-    } else {
-      userID = Random().nextInt(0x7FFFFFFF).toString() +
-          "." +
-          (DateTime.now().millisecondsSinceEpoch / 1000).toString();
-      localStorage["userID"] = userID;
-    }
-    await WikiApp.analytics.setUserId(id: userID);
-    await WikiApp.analytics
-        .setUserProperty(name: "development", value: development.toString());
 
     List<Locale> _locales;
     if (localStorage.containsKey("rpmtw_locale_languageCode")) {
-      final storage = localStorage;
       _locales = [
         Locale.fromSubtags(
-            languageCode: storage['rpmtw_locale_languageCode']!,
-            scriptCode: storage['rpmtw_locale_scriptCode'],
-            countryCode: storage['rpmtw_locale_countryCode']),
+            languageCode: localStorage['rpmtw_locale_languageCode']!,
+            scriptCode: localStorage['rpmtw_locale_scriptCode'],
+            countryCode: localStorage['rpmtw_locale_countryCode']),
       ];
     } else {
       _locales = WidgetsBinding.instance!.window.locales;
@@ -87,6 +74,11 @@ class Data {
         basicLocaleListResolution(_locales, AppLocalizations.supportedLocales);
 
     AccountHandler.init();
+    if (AccountHandler.hasAccount) {
+      await WikiApp.analytics.setUserId(id: AccountHandler.account?.uuid);
+      await WikiApp.analytics
+          .setUserProperty(name: "development", value: development.toString());
+    }
     href = html.window.location.href;
     RPMTWApiClient.init(development: development); // Initialize RPMTWApiClient
 
