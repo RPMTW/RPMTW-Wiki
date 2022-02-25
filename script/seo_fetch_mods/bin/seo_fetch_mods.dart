@@ -7,7 +7,7 @@ import 'package:xml/xml.dart';
 
 void main(List<String> arguments) async {
   RPMTWApiClient.init();
-  RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+  RPMTWApiClient apiClient = RPMTWApiClient.instance;
   int skip = 0;
   final Sitemap sitemap = Sitemap();
   String webDir = join(Directory.current.parent.parent.path, "web");
@@ -20,7 +20,7 @@ void main(List<String> arguments) async {
       String description =
           "${mod.description ?? ""} | 從今天起開始使用 RPMWiki 吧！，RPMWiki 是個全新的 Minecraft 百科平台，Minecraft 中包羅萬象的知識內容全都在這裡，包含模組、模組包、地圖等內容";
 
-      String imageUrl = mod.imageUrl(RPMTWApiClient.lastInstance.baseUrl) ??
+      String imageUrl = mod.imageUrl ??
           "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";
       String name = mod.name;
       if (mod.translatedName != null && mod.translatedName!.isNotEmpty) {
@@ -63,55 +63,118 @@ void main(List<String> arguments) async {
     crossorigin="anonymous">
 
   <style>
-    .loading {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 100vw;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
+      flex-direction: column;
     }
 
-    .loader {
-      border: 16px solid #f3f3f3;
-      /* Light grey */
-      border-top: 16px solid #3498db;
-      /* Blue */
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      animation: spin 2s linear infinite;
+    .logo img {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
     }
 
-    .loading-text {
+    .logo p {
       color: #ffffff;
+      font: sans-serif;
       font-size: 25px;
       font-display: bold;
-      display: flex;
-      margin: 0;
-      position: absolute;
-      top: 160px;
+      margin-left: 75px;
+      margin-top: -20px;
+      margin-bottom: 5px;
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
+    .loading div {
+      height: 25px;
+      width: 25px;
+      border-radius: 50%;
+      transform: scale(0);
+      background-color: red;
+      animation: scaling 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    .loading div:nth-child(0) {
+      animation-delay: 0s;
+    }
+
+    .loading div:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .loading div:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading div:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .loading div:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .loading div:nth-child(5) {
+      animation-delay: 1s;
+    }
+
+    .loading div {
+      height: 23px;
+      width: 23px;
+      border-radius: 50%;
+      transform: scale(0);
+    }
+
+
+    @keyframes scaling {
+
+      0%,
+      100% {
+        transform: scale(0.2);
+        background-color: #38f3b2;
       }
 
-      100% {
-        transform: rotate(360deg);
+      40% {
+        transform: scale(1);
+        background-color: #147df5;
+      }
+
+      60% {
+        transform: scale(1);
+        background-color: #3d4ff5;
+      }
+
+      80% {
+        transform: scale(1);
+        background-color: #743df5;
       }
     }
   </style>
 </head>
 
 <body style="background-color: rgb(34, 33, 33);">
-  <div class="loading">
-    <div class="loader"></div>
-    <p class="loading-text">Loading...</p>
+  <div class="container">
+    <div class="logo">
+      <img src="assets/assets/images/rpmwiki-logo-complex.svg" alt="">
+      <p>RPMWiki</p>
+    </div>
+    <div class="loading">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
   </div>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:

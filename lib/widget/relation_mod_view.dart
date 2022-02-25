@@ -32,7 +32,7 @@ class _RelationModViewState extends State<RelationModView> {
   }
 
   Future<MinecraftMod> load(String modUUID) async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     return await apiClient.minecraftResource.getMinecraftMod(modUUID);
   }
 

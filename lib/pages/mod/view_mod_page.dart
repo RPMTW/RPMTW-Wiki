@@ -41,7 +41,7 @@ class _ViewModPageState extends State<ViewModPage> {
   }
 
   Future<void> load() async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     mod = await apiClient.minecraftResource
         .getMinecraftMod(widget.uuid, recordViewCount: true);
     WikiApp.analytics.logViewMod(uuid: widget.uuid);

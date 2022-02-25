@@ -84,7 +84,7 @@ class BaseInfoEditorState extends State<BaseInfoEditor> {
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       MinecraftVersionManifest manifest = await RPMTWApiClient
-          .lastInstance.minecraftResource
+          .instance.minecraftResource
           .getMinecraftVersionManifest();
       _allMinecraftVersions = manifest.versions
           .where((v) => v.type == MinecraftVersionType.release) //僅顯示正式發行版

@@ -96,7 +96,7 @@ class _EditModPageState extends State<EditModPage> {
   }
 
   Future<void> load() async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     mod = await apiClient.minecraftResource
         .getMinecraftMod(widget.uuid, recordViewCount: true);
     WikiApp.analytics.logEditMod(uuid: widget.uuid);

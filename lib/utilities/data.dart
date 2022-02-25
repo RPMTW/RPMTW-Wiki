@@ -1,6 +1,4 @@
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:math';
-
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
 import 'package:rpmtw_wiki/main.dart';
 import 'package:rpmtw_wiki/utilities/account_handler.dart';

@@ -131,7 +131,7 @@ class _SubmitModDialogState extends State<SubmitModDialog> {
   }
 
   Future<MinecraftMod> _handler() async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     apiClient.setGlobalToken(AccountHandler.token!);
 
     Storage? imageStorage;

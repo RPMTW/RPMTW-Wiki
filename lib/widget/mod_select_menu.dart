@@ -23,7 +23,7 @@ class ModSelectMenu {
       ),
       Offset.zero & overlay.size,
     );
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
 
     String? filter;
     List<PopupMenuEntry<Widget>> items = [

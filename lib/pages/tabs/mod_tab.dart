@@ -60,7 +60,7 @@ class _ModsViewState extends State<_ModsView> {
 
   @override
   void initState() {
-    apiClient = RPMTWApiClient.lastInstance;
+    apiClient = RPMTWApiClient.instance;
     super.initState();
   }
 
