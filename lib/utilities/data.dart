@@ -25,7 +25,7 @@ String get rpmtwAccountUrl =>
     development ? developmentRPMTWAccountUrl : productionRPMTWAccountUrl;
 String get rpmtwAccountOauth2 =>
     "$rpmtwAccountUrl?rpmtw_auth_callback=${development ? developmentRPMWikiUrl : productionRPMWikiUrl}"
-    r"/auth?auth_token=${token}";
+    r"/auth?redirect_uri=${token}";
 String get rpmtwWikiUrl =>
     development ? developmentRPMWikiUrl : productionRPMWikiUrl;
 
