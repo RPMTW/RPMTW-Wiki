@@ -19,7 +19,7 @@ class ChangelogPage extends StatefulWidget {
 }
 
 class _ChangelogPageState extends State<ChangelogPage> {
-  RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+  RPMTWApiClient apiClient = RPMTWApiClient.instance;
 
   Future<List<WikiChangelog>> load() async {
     List<WikiChangelog> changelogs = await apiClient.minecraftResource

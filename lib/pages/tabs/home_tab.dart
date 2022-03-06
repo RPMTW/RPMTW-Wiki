@@ -25,7 +25,7 @@ class _ModTabState extends State<HomeTab> {
   void initState() {
     super.initState();
 
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     apiClient.minecraftResource
         .search(sort: ModSortType.viewCount, limit: 5)
         .then((value) {

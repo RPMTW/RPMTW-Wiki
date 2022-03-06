@@ -17,7 +17,7 @@ class AuthSuccessDialog extends StatefulWidget {
 
 class _AuthSuccessDialogState extends State<AuthSuccessDialog> {
   Future<Account> logInIng() async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     apiClient.setGlobalToken(widget.token);
     User user = await apiClient.authResource.getUserByUUID("me");
     return AccountHandler.setByUser(user, widget.token);

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:rate_limiter/rate_limiter.dart';
 import 'package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart';
+import 'package:rpmtw_wiki/main.dart';
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/add_mod_page.dart';
@@ -57,7 +60,7 @@ class _ModsViewState extends State<_ModsView> {
 
   @override
   void initState() {
-    apiClient = RPMTWApiClient.lastInstance;
+    apiClient = RPMTWApiClient.instance;
     super.initState();
   }
 
@@ -71,6 +74,12 @@ class _ModsViewState extends State<_ModsView> {
           filter = _filter;
         }
         sortType = _sortType;
+        WikiApp.analytics.logSearch(
+            searchTerm: json.encode({
+          'filter': filter,
+          'sortType': sortType.name,
+        }));
+
         setState(() {});
       },
       const Duration(milliseconds: 500),

@@ -2,10 +2,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import "package:rpmtw_api_client_flutter/rpmtw_api_client_flutter.dart";
 import 'package:flutter/material.dart';
+import 'package:rpmtw_wiki/main.dart';
 
 import 'package:rpmtw_wiki/pages/base_page.dart';
 import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
+import 'package:rpmtw_wiki/utilities/account_handler.dart';
 import 'package:rpmtw_wiki/utilities/data.dart';
 import 'package:rpmtw_wiki/utilities/extension.dart';
 import 'package:rpmtw_wiki/utilities/rpmtw_theme.dart';
@@ -35,14 +37,14 @@ class _ViewModPageState extends State<ViewModPage> {
   @override
   void initState() {
     super.initState();
-
     load();
   }
 
   Future<void> load() async {
-    RPMTWApiClient apiClient = RPMTWApiClient.lastInstance;
+    RPMTWApiClient apiClient = RPMTWApiClient.instance;
     mod = await apiClient.minecraftResource
         .getMinecraftMod(widget.uuid, recordViewCount: true);
+    WikiApp.analytics.logViewMod(uuid: widget.uuid);
 
     setState(() {
       loading = false;
@@ -96,9 +98,9 @@ class _ViewModPageState extends State<ViewModPage> {
   }
 
   List<Widget> _buildActions() {
-    void edit() => navigation.pushNamed(
+    void edit() => AccountHandler.checkHasAccount(() => navigation.pushNamed(
           EditModPage.route + mod.uuid,
-        );
+        ));
 
     void share() {
       String url = rpmtwWikiUrl + "/mod/view/" + mod.uuid;

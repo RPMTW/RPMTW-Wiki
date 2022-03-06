@@ -6,6 +6,8 @@ on:
       - main
 
   workflow_dispatch:
+  schedule:
+    - cron: "*/60 0 * * *" #每天執行一次
 
 jobs:
   Web:
@@ -16,16 +18,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.os }}-flutter-2.10.0-0.3.pre
+          key: ${{ runner.os }}-flutter-2.11.0-0.1.pre
       - uses: subosito/flutter-action@master
         with:
           channel: beta
-          flutter-version: 2.10.0-0.3.pre
+          flutter-version: 2.11.0-0.1.pre
       - name: SEO fetch wiki mods
         run: |
           cd script/seo_fetch_mods
           dart pub get
           dart run bin/seo_fetch_mods.dart
       - uses: bluefireteam/flutter-gh-pages@v7
-        # with:
-        #   webRenderer: html

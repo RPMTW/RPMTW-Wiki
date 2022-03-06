@@ -7,12 +7,13 @@ import 'package:rpmtw_wiki/utilities/utility.dart';
 import 'package:rpmtw_wiki/widget/account_manage_button.dart';
 import 'package:rpmtw_wiki/widget/seo_text.dart';
 
-class TitleBar extends StatelessWidget implements PreferredSizeWidget {
+class TitleBar extends StatefulWidget implements PreferredSizeWidget {
   final String? title;
   final Function()? onBackPressed;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
   final Widget? logo;
+  final double toolbarHeight = 65;
 
   const TitleBar({
     this.title,
@@ -23,31 +24,46 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
   }) : super(key: key);
 
-  double get toolbarHeight => 65;
+  @override
+  Size get preferredSize =>
+      Size.fromHeight(toolbarHeight + (bottom?.preferredSize.height ?? 0));
+  @override
+  State<TitleBar> createState() => _TitleBarState();
+}
+
+class _TitleBarState extends State<TitleBar> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      leading: onBackPressed != null
-          ? BackButton(
-              onPressed: () => onBackPressed!.call(),
-            )
-          : const SizedBox.shrink(),
-      leadingWidth: onBackPressed != null ? 38.0 : 0.0,
-      centerTitle: Utility.isDesktop,
-      title: _buildTitle(),
-      toolbarHeight: toolbarHeight,
-      bottom: bottom,
-      actions: [
-        ...?actions?.map((widget) => Row(
-              /// 將每個動作 widget 間隔 8 pixel
-              children: [
-                widget,
-                const SizedBox(width: 8),
-              ],
-            )),
-        const AccountManageButton()
-      ],
+    return Title(
+      title: widget.title ?? localizations.title,
+      color: Colors.blue,
+      child: AppBar(
+        leading: widget.onBackPressed != null
+            ? BackButton(
+                onPressed: () => widget.onBackPressed!.call(),
+              )
+            : const SizedBox.shrink(),
+        leadingWidth: widget.onBackPressed != null ? 38.0 : 0.0,
+        centerTitle: Utility.isDesktop,
+        title: _buildTitle(),
+        toolbarHeight: widget.toolbarHeight,
+        bottom: widget.bottom,
+        actions: [
+          ...?widget.actions?.map((widget) => Row(
+                /// 將每個動作 widget 間隔 8 pixel
+                children: [
+                  widget,
+                  const SizedBox(width: 8),
+                ],
+              )),
+          const AccountManageButton()
+        ],
+      ),
     );
   }
 
@@ -57,7 +73,7 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
           Utility.isMobile ? MainAxisAlignment.start : MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        logo ??
+        widget.logo ??
             InkResponse(
               onTap: () {
                 window.open("https://www.rpmtw.com", "RPMTW Website");
@@ -71,13 +87,9 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
             ),
         const SizedBox(width: 8),
         Expanded(
-            child: SEOText(title ?? localizations.title,
+            child: SEOText(widget.title ?? localizations.title,
                 overflow: TextOverflow.ellipsis))
       ],
     );
   }
-
-  @override
-  Size get preferredSize =>
-      Size.fromHeight(toolbarHeight + (bottom?.preferredSize.height ?? 0));
 }
