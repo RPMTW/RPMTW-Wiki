@@ -24,8 +24,8 @@ const String productionRPMTWAccountUrl = "https://account.rpmtw.com";
 String get rpmtwAccountUrl =>
     development ? developmentRPMTWAccountUrl : productionRPMTWAccountUrl;
 String get rpmtwAccountOauth2 =>
-    "$rpmtwAccountUrl?rpmtw_auth_callback=${development ? developmentRPMWikiUrl : productionRPMWikiUrl}"
-    r"/auth?redirect_uri=${token}";
+    "$rpmtwAccountUrl?redirect_uri=${development ? developmentRPMWikiUrl : productionRPMWikiUrl}"
+    r"/auth";
 String get rpmtwWikiUrl =>
     development ? developmentRPMWikiUrl : productionRPMWikiUrl;
 

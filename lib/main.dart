@@ -69,7 +69,7 @@ class _WikiAppState extends State<WikiApp> {
 
             if (hrefUri.path.startsWith("/auth")) {
               Map<String, String> query = hrefUri.queryParameters;
-              String token = query['auth_token']!;
+              String token = query['access_token']!;
               href = hrefUri.replace(path: settings.name).toString();
 
               return MaterialPageRoute(
