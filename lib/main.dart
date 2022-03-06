@@ -1,7 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:rpmtw_wiki/pages/changelog/changelog_page.dart';
 import 'package:rpmtw_wiki/pages/mod/edit_mod_page.dart';
-import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +41,6 @@ class _WikiAppState extends State<WikiApp> {
 
   @override
   Widget build(BuildContext context) {
-    /// https://github.com/flutter/flutter/issues/81215
-    TextStyle fontStyle = const TextStyle(
-        fontFeatures: [ui.FontFeature.proportionalFigures()],
-        fontFamily: "font");
-
     return MaterialApp(
         title: 'RPMWiki',
         navigatorKey: NavigationService.navigationKey,
@@ -63,21 +57,6 @@ class _WikiAppState extends State<WikiApp> {
             primarySwatch: Colors.blue,
             brightness: Brightness.dark,
             fontFamily: "font",
-            textTheme: TextTheme(
-              bodyText2: fontStyle,
-              bodyText1: fontStyle,
-              headline6: fontStyle,
-              headline5: fontStyle,
-              headline4: fontStyle,
-              headline3: fontStyle,
-              headline2: fontStyle,
-              headline1: fontStyle,
-              caption: fontStyle,
-              button: fontStyle,
-              subtitle2: fontStyle,
-              subtitle1: fontStyle,
-              overline: fontStyle,
-            ),
             tooltipTheme: const TooltipThemeData(
                 textStyle: TextStyle(fontFamily: "font", color: Colors.black))),
         initialRoute: HomePage.route,

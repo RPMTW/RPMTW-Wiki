@@ -58,8 +58,8 @@ void main(List<String> arguments) async {
   <title>$title</title>
   <link rel="manifest" href="manifest.json">
   <link rel="preload" href="main.dart.js" as="script">
-  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.31.0/bin/canvaskit.js" as="script">
-  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.31.0/bin/canvaskit.wasm" as="fetch"
+  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.32.0/bin/canvaskit.js" as="script">
+  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.32.0/bin/canvaskit.wasm" as="fetch"
     crossorigin="anonymous">
 
   <style>
