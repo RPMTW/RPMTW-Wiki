@@ -89,6 +89,7 @@ class _WikiAppState extends State<WikiApp> {
               if (routeUri.queryParameters.containsKey("tab_index")) {
                 tabIndex = int.parse(routeUri.queryParameters["tab_index"]!);
               }
+              
               WikiApp.analytics.logPageView(
                   pageClass: "HomePage",
                   pageName: "Home Page",
