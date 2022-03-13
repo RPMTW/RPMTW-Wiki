@@ -92,5 +92,7 @@
     "tabResourcePack": "資源包",
     "tabVanilla": "原版",
     "tabWorld": "世界",
-    "title": "RPMTW Minecraft 百科"
+    "title": "RPMTW Minecraft 百科",
+    "changelogNone": "沒有改變",
+    "homePopularMods": "熱門模組"
 }
