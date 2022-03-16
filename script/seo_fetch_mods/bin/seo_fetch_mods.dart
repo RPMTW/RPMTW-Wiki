@@ -27,8 +27,8 @@ void main(List<String> arguments) async {
         name += " (${mod.translatedName!})";
       }
       String url = "https://wiki.rpmtw.com/mod/view/${mod.uuid}";
-      String title = "$name | RPMWiki - 全台最大 Minecraft 模組百科";
-      String siteName = "RPMTW Wiki";
+      String title = "$name | RPMWiki - 全台最大 Minecraft 百科";
+      String siteName = "RPMWiki";
 
       String html = """
 <!DOCTYPE html>
