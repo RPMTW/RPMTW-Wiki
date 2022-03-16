@@ -18,7 +18,7 @@ void main(List<String> arguments) async {
 
     for (MinecraftMod mod in mods) {
       String description =
-          "${mod.description ?? ""} | 從今天起開始使用 RPMWiki 吧！，RPMWiki 是個全新的 Minecraft 百科平台，Minecraft 中包羅萬象的知識內容全都在這裡，包含模組、模組包、地圖等內容";
+          "${mod.description != null ? "${mod.description} | " : ""}從今天起開始使用 RPMWiki 吧！，RPMWiki 是個全新的 Minecraft 百科平台，Minecraft 中包羅萬象的知識內容全都在這裡，包含模組、模組包、地圖等內容";
 
       String imageUrl = mod.imageUrl ??
           "https://raw.githubusercontent.com/RPMTW/RPMTW-Data/main/logo/rpmtw-logo.png";

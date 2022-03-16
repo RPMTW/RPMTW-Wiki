@@ -1,1 +1,2 @@
+sitemap: https://wiki.rpmtw.com/sitemap.xml
 Sitemap: https://wiki.rpmtw.com/sitemap.xml
