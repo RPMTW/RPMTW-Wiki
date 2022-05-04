@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="讓原版的 skin 變得看起來 3D 化，Skin 不再看起來像是一張紙了！ | 從今天起開始使用 RPMWiki 吧！，RPMWiki 是個全新的 Minecraft 百科平台，Minecraft 中包羅萬象的知識內容全都在這裡，包含模組、模組包、地圖等內容">
+  <meta property="og:image" content="https://api.rpmtw.com:2096/storage/71e1c01e-31f9-4808-aba9-d5ad3aacaf2a/download" />
+  <meta property="og:image:width" content="256" />
+  <meta property="og:image:height" content="256" />
+  <meta property="og:description" content="讓原版的 skin 變得看起來 3D 化，Skin 不再看起來像是一張紙了！ | 從今天起開始使用 RPMWiki 吧！，RPMWiki 是個全新的 Minecraft 百科平台，Minecraft 中包羅萬象的知識內容全都在這裡，包含模組、模組包、地圖等內容">
+  <meta property="og:title" content="Skin Layers 3D (3D 皮膚) | RPMWiki - 全台最大 Minecraft 模組百科">
+  <meta property="og:site_name" content="RPMTW Wiki">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2022-01-22T10:55:35.057" />
+  <meta property="article:modified_time" content="2022-01-22T10:55:35.057" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Skin Layers 3D (3D 皮膚) | RPMWiki - 全台最大 Minecraft 模組百科">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="keywords" content="RPMTW,minecraft,mod,RPMTW Wiki,Minecraft Wiki,RPMWiki,當個創世神百科,我的世界百科">
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>Skin Layers 3D (3D 皮膚) | RPMWiki - 全台最大 Minecraft 模組百科</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preload" href="main.dart.js" as="script">
+  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.32.0/bin/canvaskit.js" as="script">
+  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.32.0/bin/canvaskit.wasm" as="fetch"
+    crossorigin="anonymous">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .logo img {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .logo p {
+      color: #ffffff;
+      font: sans-serif;
+      font-size: 25px;
+      font-display: bold;
+      margin-left: 75px;
+      margin-top: -20px;
+      margin-bottom: 5px;
+    }
+
+    .loading div {
+      height: 25px;
+      width: 25px;
+      border-radius: 50%;
+      transform: scale(0);
+      background-color: red;
+      animation: scaling 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    .loading div:nth-child(0) {
+      animation-delay: 0s;
+    }
+
+    .loading div:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .loading div:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading div:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .loading div:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .loading div:nth-child(5) {
+      animation-delay: 1s;
+    }
+
+    .loading div {
+      height: 23px;
+      width: 23px;
+      border-radius: 50%;
+      transform: scale(0);
+    }
+
+
+    @keyframes scaling {
+
+      0%,
+      100% {
+        transform: scale(0.2);
+        background-color: #38f3b2;
+      }
+
+      40% {
+        transform: scale(1);
+        background-color: #147df5;
+      }
+
+      60% {
+        transform: scale(1);
+        background-color: #3d4ff5;
+      }
+
+      80% {
+        transform: scale(1);
+        background-color: #743df5;
+      }
+    }
+  </style>
+</head>
+
+<body style="background-color: rgb(34, 33, 33);">
+  <div class="container">
+    <div class="logo">
+      <img src="assets/assets/images/rpmwiki-logo-complex.svg" alt="">
+      <p>RPMWiki</p>
+    </div>
+    <div class="loading">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <!-- This script installs service_worker.js to provide PWA functionality to
+       application. For more information, see:
+       https://developers.google.com/web/fundamentals/primers/service-workers -->
+  <script>
+    var serviceWorkerVersion = null;
+    var scriptLoaded = false;
+    function loadMainDartJs() {
+      if (scriptLoaded) {
+        return;
+      }
+      scriptLoaded = true;
+      var scriptTag = document.createElement('script');
+      scriptTag.src = 'main.dart.js';
+      scriptTag.type = 'application/javascript';
+      document.body.append(scriptTag);
+    }
+
+    if ('serviceWorker' in navigator) {
+      // Service workers are supported. Use them.
+      window.addEventListener('load', function () {
+        // Wait for registration to finish before dropping the <script> tag.
+        // Otherwise, the browser will load the script multiple times,
+        // potentially different versions.
+        var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
+        navigator.serviceWorker.register(serviceWorkerUrl)
+          .then((reg) => {
+            function waitForActivation(serviceWorker) {
+              serviceWorker.addEventListener('statechange', () => {
+                if (serviceWorker.state == 'activated') {
+                  console.log('Installed new service worker.');
+                  loadMainDartJs();
+                }
+              });
+            }
+            if (!reg.active && (reg.installing || reg.waiting)) {
+              // No active web worker and we have installed or are installing
+              // one for the first time. Simply wait for it to activate.
+              waitForActivation(reg.installing || reg.waiting);
+            } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
+              // When the app updates the serviceWorkerVersion changes, so we
+              // need to ask the service worker to update.
+              console.log('New service worker available.');
+              reg.update();
+              waitForActivation(reg.installing);
+            } else {
+              // Existing service worker is still good.
+              console.log('Loading app from service worker.');
+              loadMainDartJs();
+            }
+          });
+
+        // If service worker doesn't succeed in a reasonable amount of time,
+        // fallback to plaint <script> tag.
+        setTimeout(() => {
+          if (!scriptLoaded) {
+            console.warn(
+              'Failed to load app from service worker. Falling back to plain <script> tag.',
+            );
+            loadMainDartJs();
+          }
+        }, 4000);
+      });
+    } else {
+      // Service workers not supported. Just drop the <script> tag.
+      loadMainDartJs();
+    }
+  </script>
+</body>
+
+</html>
+    
